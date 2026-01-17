@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PUMA Notes">
+
+    <link rel="apple-touch-icon" href="image_5.png">
+    <link rel="icon" href="image_5.png" type="image/png">
+
+    <title>PUMA PRO v1.6</title>
+    
+    <style>
+        /* --- ESTILOS --- */
+        :root { --bg: #f2f2f7; --blue: #007AFF; --green: #34C759; --puma: #D35400; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg); margin: 0; height: 100vh; width: 100vw; overflow: hidden;
+            display: flex; flex-direction: column; color: #333;
+        }
+
+        /* TOP BAR */
+        .top-bar {
+            background: rgba(255,255,255,0.95); padding: 8px 15px; border-bottom: 1px solid #ddd;
+            display: flex; justify-content: space-between; align-items: center;
+            height: 54px; flex-shrink: 0; z-index: 20; backdrop-filter: blur(10px);
+        }
+        .brand { font-weight: 900; font-size: 20px; color: #333; display: flex; align-items: center; gap: 10px; letter-spacing: -0.5px; }
+        .brand img { height: 40px; width: auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .controls { display: flex; gap: 10px; align-items: center; }
+        .help-btn { background: var(--puma); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; font-weight: 800; font-size: 16px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        select.lang-select { padding: 6px 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 13px; background: #f9f9f9; font-weight: 600; color: #555; outline: none; }
+
+        /* TABS */
+        .tabs { display: flex; background: #fff; padding: 0 10px 10px 10px; border-bottom: 1px solid #ccc; justify-content: center; gap: 10px; flex-shrink: 0; z-index: 20; }
+        .tab { padding: 8px 20px; border-radius: 20px; border: none; background: #eee; font-weight: 600; font-size: 13px; color: #666; transition: all 0.2s ease; cursor: pointer; }
+        .tab.active { background: var(--blue); color: white; box-shadow: 0 2px 8px rgba(0,122,255,0.3); }
+
+        /* MAIN */
+        .main-container { flex-grow: 1; position: relative; overflow: hidden; width: 100%; }
+        .panel { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; background: white; }
+        .panel.active { display: flex; }
+        .scrollable-content { flex-grow: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 25px; padding-bottom: 110px; }
+        textarea.scrollable-content { border: none; outline: none; resize: none; font-family: 'Menlo', 'Monaco', monospace; font-size: 15px; width: 100%; box-sizing: border-box; color: #333; line-height: 1.5; }
+        textarea::placeholder { color: #aaa; font-style: italic; white-space: pre-wrap; }
+
+        /* TOOLBAR */
+        .toolbar { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid #ccc; padding: 15px; box-sizing: border-box; display: flex; gap: 12px; justify-content: center; box-shadow: 0 -5px 25px rgba(0,0,0,0.1); z-index: 30; }
+        .btn { flex: 1; padding: 14px; border-radius: 14px; font-weight: 700; text-align: center; border: none; font-size: 15px; cursor: pointer; white-space: nowrap; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--blue); color: white; box-shadow: 0 4px 12px rgba(0,122,255,0.3); }
+        .btn-success { background: var(--green); color: white; box-shadow: 0 4px 12px rgba(52,199,89,0.3); }
+        .btn-outline { background: #fff; border: 2px solid #e0e0e0; color: #555; }
+        .btn-secondary { background: #E5E5EA; color: #333; max-width: 60px; font-size: 20px; padding: 12px; }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(2px); }
+        .modal { background: white; width: 88%; max-width: 500px; max-height: 85vh; overflow-y: auto; border-radius: 22px; padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+        .modal h3 { margin-top: 0; color: var(--puma); font-size: 22px; display: flex; align-items: center; gap: 10px; }
+        .prompt-box { background: #f4f4f7; padding: 15px; border-radius: 12px; font-family: 'Menlo', monospace; font-size: 12px; margin: 20px 0; word-break: break-word; white-space: pre-wrap; border: 1px solid #e0e0e0; color: #444; }
+
+        /* VISUAL STYLES */
+        #preview { line-height: 1.65; }
+        .apple-header { font-size: 1.3em; font-weight: 800; margin-top: 25px; margin-bottom: 10px; display: flex; align-items: center; color: #000; }
+        .apple-checkbox { accent-color: #d4af37; transform: scale(1.3); margin-right: 12px; pointer-events: none; }
+        ul { list-style: none; padding-left: 0; margin: 15px 0; }
+        li { padding-left: 24px; position: relative; margin-bottom: 8px; }
+        li::before { content: "—"; position: absolute; left: 0; color: #999; font-weight: bold; }
+        li ul li { padding-left: 24px; border-left: 2px solid #e5e5e5; margin-top: 5px; }
+        .apple-quote { background-color: #F2F2F7 !important; border-left: 5px solid #8E8E93 !important; margin: 20px 0; padding: 18px 22px; border-radius: 14px; font-style: italic; color: #333; font-size: 0.95em; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .apple-sidenote { background-color: #FCE4EC !important; color: #880E4F; padding: 18px 22px; border-radius: 14px; margin: 20px 0; border-left: 5px solid #F06292 !important; font-size: 0.95em; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .sidenote-label { font-weight: 900; font-size: 0.7em; text-transform: uppercase; display: block; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .apple-mark { background-color: #FFCCBC !important; color: #BF360C; padding: 2px 6px; border-radius: 6px; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: 500; }
+        b { font-weight: 800; color: #000; }
+
+        @media print { .top-bar, .tabs, .toolbar, .modal-overlay { display: none !important; } .panel.active { position: relative; display: block; height: auto; overflow: visible; } .scrollable-content { overflow: visible; padding: 0; margin: 0; height: auto; } body { background: white; } #preview { padding: 20px 0; } }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="brand">
+            <img src="image_5.png" alt="Puma Logo"> 
+            PUMA NOTES
+        </div>
+        <div class="controls">
+            <button class="help-btn" onclick="toggleModal(true)">?</button>
+            <select class="lang-select" id="langSelector" onchange="changeLanguage()">
+                <option value="en" selected>EN</option>
+                <option value="es">ES</option>
+                <option value="de">DE</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" id="tabEditor" onclick="verEditor()">1. Editor</button>
+        <button class="tab" id="tabPreview" onclick="verPreview()">2. Preview</button>
+    </div>
+
+    <div class="main-container">
+        <div id="editorPanel" class="panel active">
+            <textarea id="inputTxt" class="scrollable-content"></textarea>
+            <div class="toolbar">
+                <input type="file" id="fileInput" accept=".md,.txt" style="display:none" onchange="loadFile(this)">
+                <button class="btn btn-outline" id="btnImport" onclick="document.getElementById('fileInput').click()">📂 Import</button>
+                <button class="btn btn-primary" id="btnGenerate" onclick="verPreview()">Generate View &rarr;</button>
+            </div>
+        </div>
+
+        <div id="previewPanel" class="panel">
+            <div id="preview" class="scrollable-content"></div>
+            <div class="toolbar">
+                <button class="btn btn-secondary" id="btnBack" onclick="verEditor()">&larr;</button>
+                <button class="btn btn-success" id="btnPdf" onclick="imprimir()">📤 Share PDF / WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="helpModal" onclick="toggleModal(false)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <h3 id="modalTitle">🐆 PUMA Prompt</h3>
+            <p id="modalDesc" style="font-size:15px; color:#666; margin-bottom: 15px;">Copy to NotebookLM:</p>
+            <div class="prompt-box" id="promptText">
+INSTRUCTION: Analyze the attached document and generate a structured summary.
+IMPORTANT FORMATTING RULES:
+1. Do NOT include reference numbers like [1].
+2. Use Markdown strictly.
+3. For Section Headers use: - [x] **Title**
+4. For details use nested lists.
+5. For Direct Quotes use: > "Quote text"
+6. For Side Notes use: **Side note:** Text
+7. For Key Concepts use: ==Concept== or **Concept**
+            </div>
+            <button class="btn btn-primary" id="btnCopy" onclick="copyPrompt()" style="width:100%; padding: 16px; font-size: 16px;">Copy Prompt</button>
+            <button class="btn btn-outline" onclick="toggleModal(false)" style="width:100%; margin-top:12px; border:none; color: #999;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                tabEditor: "1. Editor", tabPreview: "2. Preview",
+                placeholder: "Paste NotebookLM output here.\n\n--- RULES ---\n> Quote (Gray Box)\n**Side note:** (Pink Box)\n- [x] Title (Checkbox)\n==Highlight== (Orange)",
+                btnImport: "📂 Import File", btnGenerate: "Generate View →", btnPdf: "📤 Share PDF / WhatsApp", btnBack: "←",
+                modalTitle: "🐆 PUMA Prompt", modalDesc: "Copy to NotebookLM (Note: use ** for Side note):", btnCopy: "Copy Prompt", noteLabel: "NOTE"
+            },
+            es: {
+                tabEditor: "1. Editor", tabPreview: "2. Vista Previa",
+                placeholder: "Pega el resultado aquí.\n\n--- REGLAS ---\n> Cita (Caja Gris)\n**Nota:** (Caja Rosa)\n- [x] Título (Checkbox)\n==Resaltar== (Naranja)",
+                btnImport: "📂 Importar Archivo", btnGenerate: "Generar Vista →", btnPdf: "📤 PDF / WhatsApp", btnBack: "←",
+                modalTitle: "🐆 Prompt PUMA", modalDesc: "Copia en NotebookLM (Nota: usa ** para Side note):", btnCopy: "Copiar Prompt", noteLabel: "NOTA"
+            },
+            de: {
+                tabEditor: "1. Editor", tabPreview: "2. Vorschau",
+                placeholder: "Text hier einfügen.\n\n--- REGELN ---\n> Zitat (Graue Box)\n**Note:** (Rosa Box)\n- [x] Titel (Checkbox)\n==Markieren== (Orange)",
+                btnImport: "📂 Import", btnGenerate: "Vorschau →", btnPdf: "📤 PDF Teilen", btnBack: "←",
+                modalTitle: "🐆 PUMA Prompt", modalDesc: "Kopieren an NotebookLM:", btnCopy: "Prompt kopieren", noteLabel: "HINWEIS"
+            }
+        };
+
+        let currentLang = 'en';
+
+        function changeLanguage() {
+            currentLang = document.getElementById('langSelector').value;
+            const t = translations[currentLang];
+            document.getElementById('tabEditor').innerText = t.tabEditor;
+            document.getElementById('tabPreview').innerText = t.tabPreview;
+            document.getElementById('inputTxt').placeholder = t.placeholder;
+            document.getElementById('btnImport').innerText = t.btnImport;
+            document.getElementById('btnGenerate').innerText = t.btnGenerate;
+            document.getElementById('btnPdf').innerText = t.btnPdf;
+            document.getElementById('btnBack').innerText = t.btnBack;
+            document.getElementById('modalTitle').innerText = t.modalTitle;
+            document.getElementById('modalDesc').innerText = t.modalDesc;
+            document.getElementById('btnCopy').innerText = t.btnCopy;
+            if(document.getElementById('previewPanel').classList.contains('active')) convertirTexto();
+        }
+
+        function convertirTexto() {
+            let texto = document.getElementById('inputTxt').value;
+            let html = "";
+            let lineas = texto.split('\n');
+            let dentroDeLista = false;
+            let label = translations[currentLang].noteLabel;
+
+            lineas.forEach(linea => {
+                let l = linea.trim();
+                
+                // --- PROCESAMIENTO DE LÍNEAS ---
+
+                // 1. CITAS (>)
+                if (l.startsWith('>')) {
+                    if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
+                    html += `<div class="apple-quote">${fmt(l.substring(1))}</div>`;
+                
+                // 2. NOTAS LATERALES (Caja Rosa) - AHORA MÁS INTELIGENTE
+                // Acepta: "**Side note:**", "**Sine note:**" (typo común), "**Note:**", "**Nota:**"
+                } else if (
+                    l.includes('**Side note:**') || 
+                    l.includes('**Sine note:**') || 
+                    l.includes('**Note:**') || 
+                    l.includes('**Nota:**')
+                ) {
+                    if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
+                    // Limpiamos cualquiera de las variantes para dejar solo el texto
+                    let contenido = l.replace(/\*\*(Side note|Sine note|Note|Nota):\*\*/gi, '').replaceAll('*','').trim();
+                    html += `<div class="apple-sidenote"><span class="sidenote-label">${label}</span>${fmt(contenido)}</div>`;
+                
+                // 3. TÍTULOS CON CHECKBOX
+                } else if (l.startsWith('- [x]')) {
+                    if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
+                    html += `<div class="apple-header"><input type="checkbox" checked class="apple-checkbox" onclick="return false;"> ${fmt(l.replace('- [x]','').replaceAll('*',''))}</div>`;
+                
+                // 4. LISTAS
+                } else if (l.startsWith('- ')) {
+                    if (!dentroDeLista) { html += '<ul>'; dentroDeLista = true; }
+                    let esSub = linea.startsWith('    ') || linea.startsWith('\t');
+                    html += esSub ? `<ul><li>${fmt(l.substring(2))}</li></ul>` : `<li>${fmt(l.substring(2))}</li>`;
+                
+                // 5. PÁRRAFOS NORMALES
+                } else {
+                    if (dentroDeLista && l === "") { html += '</ul>'; dentroDeLista = false; }
+                    if (l !== "") html += `<p>${fmt(l)}</p>`;
+                }
+            });
+            if (dentroDeLista) html += '</ul>';
+            document.getElementById('preview').innerHTML = html;
+        }
+
+        function fmt(txt) {
+            return txt.replace(/==(.*?)==/g, '<mark class="apple-mark">$1</mark>')
+                      .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        }
+
+        function toggleModal(show) { document.getElementById('helpModal').style.display = show ? 'flex' : 'none'; }
+        function copyPrompt() {
+            navigator.clipboard.writeText(document.getElementById('promptText').innerText).then(() => {
+                const btn = document.getElementById('btnCopy');
+                let orig = btn.innerText; btn.innerText = "¡Copied! ✅"; btn.style.background = "#34C759";
+                setTimeout(()=>{ btn.innerText=orig; btn.style.background = "var(--blue)"; toggleModal(false); }, 1500);
+            });
+        }
+        function loadFile(input) {
+            let reader = new FileReader();
+            reader.readAsText(input.files[0]);
+            reader.onload = function() { document.getElementById('inputTxt').value = reader.result; };
+        }
+        function verEditor() {
+            document.getElementById('editorPanel').classList.add('active');
+            document.getElementById('previewPanel').classList.remove('active');
+            updateTabs(0);
+        }
+        function verPreview() {
+            convertirTexto();
+            document.getElementById('editorPanel').classList.remove('active');
+            document.getElementById('previewPanel').classList.add('active');
+            updateTabs(1);
+        }
+        function updateTabs(idx) {
+            document.querySelectorAll('.tab').forEach((t, i) => i === idx ? t.classList.add('active') : t.classList.remove('active'));
+        }
+        function imprimir() { window.print(); }
+        
+        changeLanguage();
+    </script>
+</body>
+</html>
