@@ -1,308 +1,196 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>SaraPuma – Visualizador</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>SaraPuma – Markdown Viewer</title>
   <link rel="icon" href="image_5.png" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#D35400" />
   <link rel="apple-touch-icon" href="image_5.png" />
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('✅ Service Worker Registered'))
-        .catch(error => console.error('❌ Service Worker Error:', error));
+  <style>
+    :root {
+      --brand: #D35400;
+      --bg-light: #ffffff;
+      --bg-dark: #1e1e1e;
+      --text-light: #333;
+      --text-dark: #f5f5f5;
+      --note-bg: #fff9f0;
+      --note-dark-bg: #3b2e1e;
     }
-  </script>
-    
-    <style>
-        /* --- THEME VARIABLES --- */
-        :root {
-            --brand: #D35400; --blue: #007AFF; --green: #34C759;
-            /* Light Mode */
-            --bg: #f2f2f7; --surface: #ffffff; --text-main: #000000; --text-sec: #666666;
-            --border: #d1d1d6; --bar-bg: rgba(255,255,255,0.95); --input-bg: #ffffff; --btn-sec-bg: #E5E5EA;
-            --hr-color: #e5e5ea;
-        }
 
-        [data-theme="dark"] {
-            /* Dark Mode */
-            --bg: #000000; --surface: #1c1c1e; --text-main: #ffffff; --text-sec: #aeb0b2;
-            --border: #38383a; --bar-bg: rgba(28,28,30,0.95); --input-bg: #1c1c1e; --btn-sec-bg: #3a3a3c;
-            --hr-color: #38383a;
-        }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg-light);
+      color: var(--text-light);
+      transition: all 0.3s ease;
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg); margin: 0; height: 100vh; width: 100vw; overflow: hidden;
-            display: flex; flex-direction: column; color: var(--text-main); transition: background 0.3s;
-        }
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
 
-        /* TOP BAR */
-        .top-bar {
-            background: var(--bar-bg); padding: 8px 15px; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-            height: 54px; flex-shrink: 0; z-index: 20; backdrop-filter: blur(10px);
-        }
-        .brand { 
-            font-weight: 900; font-size: 18px; color: var(--text-main); 
-            display: flex; align-items: center; gap: 10px; letter-spacing: -0.5px; text-decoration: none;
-        }
-        .brand img { height: 36px; width: auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        
-        .controls { display: flex; gap: 12px; align-items: center; }
-        .icon-btn {
-            background: transparent; border: none; cursor: pointer; padding: 5px;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--blue); transition: transform 0.2s;
-        }
-        .icon-btn svg { width: 24px; height: 24px; fill: currentColor; }
-        select.lang-select { 
-            padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; 
-            background: var(--surface); color: var(--text-main); font-weight: 600; outline: none;
-        }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--brand);
+      color: white;
+    }
 
-        /* TABS */
-        .tabs { 
-            display: flex; background: var(--surface); padding: 0 10px 10px 10px; border-bottom: 1px solid var(--border); 
-            justify-content: center; gap: 10px; flex-shrink: 0; z-index: 20;
-        }
-        .tab { 
-            padding: 8px 20px; border-radius: 20px; border: none; background: var(--bg); 
-            font-weight: 600; font-size: 13px; color: var(--text-sec); transition: all 0.2s ease; cursor: pointer;
-        }
-        .tab.active { background: var(--blue); color: white; box-shadow: 0 2px 8px rgba(0,122,255,0.3); }
+    .controls {
+      display: flex;
+      gap: 10px;
+    }
 
-        /* MAIN */
-        .main-container { flex-grow: 1; position: relative; overflow: hidden; width: 100%; }
-        .panel { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; background: var(--surface); }
-        .panel.active { display: flex; }
-        .scrollable-content { flex-grow: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 25px; padding-bottom: 110px; }
-        
-        textarea.scrollable-content { 
-            border: none; outline: none; resize: none; font-family: 'Menlo', 'Monaco', monospace; 
-            font-size: 15px; width: 100%; box-sizing: border-box; 
-            background: var(--input-bg); color: var(--text-main); line-height: 1.5;
-        }
+    .controls button {
+      border: none;
+      background: white;
+      color: var(--brand);
+      padding: 6px 12px;
+      font-weight: bold;
+      border-radius: 20px;
+      cursor: pointer;
+    }
 
-        /* TOOLBAR */
-        .toolbar { 
-            position: absolute; bottom: 0; left: 0; width: 100%; 
-            background: var(--bar-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); 
-            border-top: 1px solid var(--border); padding: 15px; box-sizing: border-box; 
-            display: flex; gap: 12px; justify-content: center; z-index: 30; 
-        }
-        .btn { flex: 1; padding: 14px; border-radius: 14px; font-weight: 700; text-align: center; border: none; font-size: 15px; cursor: pointer; white-space: nowrap; transition: transform 0.1s; }
-        .btn:active { transform: scale(0.98); }
-        .btn-primary { background: var(--blue); color: white; }
-        .btn-success { background: var(--green); color: white; }
-        .btn-outline { background: var(--surface); border: 2px solid var(--border); color: var(--text-sec); }
-        .btn-secondary { background: var(--btn-sec-bg); color: var(--text-main); max-width: 60px; font-size: 20px; padding: 12px; }
+    .main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
 
-        /* --- VISUAL STYLES --- */
-        #preview { line-height: 1.65; color: var(--text-main); }
-        
-        /* HEADERS */
-        h1, h2, h3, h4 { margin-top: 25px; margin-bottom: 10px; font-weight: 800; line-height: 1.2; }
-        h1 { font-size: 1.8em; letter-spacing: -0.5px; }
-        h2 { font-size: 1.5em; letter-spacing: -0.3px; }
-        h3 { font-size: 1.25em; }
-        
-        /* DIVIDER */
-        hr.apple-hr { border: 0; border-top: 2px solid var(--hr-color); margin: 30px 0; }
+    textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 12px;
+      font-family: Menlo, monospace;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
 
-        /* Apple Checkbox Header */
-        .apple-header { font-size: 1.3em; font-weight: 800; margin-top: 25px; margin-bottom: 10px; display: flex; align-items: center; }
-        .apple-checkbox { accent-color: #d4af37; transform: scale(1.3); margin-right: 12px; pointer-events: none; }
-        
-        /* Lists */
-        ul { list-style: none; padding-left: 0; margin: 15px 0; }
-        li { padding-left: 24px; position: relative; margin-bottom: 8px; color: var(--text-main); }
-        li::before { content: "—"; position: absolute; left: 0; color: #999; font-weight: bold; }
-        li ul li { padding-left: 24px; border-left: 2px solid var(--border); margin-top: 5px; }
-        
-        /* Blocks */
-        .apple-quote { background-color: #F2F2F7 !important; border-left: 5px solid #8E8E93 !important; margin: 20px 0; padding: 18px 22px; border-radius: 14px; font-style: italic; color: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        .apple-sidenote { background-color: #FCE4EC !important; color: #880E4F !important; padding: 18px 22px; border-radius: 14px; margin: 20px 0; border-left: 5px solid #F06292 !important; font-size: 0.95em; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        .sidenote-label { font-weight: 900; font-size: 0.7em; text-transform: uppercase; display: block; margin-bottom: 6px; letter-spacing: 0.5px; }
-        
-        /* Inline */
-        .apple-mark { background-color: #FFCCBC !important; color: #BF360C !important; padding: 2px 6px; border-radius: 6px; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: 500; }
-        .apple-mark-green { background-color: #D4EDDA !important; color: #155724 !important; padding: 2px 6px; border-radius: 6px; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: 500; }
-        b { font-weight: 800; color: var(--text-main); }
-        s { color: var(--text-sec); opacity: 0.7; text-decoration-thickness: 2px; }
+    .output {
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 20px;
+      background: #fdfdfd;
+      overflow-x: auto;
+    }
 
-        @media print {
-            .top-bar, .tabs, .toolbar { display: none !important; }
-            .panel.active { display: block !important; position: relative; height: auto; overflow: visible; background: white; }
-            .scrollable-content { overflow: visible; padding: 0; height: auto; }
-            body, .main-container { background: white; height: auto; overflow: visible; }
-            #preview { color: black; }
-            li, b, h1, h2, h3 { color: black; }
-        }
-    </style>
+    body.dark .output {
+      background: #2e2e2e;
+      border-color: #555;
+    }
+
+    .note {
+      background: var(--note-bg);
+      border-left: 5px solid var(--brand);
+      padding: 10px;
+      border-radius: 6px;
+      margin: 10px 0;
+    }
+
+    body.dark .note {
+      background: var(--note-dark-bg);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      padding: 20px;
+      color: #999;
+    }
+  </style>
 </head>
 <body>
-
-    <div class="top-bar">
-        <a href="index.html" class="brand">
-            <img src="image_5.png" alt="SaraPuma"> 
-            SaraPuma
-        </a>
-        <div class="controls">
-            <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Dark/Light Mode">
-                <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            </button>
-            <button class="icon-btn" onclick="window.open('manual.html', '_blank')" title="Manual & AI Help">
-                <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-            </button>
-            <select class="lang-select" id="langSelector" onchange="changeLanguage()">
-                <option value="en">EN</option>
-                <option value="es" selected>ES</option>
-                <option value="de">DE</option>
-            </select>
-        </div>
+  <header>
+    <div><strong>SaraPuma</strong></div>
+    <div class="controls">
+      <button onclick="toggleTheme()">🌗</button>
+      <button onclick="setLang('en')">EN</button>
+      <button onclick="setLang('es')">ES</button>
+      <button onclick="setLang('de')">DE</button>
     </div>
+  </header>
 
-    <div class="tabs">
-        <button class="tab active" id="tabEditor" onclick="verEditor()">Editor</button>
-        <button class="tab" id="tabPreview" onclick="verPreview()">Preview</button>
-    </div>
+  <div class="main">
+    <label id="editor-label" for="md-input"><strong>Paste or write your Markdown below:</strong></label>
+    <textarea id="md-input">
+# SaraPuma Magic Prompt
 
-    <div class="main-container">
-        <div id="editorPanel" class="panel active">
-            <textarea id="inputTxt" class="scrollable-content"></textarea>
-            <div class="toolbar">
-                <input type="file" id="fileInput" accept=".md,.txt" style="display:none" onchange="loadFile(this)">
-                <button class="btn btn-outline" id="btnImport" onclick="document.getElementById('fileInput').click()">📂 Import MD</button>
-                <button class="btn btn-primary" id="btnGenerate" onclick="verPreview()">Generate &rarr;</button>
-            </div>
-        </div>
+INSTRUCTION: Please output your answer in Markdown format using a code block.
 
-        <div id="previewPanel" class="panel">
-            <div id="preview" class="scrollable-content"></div>
-            <div class="toolbar">
-                <button class="btn btn-secondary" id="btnBack" onclick="verEditor()">&larr;</button>
-                <button class="btn btn-success" id="btnPdf" onclick="imprimir()">📤 Share PDF</button>
-            </div>
-        </div>
-    </div>
+MARKDOWN SYNTAX TO APPLY:
+1. # Main Header, ## Subheader
+2. **Bold**, *Italic*, ~~Strikethrough~~, <u>Underline</u>
+3. [Link Text](URL)
+4. > Blockquote
+5. - Bullet list, 1. Ordered list
+6. `Inline code`, ```Code block```
+7. - [x] Checklist
+8. **Side note:** This is a margin note
+9. ==Highlight== and ++Green highlight++
+10. --- Divider
+    </textarea>
 
-    <script>
-        const translations = {
-            en: { 
-                tabEditor: "Editor", tabPreview: "Preview", 
-                placeholder: "💡 AI TIP: Ask ChatGPT to 'Rewrite in Markdown' to preserve links and headers.\n\n--- CHEATSHEET ---\n# Header 1\n## Header 2\n---\n> Quote\n**Side note:** Text\n- [x] Checklist\n==Orange== / ++Green++\n[Link](url)", 
-                btnImport: "📂 Import File", btnGenerate: "Generate View →", btnPdf: "📤 Share PDF", noteLabel: "NOTE" 
-            },
-            es: { 
-                tabEditor: "Editor", tabPreview: "Vista Previa", 
-                placeholder: "💡 TIP IA: Pídele a ChatGPT 'Reescribir en Markdown' para mantener los enlaces.\n\n--- CÓDIGOS ---\n# Título 1\n## Título 2\n---\n> Cita\n**Nota:** Texto\n- [x] Tarea\n==Naranja== / ++Verde++\n[Enlace](url)", 
-                btnImport: "📂 Importar", btnGenerate: "Generar Vista →", btnPdf: "📤 PDF / WhatsApp", noteLabel: "NOTA" 
-            },
-            de: { 
-                tabEditor: "Editor", tabPreview: "Vorschau", 
-                placeholder: "💡 AI TIPP: Bitten Sie ChatGPT, 'in Markdown neu zu schreiben'.\n\n--- REGELN ---\n# Titel 1\n## Titel 2\n---\n> Zitat\n**Note:** Text\n- [x] Checkbox\n==Orange== / ++Grün++\n[Link](url)", 
-                btnImport: "📂 Import", btnGenerate: "Vorschau →", btnPdf: "📤 PDF Teilen", noteLabel: "HINWEIS" 
-            }
-        };
+    <div class="output" id="rendered-output"></div>
+  </div>
 
-        let currentLang = 'en';
+  <footer>
+    © 2026 SaraPuma • v3.0 • Built for Leaders
+  </footer>
 
-        function toggleTheme() {
-            const html = document.documentElement;
-            html.setAttribute('data-theme', html.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
-        }
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
+  <script>
+    const md = window.markdownit({html: true});
+    const input = document.getElementById('md-input');
+    const output = document.getElementById('rendered-output');
 
-        function changeLanguage() {
-            currentLang = document.getElementById('langSelector').value;
-            const t = translations[currentLang];
-            document.getElementById('tabEditor').innerText = t.tabEditor;
-            document.getElementById('tabPreview').innerText = t.tabPreview;
-            document.getElementById('inputTxt').placeholder = t.placeholder;
-            document.getElementById('btnImport').innerText = t.btnImport;
-            document.getElementById('btnGenerate').innerText = t.btnGenerate;
-            document.getElementById('btnPdf').innerText = t.btnPdf;
-            if(document.getElementById('previewPanel').classList.contains('active')) convertirTexto();
-        }
+    function render() {
+      let text = input.value;
 
-        function convertirTexto() {
-            let texto = document.getElementById('inputTxt').value;
-            let html = "";
-            let lineas = texto.split('\n');
-            let dentroDeLista = false;
-            let label = translations[currentLang].noteLabel;
+      // Side note detection
+      text = text.replace(/\*\*(Side note|Nota|Hinweis):\*\*(.*)/gi,
+        '<div class="note"><strong>$1:</strong> $2</div>');
 
-            lineas.forEach(linea => {
-                let l = linea.trim();
-                
-                if (l === '---' || l === '***') {
-                    if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
-                    html += '<hr class="apple-hr">';
-                } else if (l.startsWith('#')) {
-                    if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
-                    let level = l.match(/^#+/)[0].length;
-                    let content = l.replace(/^#+/, '').trim();
-                    if (level > 6) level = 6;
-                    html += `<h${level}>${fmt(content)}</h${level}>`;
-                } else if (l.startsWith('>')) {
-                    if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
-                    html += `<div class="apple-quote">${fmt(l.substring(1))}</div>`;
-                } else if (l.match(/^\*\*(Side note|Sine note|Note|Nota|Hinweis).*:\*\*/i)) {
-                    if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
-                    let contenido = l.replace(/^\*\*(.*?):\*\*/, '').trim();
-                    html += `<div class="apple-sidenote"><span class="sidenote-label">${label}</span>${fmt(contenido)}</div>`;
-                } else if (l.startsWith('- [x]')) {
-                    if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
-                    html += `<div class="apple-header"><input type="checkbox" checked class="apple-checkbox" onclick="return false;"> ${fmt(l.replace('- [x]','').replaceAll('*',''))}</div>`;
-                } else if (l.match(/^[-*•] /)) {
-                    if (!dentroDeLista) { html += '<ul>'; dentroDeLista = true; }
-                    let content = l.substring(1).trim(); 
-                    let esSub = linea.startsWith('    ') || linea.startsWith('\t');
-                    html += esSub ? `<ul><li>${fmt(content)}</li></ul>` : `<li>${fmt(content)}</li>`;
-                } else {
-                    if (dentroDeLista && l === "") { html += '</ul>'; dentroDeLista = false; }
-                    if (l !== "") html += `<p>${fmt(l)}</p>`;
-                }
-            });
-            if (dentroDeLista) html += '</ul>';
-            document.getElementById('preview').innerHTML = html;
-        }
+      output.innerHTML = md.render(text);
+    }
 
-        function fmt(txt) {
-            return txt
-                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="color:var(--blue);text-decoration:none;font-weight:600;">$1 🔗</a>')
-                .replace(/==(.*?)==/g, '<mark class="apple-mark">$1</mark>')
-                .replace(/\+\+(.*?)\+\+/g, '<mark class="apple-mark-green">$1</mark>')
-                .replace(/~~(.*?)~~/g, '<s>$1</s>')
-                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-                .replace(/\*(.*?)\*/g, '<i>$1</i>');
-        }
+    input.addEventListener('input', render);
+    window.onload = render;
 
-        function loadFile(input) {
-            let reader = new FileReader();
-            reader.readAsText(input.files[0]);
-            reader.onload = function() { document.getElementById('inputTxt').value = reader.result; };
-        }
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+    }
 
-        function verEditor() {
-            document.getElementById('editorPanel').classList.add('active');
-            document.getElementById('previewPanel').classList.remove('active');
-            updateTabs(0);
-        }
-        function verPreview() {
-            convertirTexto();
-            document.getElementById('editorPanel').classList.remove('active');
-            document.getElementById('previewPanel').classList.add('active');
-            updateTabs(1);
-        }
-        function updateTabs(idx) {
-            document.querySelectorAll('.tab').forEach((t, i) => i === idx ? t.classList.add('active') : t.classList.remove('active'));
-        }
-        function imprimir() { window.print(); }
-        
-        changeLanguage();
-    </script>
+    const translations = {
+      en: {
+        "editor-label": "Paste or write your Markdown below:"
+      },
+      es: {
+        "editor-label": "Pega o escribe tu Markdown aquí:"
+      },
+      de: {
+        "editor-label": "Markdown hier einfügen oder schreiben:"
+      }
+    };
+
+    function setLang(lang) {
+      for (const id in translations[lang]) {
+        document.getElementById(id).textContent = translations[lang][id];
+      }
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
 </body>
 </html>
