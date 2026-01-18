@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>SaraPuma© – Markdown Viewer</title>
+  <title>SaraPuma – Markdown Viewer</title>
   <link rel="icon" href="image_5.png" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#D35400" />
@@ -68,7 +68,7 @@
 
     textarea {
       width: 100%;
-      min-height: 200px;
+      min-height: 220px;
       padding: 12px;
       font-family: Menlo, monospace;
       font-size: 14px;
@@ -104,97 +104,8 @@
     footer {
       text-align: center;
       font-size: 12px;
-      padding: 20px;
-      color: #999;
+      padding: 30px 20px;
+      color: #888;
     }
   </style>
 </head>
-<body>
-  <header>
-    <div style="font-size:12px; color:white;">© 2026 SaraPuma</div>
-    <div><strong>SaraPuma</strong></div>
-    <div class="controls">
-      <button onclick="toggleTheme()">🌗</button>
-      <button onclick="setLang('en')">EN</button>
-      <button onclick="setLang('es')">ES</button>
-      <button onclick="setLang('de')">DE</button>
-    </div>
-  </header>
-
-  <div class="main">
-    <label id="editor-label" for="md-input"><strong>Paste or write your Markdown below:</strong></label>
-    <textarea id="md-input">
-# SaraPuma Magic Prompt
-
-INSTRUCTION: Please output your answer in Markdown format using a code block.
-
-MARKDOWN SYNTAX TO APPLY:
-1. # Main Header, ## Subheader
-2. **Bold**, *Italic*, ~~Strikethrough~~, <u>Underline</u>
-3. [Link Text](URL)
-4. > Blockquote
-5. - Bullet list, 1. Ordered list
-6. \`Inline code\`, \`\`\`Code block\`\`\`
-7. - [x] Checklist
-8. **Side note:** This is a margin note
-9. ==Highlight== and ++Green highlight++
-10. --- Divider
-    </textarea>
-
-    <div class="output" id="rendered-output"></div>
-  </div>
-
-  <footer>
-  <div>© 2026 SaraPuma Notes · All rights reserved.</div>
-  <div id="footer-legal" style="font-size:12px; margin-top:5px;">
-    This app is provided “as is” without warranty of any kind.
-  </div>
-</footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
-  <script>
-    const md = window.markdownit({html: true});
-    const input = document.getElementById('md-input');
-    const output = document.getElementById('rendered-output');
-
-    function render() {
-      let text = input.value;
-
-      // Side note detection
-      text = text.replace(/\*\*(Side note|Nota|Hinweis):\*\*(.*)/gi,
-        '<div class="note"><strong>$1:</strong> $2</div>');
-
-      output.innerHTML = md.render(text);
-    }
-
-    input.addEventListener('input', render);
-    window.onload = render;
-
-    function toggleTheme() {
-      document.body.classList.toggle('dark');
-    }
-
-    const translations = {
-      en: {
-        "editor-label": "Paste or write your Markdown below:"
-      },
-      es: {
-        "editor-label": "Pega o escribe tu Markdown aquí:"
-      },
-      de: {
-        "editor-label": "Markdown hier einfügen oder schreiben:"
-      }
-    };
-
-    function setLang(lang) {
-      for (const id in translations[lang]) {
-        document.getElementById(id).textContent = translations[lang][id];
-      }
-    }
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
-    }
-  </script>
-</body>
-</html>
