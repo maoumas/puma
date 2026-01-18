@@ -1,110 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SaraPuma - Manual v2.1</title>
-    <link rel="apple-touch-icon" href="image_5.png">
-    <link rel="icon" href="image_5.png" type="image/png">
-    
-    <style>
-        :root { --bg: #f2f2f7; --blue: #007AFF; --green: #34C759; --puma: #D35400; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); margin: 0; color: #333; line-height: 1.6; }
-        .header { background: rgba(255,255,255,0.95); padding: 15px; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; }
-        .brand { font-weight: 900; font-size: 18px; display: flex; align-items: center; gap: 10px; color: #333; text-decoration: none; }
-        .brand img { height: 32px; border-radius: 6px; }
-        .back-btn { background: var(--blue); color: white; text-decoration: none; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 14px; }
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-        .card { background: white; border-radius: 18px; padding: 30px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .card-ai { background: #222; color: white; border: 1px solid #444; }
-        .card-ai h3 { color: #51c4d3; } .card-ai p { color: #ccc; }
-        h1 { margin-top: 0; color: var(--puma); font-size: 28px; }
-        h3 { color: var(--blue); margin-top: 25px; margin-bottom: 10px; }
-        .code-block { background: #111; color: #f8f8f2; padding: 20px; border-radius: 12px; font-family: 'Menlo', monospace; font-size: 13px; overflow-x: auto; margin: 15px 0; border: 1px solid #444; position: relative; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th { text-align: left; background: #eee; padding: 10px; border-radius: 8px 8px 0 0; }
-        td { border-bottom: 1px solid #eee; padding: 10px; font-size: 14px; vertical-align: top; }
-        code { background: #eee; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #d63384; display: inline-block; margin-bottom: 4px; }
-        .copy-btn { background: var(--green); color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; float: right; font-size: 12px; }
-        .lang-nav { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
-        .lang-nav a { text-decoration: none; background: #fff; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: bold; color: #555; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SaraPuma Manual</title>
+  <link rel="icon" href="image_5.png" />
+  <link rel="apple-touch-icon" href="image_5.png" />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    header {
+      background: #D35400;
+      color: white;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .lang-buttons {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .lang-buttons button {
+      margin: 0 8px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 20px;
+      font-weight: bold;
+      background: #eee;
+      color: #555;
+      cursor: pointer;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #D35400;
+    }
+
+    code {
+      background: #f1f1f1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      padding: 30px 20px;
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <a href="app.html" class="brand"><img src="image_5.png" alt="Logo"> SaraPuma Manual</a>
-        <a href="app.html" class="back-btn">Open App &rarr;</a>
+  <header>
+    <div><strong>SaraPuma Manual</strong></div>
+    <a href="app.html" style="color:white;text-decoration:none;">← Back to App</a>
+  </header>
+
+  <div class="container">
+    <div class="lang-buttons">
+      <button onclick="setLang('en')">🇬🇧 English</button>
+      <button onclick="setLang('es')">🇪🇸 Español</button>
+      <button onclick="setLang('de')">🇩🇪 Deutsch</button>
     </div>
 
-    <div class="container">
-        <div class="lang-nav"><a href="#en">🇬🇧 English</a><a href="#es">🇪🇸 Español</a><a href="#de">🇩🇪 Deutsch</a></div>
-
-        <div id="en">
-            <div class="card card-ai">
-                <h3>🤖 1. How to Import from ChatGPT / AI</h3>
-                <p>If you just copy text from ChatGPT, you lose links and headers. Use this prompt to get the perfect format for SaraPuma:</p>
-                <div class="code-block">
-                    <button class="copy-btn" onclick="copyToClip('promptAI_en')">COPY</button>
-                    <pre id="promptAI_en">Please rewrite the previous response in strict Markdown format (code block). 
-- Use [Link Text](URL) for all links so they are clickable.
-- Use # and ## for headers.
-- Use **Bold** for emphasis.</pre>
-                </div>
-                <p>Then, simply <strong>copy the code block</strong> from ChatGPT and paste it into SaraPuma.</p>
-            </div>
-
-            <div class="card">
-                <h3>🎨 2. Formatting Cheat Sheet</h3>
-                <table>
-                    <tr><th width="40%">Element</th><th>Markdown Code</th></tr>
-                    <tr><td><strong>Header</strong></td><td><code># Title</code></td></tr>
-                    <tr><td><strong>Divider</strong></td><td><code>---</code></td></tr>
-                    <tr><td><strong>Quote</strong></td><td><code>> Quote text</code></td></tr>
-                    <tr><td><strong>Side Note</strong></td><td><code>**Side note:** Text</code></td></tr>
-                    <tr><td><strong>Highlights</strong></td><td><code>==Orange==</code> <code>++Green++</code></td></tr>
-                    <tr><td><strong>Link</strong></td><td><code>[Title](https://...)</code></td></tr>
-                </table>
-            </div>
-        </div>
-
-        <div id="es">
-            <div class="card card-ai">
-                <h3>🤖 1. Cómo Importar desde ChatGPT / IA</h3>
-                <p>Si copias texto normal de ChatGPT, pierdes los enlaces y títulos. Usa este prompt para obtener el formato perfecto:</p>
-                <div class="code-block">
-                    <button class="copy-btn" onclick="copyToClip('promptAI_es')">COPIAR</button>
-                    <pre id="promptAI_es">Por favor, reescribe la respuesta anterior en formato Markdown (bloque de código).
-- Usa [Texto](URL) para todos los enlaces, así no se pierden.
-- Usa # y ## para los títulos.
-- Usa **Negrita** para resaltar.</pre>
-                </div>
-                <p>Luego, simplemente <strong>copia el bloque de código</strong> de ChatGPT y pégalo en SaraPuma.</p>
-            </div>
-
-            <div class="card">
-                <h3>🎨 2. Guía de Formato</h3>
-                <table>
-                    <tr><th width="40%">Elemento</th><th>Código Markdown</th></tr>
-                    <tr><td><strong>Título</strong></td><td><code># Título</code></td></tr>
-                    <tr><td><strong>Separador</strong></td><td><code>---</code></td></tr>
-                    <tr><td><strong>Cita</strong></td><td><code>> Texto cita</code></td></tr>
-                    <tr><td><strong>Nota</strong></td><td><code>**Nota:** Texto</code></td></tr>
-                    <tr><td><strong>Resaltadores</strong></td><td><code>==Naranja==</code> <code>++Verde++</code></td></tr>
-                    <tr><td><strong>Enlace</strong></td><td><code>[Texto](https://...)</code></td></tr>
-                </table>
-            </div>
-        </div>
-
-        <div id="de" class="card">
-            <h3>🤖 Importieren von ChatGPT</h3>
-            <p>Bitten Sie die KI: <em>"Bitte schreiben Sie das in Markdown um, mit [Link](url) für Links."</em></p>
-        </div>
+    <div id="manual-content">
+      <!-- This content will be replaced dynamically by JS -->
     </div>
+  </div>
 
-    <script>
-        function copyToClip(id) {
-            navigator.clipboard.writeText(document.getElementById(id).innerText).then(() => alert("Prompt copied!"));
-        }
-    </script>
+  <footer>
+    © 2026 SaraPuma Notes · All rights reserved. This guide is offered for educational purposes only.
+  </footer>
+
+  <script>
+    const manualData = {
+      en: `
+      <div class="card">
+        <h2>🤖 Importing from ChatGPT or AI</h2>
+        <p>To preserve formatting and links, ask your AI to use Markdown like this:</p>
+        <code>Please write your answer in Markdown (code block) format. Use [Text](URL) for links, and headers (#).</code>
+        <p>Then copy and paste directly into SaraPuma.</p>
+      </div>
+      <div class="card">
+        <h2>🎨 Markdown Formatting Cheat Sheet</h2>
+        <table>
+          <tr><th>Feature</th><th>Syntax</th></tr>
+          <tr><td>Header</td><td><code># Title</code></td></tr>
+          <tr><td>Bold / Italic</td><td><code>**Bold**</code>, <code>*Italic*</code></td></tr>
+          <tr><td>Strikethrough</td><td><code>~~Text~~</code></td></tr>
+          <tr><td>Underline</td><td><code><u>Text</u></code></td></tr>
+          <tr><td>Quote</td><td><code>> Quoted text</code></td></tr>
+          <tr><td>Link</td><td><code>[Text](URL)</code></td></tr>
+          <tr><td>Highlight</td><td><code>==Text==</code>, <code>++Green++</code></td></tr>
+          <tr><td>Checklist</td><td><code>- [x] Done</code></td></tr>
+          <tr><td>Code</td><td><code>\`inline\`</code>, <code>```block```</code></td></tr>
+        </table>
+      </div>
+      `,
+      es: `
+      <div class="card">
+        <h2>🤖 Importar desde ChatGPT o IA</h2>
+        <p>Para mantener el formato y enlaces, pide a la IA usar Markdown así:</p>
+        <code>Por favor, responde en formato Markdown (bloque de código). Usa [Texto](URL) para enlaces y títulos con #.</code>
+        <p>Luego copia y pega directamente en SaraPuma.</p>
+      </div>
+      <div class="card">
+        <h2>🎨 Guía de Formato Markdown</h2>
+        <table>
+          <tr><th>Elemento</th><th>Sintaxis</th></tr>
+          <tr><td>Título</td><td><code># Título</code></td></tr>
+          <tr><td>Negrita / Cursiva</td><td><code>**Negrita**</code>, <code>*Cursiva*</code></td></tr>
+          <tr><td>Tachado</td><td><code>~~Texto~~</code></td></tr>
+          <tr><td>Subrayado</td><td><code><u>Texto</u></code></td></tr>
+          <tr><td>Cita</td><td><code>> Texto citado</code></td></tr>
+          <tr><td>Enlace</td><td><code>[Texto](URL)</code></td></tr>
+          <tr><td>Resaltado</td><td><code>==Texto==</code>, <code>++Verde++</code></td></tr>
+          <tr><td>Checklist</td><td><code>- [x] Hecho</code></td></tr>
+          <tr><td>Código</td><td><code>\`línea\`</code>, <code>```bloque```</code></td></tr>
+        </table>
+      </div>
+      `,
+      de: `
+      <div class="card">
+        <h2>🤖 Importieren von ChatGPT oder KI</h2>
+        <p>Um Formatierung und Links zu behalten, bitte die KI:</p>
+        <code>Bitte antworten Sie im Markdown-Format (Codeblock). Verwenden Sie [Text](URL) für Links und # für Überschriften.</code>
+        <p>Kopieren und direkt in SaraPuma einfügen.</p>
+      </div>
+      <div class="card">
+        <h2>🎨 Markdown-Formatierung</h2>
+        <table>
+          <tr><th>Funktion</th><th>Syntax</th></tr>
+          <tr><td>Überschrift</td><td><code># Titel</code></td></tr>
+          <tr><td>Fett / Kursiv</td><td><code>**Fett**</code>, <code>*Kursiv*</code></td></tr>
+          <tr><td>Durchgestrichen</td><td><code>~~Text~~</code></td></tr>
+          <tr><td>Unterstrichen</td><td><code><u>Text</u></code></td></tr>
+          <tr><td>Zitat</td><td><code>> Zitat</code></td></tr>
+          <tr><td>Link</td><td><code>[Text](URL)</code></td></tr>
+          <tr><td>Highlight</td><td><code>==Text==</code>, <code>++Grün++</code></td></tr>
+          <tr><td>Checklist</td><td><code>- [x] Erledigt</code></td></tr>
+          <tr><td>Code</td><td><code>\`inline\`</code>, <code>```block```</code></td></tr>
+        </table>
+      </div>
+      `
+    };
+
+    function setLang(lang) {
+      document.getElementById('manual-content').innerHTML = manualData[lang];
+    }
+
+    window.onload = () => setLang('en');
+  </script>
 </body>
 </html>
