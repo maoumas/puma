@@ -11,35 +11,21 @@
     <link rel="apple-touch-icon" href="image_5.png">
     <link rel="icon" href="image_5.png" type="image/png">
 
-    <title>SaraPuma App</title>
+    <title>SaraPuma Universal</title>
     
     <style>
-        /* --- THEME VARIABLES (Light/Dark) --- */
+        /* --- THEME VARIABLES --- */
         :root {
-            --brand: #D35400;
-            --blue: #007AFF;
-            --green: #34C759;
-            /* Light Mode Default */
-            --bg: #f2f2f7;
-            --surface: #ffffff;
-            --text-main: #000000;
-            --text-sec: #666666;
-            --border: #d1d1d6;
-            --bar-bg: rgba(255,255,255,0.95);
-            --input-bg: #ffffff;
-            --btn-sec-bg: #E5E5EA;
+            --brand: #D35400; --blue: #007AFF; --green: #34C759;
+            /* Light Mode */
+            --bg: #f2f2f7; --surface: #ffffff; --text-main: #000000; --text-sec: #666666;
+            --border: #d1d1d6; --bar-bg: rgba(255,255,255,0.95); --input-bg: #ffffff; --btn-sec-bg: #E5E5EA;
         }
 
         [data-theme="dark"] {
-            /* Dark Mode Overrides */
-            --bg: #000000;
-            --surface: #1c1c1e;
-            --text-main: #ffffff;
-            --text-sec: #aeb0b2;
-            --border: #38383a;
-            --bar-bg: rgba(28,28,30,0.95);
-            --input-bg: #1c1c1e;
-            --btn-sec-bg: #3a3a3c;
+            /* Dark Mode */
+            --bg: #000000; --surface: #1c1c1e; --text-main: #ffffff; --text-sec: #aeb0b2;
+            --border: #38383a; --bar-bg: rgba(28,28,30,0.95); --input-bg: #1c1c1e; --btn-sec-bg: #3a3a3c;
         }
 
         body {
@@ -60,17 +46,13 @@
         }
         .brand img { height: 36px; width: auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         
-        /* ICONS & CONTROLS */
         .controls { display: flex; gap: 12px; align-items: center; }
-        
         .icon-btn {
             background: transparent; border: none; cursor: pointer; padding: 5px;
             display: flex; align-items: center; justify-content: center;
             color: var(--blue); transition: transform 0.2s;
         }
-        .icon-btn:active { transform: scale(0.9); }
         .icon-btn svg { width: 24px; height: 24px; fill: currentColor; }
-
         select.lang-select { 
             padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; 
             background: var(--surface); color: var(--text-main); font-weight: 600; outline: none;
@@ -87,77 +69,52 @@
         }
         .tab.active { background: var(--blue); color: white; box-shadow: 0 2px 8px rgba(0,122,255,0.3); }
 
-        /* MAIN CONTENT */
+        /* MAIN */
         .main-container { flex-grow: 1; position: relative; overflow: hidden; width: 100%; }
-        .panel { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            display: none; flex-direction: column; background: var(--surface); 
-        }
+        .panel { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; background: var(--surface); }
         .panel.active { display: flex; }
-        
-        .scrollable-content { 
-            flex-grow: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; 
-            padding: 25px; padding-bottom: 110px; 
-        }
+        .scrollable-content { flex-grow: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 25px; padding-bottom: 110px; }
         
         textarea.scrollable-content { 
             border: none; outline: none; resize: none; font-family: 'Menlo', 'Monaco', monospace; 
             font-size: 15px; width: 100%; box-sizing: border-box; 
             background: var(--input-bg); color: var(--text-main); line-height: 1.5;
         }
-        textarea::placeholder { color: var(--text-sec); font-style: italic; opacity: 0.6; }
 
-        /* TOOLBAR (Floating Bottom) */
+        /* TOOLBAR */
         .toolbar { 
             position: absolute; bottom: 0; left: 0; width: 100%; 
             background: var(--bar-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); 
             border-top: 1px solid var(--border); padding: 15px; box-sizing: border-box; 
-            display: flex; gap: 12px; justify-content: center; 
-            box-shadow: 0 -5px 25px rgba(0,0,0,0.1); z-index: 30; 
+            display: flex; gap: 12px; justify-content: center; z-index: 30; 
         }
-
-        /* BUTTONS */
-        .btn { 
-            flex: 1; padding: 14px; border-radius: 14px; font-weight: 700; text-align: center; border: none; 
-            font-size: 15px; cursor: pointer; white-space: nowrap; transition: transform 0.1s; 
-        }
+        .btn { flex: 1; padding: 14px; border-radius: 14px; font-weight: 700; text-align: center; border: none; font-size: 15px; cursor: pointer; white-space: nowrap; transition: transform 0.1s; }
         .btn:active { transform: scale(0.98); }
-        .btn-primary { background: var(--blue); color: white; box-shadow: 0 4px 12px rgba(0,122,255,0.3); }
-        .btn-success { background: var(--green); color: white; box-shadow: 0 4px 12px rgba(52,199,89,0.3); }
+        .btn-primary { background: var(--blue); color: white; }
+        .btn-success { background: var(--green); color: white; }
         .btn-outline { background: var(--surface); border: 2px solid var(--border); color: var(--text-sec); }
         .btn-secondary { background: var(--btn-sec-bg); color: var(--text-main); max-width: 60px; font-size: 20px; padding: 12px; }
 
-        /* --- VISUAL STYLES (Apple Notes Engine) --- */
+        /* --- VISUAL STYLES --- */
         #preview { line-height: 1.65; color: var(--text-main); }
-        
         .apple-header { font-size: 1.3em; font-weight: 800; margin-top: 25px; margin-bottom: 10px; display: flex; align-items: center; }
         .apple-checkbox { accent-color: #d4af37; transform: scale(1.3); margin-right: 12px; pointer-events: none; }
-        
         ul { list-style: none; padding-left: 0; margin: 15px 0; }
         li { padding-left: 24px; position: relative; margin-bottom: 8px; color: var(--text-main); }
         li::before { content: "—"; position: absolute; left: 0; color: #999; font-weight: bold; }
         li ul li { padding-left: 24px; border-left: 2px solid var(--border); margin-top: 5px; }
         
-        /* Force Colors for PDF/Print */
-        .apple-quote { 
-            background-color: #F2F2F7 !important; border-left: 5px solid #8E8E93 !important; 
-            margin: 20px 0; padding: 18px 22px; border-radius: 14px; font-style: italic; color: #333 !important; 
-            -webkit-print-color-adjust: exact; print-color-adjust: exact; 
-        }
-        .apple-sidenote { 
-            background-color: #FCE4EC !important; color: #880E4F !important; 
-            padding: 18px 22px; border-radius: 14px; margin: 20px 0; 
-            border-left: 5px solid #F06292 !important; font-size: 0.95em; 
-            -webkit-print-color-adjust: exact; print-color-adjust: exact; 
-        }
+        /* FORMAT BLOCKS */
+        .apple-quote { background-color: #F2F2F7 !important; border-left: 5px solid #8E8E93 !important; margin: 20px 0; padding: 18px 22px; border-radius: 14px; font-style: italic; color: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .apple-sidenote { background-color: #FCE4EC !important; color: #880E4F !important; padding: 18px 22px; border-radius: 14px; margin: 20px 0; border-left: 5px solid #F06292 !important; font-size: 0.95em; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         .sidenote-label { font-weight: 900; font-size: 0.7em; text-transform: uppercase; display: block; margin-bottom: 6px; letter-spacing: 0.5px; }
-        .apple-mark { 
-            background-color: #FFCCBC !important; color: #BF360C !important; padding: 2px 6px; border-radius: 6px; 
-            -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: 500; 
-        }
+        
+        /* INLINE STYLES */
+        .apple-mark { background-color: #FFCCBC !important; color: #BF360C !important; padding: 2px 6px; border-radius: 6px; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: 500; }
+        .apple-mark-green { background-color: #D4EDDA !important; color: #155724 !important; padding: 2px 6px; border-radius: 6px; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: 500; }
         b { font-weight: 800; color: var(--text-main); }
+        s { color: var(--text-sec); opacity: 0.7; text-decoration-thickness: 2px; }
 
-        /* PRINT STYLES */
         @media print {
             .top-bar, .tabs, .toolbar { display: none !important; }
             .panel.active { display: block !important; position: relative; height: auto; overflow: visible; background: white; }
@@ -172,22 +129,19 @@
 
     <div class="top-bar">
         <a href="index.html" class="brand">
-            <img src="image_5.png" alt="SaraPuma Logo"> 
+            <img src="image_5.png" alt="SaraPuma"> 
             SaraPuma
         </a>
-        
         <div class="controls">
-            <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle Dark Mode">
+            <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Dark/Light Mode">
                 <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
             </button>
-            
-            <button class="icon-btn" onclick="window.open('manual.html', '_blank')" title="Open Manual">
+            <button class="icon-btn" onclick="window.open('manual.html', '_blank')" title="Manual">
                 <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
             </button>
-
             <select class="lang-select" id="langSelector" onchange="changeLanguage()">
-                <option value="en" selected>EN</option>
-                <option value="es">ES</option>
+                <option value="en">EN</option>
+                <option value="es" selected>ES</option>
                 <option value="de">DE</option>
             </select>
         </div>
@@ -204,7 +158,7 @@
             <div class="toolbar">
                 <input type="file" id="fileInput" accept=".md,.txt" style="display:none" onchange="loadFile(this)">
                 <button class="btn btn-outline" id="btnImport" onclick="document.getElementById('fileInput').click()">📂 Import MD</button>
-                <button class="btn btn-primary" id="btnGenerate" onclick="verPreview()">Generate View &rarr;</button>
+                <button class="btn btn-primary" id="btnGenerate" onclick="verPreview()">Generate &rarr;</button>
             </div>
         </div>
 
@@ -218,44 +172,32 @@
     </div>
 
     <script>
-        // --- TRANSLATIONS (English Base) ---
+        // --- AQUÍ ESTÁ LA ACTUALIZACIÓN CON TODOS LOS NUEVOS CÓDIGOS ---
         const translations = {
-            en: {
-                tabEditor: "Editor", tabPreview: "Preview",
-                placeholder: "Paste Markdown or NotebookLM text here.\n\n--- SUPPORTED CODES ---\n> Quote\n**Side note:** Text\n- [x] Title\n==Highlight==",
-                btnImport: "📂 Import File", btnGenerate: "Generate View →", btnPdf: "📤 Share PDF / WhatsApp", btnBack: "←",
-                noteLabel: "NOTE"
+            en: { 
+                tabEditor: "Editor", tabPreview: "Preview", 
+                placeholder: "Paste Markdown here...\n\n--- CHEATSHEET ---\n> Quote\n**Side note:** Text\n- [x] Title\n==Highlight== (Orange)\n++Highlight++ (Green)\n~~Strikethrough~~\n[Link Text](url)", 
+                btnImport: "📂 Import File", btnGenerate: "Generate View →", btnPdf: "📤 Share PDF", noteLabel: "NOTE" 
             },
-            es: {
-                tabEditor: "Editor", tabPreview: "Vista Previa",
-                placeholder: "Pega aquí tu texto Markdown o de NotebookLM.\n\n--- CÓDIGOS ---\n> Cita\n**Nota:** Texto\n- [x] Título\n==Resaltar==",
-                btnImport: "📂 Importar", btnGenerate: "Generar Vista →", btnPdf: "📤 PDF / WhatsApp", btnBack: "←",
-                noteLabel: "NOTA"
+            es: { 
+                tabEditor: "Editor", tabPreview: "Vista Previa", 
+                placeholder: "Pega tu Markdown aquí...\n\n--- CÓDIGOS ---\n> Cita\n**Nota:** Texto\n- [x] Título\n==Resaltar== (Naranja)\n++Resaltar++ (Verde)\n~~Tachado~~\n[Enlace](url)", 
+                btnImport: "📂 Importar", btnGenerate: "Generar Vista →", btnPdf: "📤 PDF / WhatsApp", noteLabel: "NOTA" 
             },
-            de: {
-                tabEditor: "Editor", tabPreview: "Vorschau",
-                placeholder: "Markdown hier einfügen.\n\n--- REGELN ---\n> Zitat\n**Note:** Text\n- [x] Titel\n==Markieren==",
-                btnImport: "📂 Import", btnGenerate: "Vorschau →", btnPdf: "📤 PDF Teilen", btnBack: "←",
-                noteLabel: "HINWEIS"
+            de: { 
+                tabEditor: "Editor", tabPreview: "Vorschau", 
+                placeholder: "Markdown hier einfügen...\n\n--- REGELN ---\n> Zitat\n**Note:** Text\n- [x] Titel\n==Orange==\n++Grün++\n~~Durchgestrichen~~\n[Link](url)", 
+                btnImport: "📂 Import", btnGenerate: "Vorschau →", btnPdf: "📤 PDF Teilen", noteLabel: "HINWEIS" 
             }
         };
 
         let currentLang = 'en';
 
-        // --- DARK MODE LOGIC ---
         function toggleTheme() {
             const html = document.documentElement;
-            const current = html.getAttribute('data-theme');
-            const next = current === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', next);
-            
-            // Update Icon (Simple swap logic or just visual feedback)
-            const btn = document.getElementById('themeBtn');
-            btn.style.transform = "rotate(360deg)";
-            setTimeout(() => btn.style.transform = "rotate(0deg)", 200);
+            html.setAttribute('data-theme', html.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
         }
 
-        // --- LANGUAGE LOGIC ---
         function changeLanguage() {
             currentLang = document.getElementById('langSelector').value;
             const t = translations[currentLang];
@@ -265,11 +207,9 @@
             document.getElementById('btnImport').innerText = t.btnImport;
             document.getElementById('btnGenerate').innerText = t.btnGenerate;
             document.getElementById('btnPdf').innerText = t.btnPdf;
-            
             if(document.getElementById('previewPanel').classList.contains('active')) convertirTexto();
         }
 
-        // --- PARSER ENGINE ---
         function convertirTexto() {
             let texto = document.getElementById('inputTxt').value;
             let html = "";
@@ -280,30 +220,30 @@
             lineas.forEach(linea => {
                 let l = linea.trim();
                 
-                // 1. Quotes
+                // 1. Citas
                 if (l.startsWith('>')) {
                     if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
                     html += `<div class="apple-quote">${fmt(l.substring(1))}</div>`;
                 
-                // 2. Smart Side Notes (Tolerance for typos: Sine note, Note, Nota)
+                // 2. Notas Laterales
                 } else if (l.match(/^\*\*(Side note|Sine note|Note|Nota|Hinweis).*:\*\*/i)) {
                     if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
-                    // Remove the bold label trigger to get content
                     let contenido = l.replace(/^\*\*(.*?):\*\*/, '').trim();
                     html += `<div class="apple-sidenote"><span class="sidenote-label">${label}</span>${fmt(contenido)}</div>`;
                 
-                // 3. Header with Checkbox
+                // 3. Título con Checkbox
                 } else if (l.startsWith('- [x]')) {
                     if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
                     html += `<div class="apple-header"><input type="checkbox" checked class="apple-checkbox" onclick="return false;"> ${fmt(l.replace('- [x]','').replaceAll('*',''))}</div>`;
                 
-                // 4. Lists
-                } else if (l.startsWith('- ')) {
+                // 4. Listas (Detecta - * •)
+                } else if (l.match(/^[-*•] /)) {
                     if (!dentroDeLista) { html += '<ul>'; dentroDeLista = true; }
+                    let content = l.substring(1).trim(); 
                     let esSub = linea.startsWith('    ') || linea.startsWith('\t');
-                    html += esSub ? `<ul><li>${fmt(l.substring(2))}</li></ul>` : `<li>${fmt(l.substring(2))}</li>`;
+                    html += esSub ? `<ul><li>${fmt(content)}</li></ul>` : `<li>${fmt(content)}</li>`;
                 
-                // 5. Paragraphs
+                // 5. Párrafos
                 } else {
                     if (dentroDeLista && l === "") { html += '</ul>'; dentroDeLista = false; }
                     if (l !== "") html += `<p>${fmt(l)}</p>`;
@@ -314,8 +254,13 @@
         }
 
         function fmt(txt) {
-            return txt.replace(/==(.*?)==/g, '<mark class="apple-mark">$1</mark>')
-                      .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            return txt
+                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="color:var(--blue);text-decoration:none;font-weight:600;">$1 🔗</a>')
+                .replace(/==(.*?)==/g, '<mark class="apple-mark">$1</mark>')
+                .replace(/\+\+(.*?)\+\+/g, '<mark class="apple-mark-green">$1</mark>')
+                .replace(/~~(.*?)~~/g, '<s>$1</s>')
+                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                .replace(/\*(.*?)\*/g, '<i>$1</i>');
         }
 
         function loadFile(input) {
@@ -340,7 +285,6 @@
         }
         function imprimir() { window.print(); }
         
-        // Init
         changeLanguage();
     </script>
 </body>
