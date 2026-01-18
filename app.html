@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="image_5.png">
     <link rel="icon" href="image_5.png" type="image/png">
 
-    <title>SaraPuma Universal</title>
+    <title>SaraPuma Universal v2.1</title>
     
     <style>
         /* --- THEME VARIABLES --- */
@@ -20,12 +20,14 @@
             /* Light Mode */
             --bg: #f2f2f7; --surface: #ffffff; --text-main: #000000; --text-sec: #666666;
             --border: #d1d1d6; --bar-bg: rgba(255,255,255,0.95); --input-bg: #ffffff; --btn-sec-bg: #E5E5EA;
+            --hr-color: #e5e5ea;
         }
 
         [data-theme="dark"] {
             /* Dark Mode */
             --bg: #000000; --surface: #1c1c1e; --text-main: #ffffff; --text-sec: #aeb0b2;
             --border: #38383a; --bar-bg: rgba(28,28,30,0.95); --input-bg: #1c1c1e; --btn-sec-bg: #3a3a3c;
+            --hr-color: #38383a;
         }
 
         body {
@@ -97,19 +99,32 @@
 
         /* --- VISUAL STYLES --- */
         #preview { line-height: 1.65; color: var(--text-main); }
+        
+        /* HEADERS */
+        h1, h2, h3, h4 { margin-top: 25px; margin-bottom: 10px; font-weight: 800; line-height: 1.2; }
+        h1 { font-size: 1.8em; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5em; letter-spacing: -0.3px; }
+        h3 { font-size: 1.25em; }
+        
+        /* DIVIDER */
+        hr.apple-hr { border: 0; border-top: 2px solid var(--hr-color); margin: 30px 0; }
+
+        /* Apple Checkbox Header */
         .apple-header { font-size: 1.3em; font-weight: 800; margin-top: 25px; margin-bottom: 10px; display: flex; align-items: center; }
         .apple-checkbox { accent-color: #d4af37; transform: scale(1.3); margin-right: 12px; pointer-events: none; }
+        
+        /* Lists */
         ul { list-style: none; padding-left: 0; margin: 15px 0; }
         li { padding-left: 24px; position: relative; margin-bottom: 8px; color: var(--text-main); }
         li::before { content: "—"; position: absolute; left: 0; color: #999; font-weight: bold; }
         li ul li { padding-left: 24px; border-left: 2px solid var(--border); margin-top: 5px; }
         
-        /* FORMAT BLOCKS */
+        /* Blocks */
         .apple-quote { background-color: #F2F2F7 !important; border-left: 5px solid #8E8E93 !important; margin: 20px 0; padding: 18px 22px; border-radius: 14px; font-style: italic; color: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         .apple-sidenote { background-color: #FCE4EC !important; color: #880E4F !important; padding: 18px 22px; border-radius: 14px; margin: 20px 0; border-left: 5px solid #F06292 !important; font-size: 0.95em; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         .sidenote-label { font-weight: 900; font-size: 0.7em; text-transform: uppercase; display: block; margin-bottom: 6px; letter-spacing: 0.5px; }
         
-        /* INLINE STYLES */
+        /* Inline */
         .apple-mark { background-color: #FFCCBC !important; color: #BF360C !important; padding: 2px 6px; border-radius: 6px; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: 500; }
         .apple-mark-green { background-color: #D4EDDA !important; color: #155724 !important; padding: 2px 6px; border-radius: 6px; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: 500; }
         b { font-weight: 800; color: var(--text-main); }
@@ -121,7 +136,7 @@
             .scrollable-content { overflow: visible; padding: 0; height: auto; }
             body, .main-container { background: white; height: auto; overflow: visible; }
             #preview { color: black; }
-            li, b { color: black; }
+            li, b, h1, h2, h3 { color: black; }
         }
     </style>
 </head>
@@ -136,7 +151,7 @@
             <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Dark/Light Mode">
                 <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
             </button>
-            <button class="icon-btn" onclick="window.open('manual.html', '_blank')" title="Manual">
+            <button class="icon-btn" onclick="window.open('manual.html', '_blank')" title="Manual & AI Help">
                 <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
             </button>
             <select class="lang-select" id="langSelector" onchange="changeLanguage()">
@@ -172,21 +187,20 @@
     </div>
 
     <script>
-        // --- AQUÍ ESTÁ LA ACTUALIZACIÓN CON TODOS LOS NUEVOS CÓDIGOS ---
         const translations = {
             en: { 
                 tabEditor: "Editor", tabPreview: "Preview", 
-                placeholder: "Paste Markdown here...\n\n--- CHEATSHEET ---\n> Quote\n**Side note:** Text\n- [x] Title\n==Highlight== (Orange)\n++Highlight++ (Green)\n~~Strikethrough~~\n[Link Text](url)", 
+                placeholder: "💡 AI TIP: Ask ChatGPT to 'Rewrite in Markdown' to preserve links and headers.\n\n--- CHEATSHEET ---\n# Header 1\n## Header 2\n---\n> Quote\n**Side note:** Text\n- [x] Checklist\n==Orange== / ++Green++\n[Link](url)", 
                 btnImport: "📂 Import File", btnGenerate: "Generate View →", btnPdf: "📤 Share PDF", noteLabel: "NOTE" 
             },
             es: { 
                 tabEditor: "Editor", tabPreview: "Vista Previa", 
-                placeholder: "Pega tu Markdown aquí...\n\n--- CÓDIGOS ---\n> Cita\n**Nota:** Texto\n- [x] Título\n==Resaltar== (Naranja)\n++Resaltar++ (Verde)\n~~Tachado~~\n[Enlace](url)", 
+                placeholder: "💡 TIP IA: Pídele a ChatGPT 'Reescribir en Markdown' para mantener los enlaces.\n\n--- CÓDIGOS ---\n# Título 1\n## Título 2\n---\n> Cita\n**Nota:** Texto\n- [x] Tarea\n==Naranja== / ++Verde++\n[Enlace](url)", 
                 btnImport: "📂 Importar", btnGenerate: "Generar Vista →", btnPdf: "📤 PDF / WhatsApp", noteLabel: "NOTA" 
             },
             de: { 
                 tabEditor: "Editor", tabPreview: "Vorschau", 
-                placeholder: "Markdown hier einfügen...\n\n--- REGELN ---\n> Zitat\n**Note:** Text\n- [x] Titel\n==Orange==\n++Grün++\n~~Durchgestrichen~~\n[Link](url)", 
+                placeholder: "💡 AI TIPP: Bitten Sie ChatGPT, 'in Markdown neu zu schreiben'.\n\n--- REGELN ---\n# Titel 1\n## Titel 2\n---\n> Zitat\n**Note:** Text\n- [x] Checkbox\n==Orange== / ++Grün++\n[Link](url)", 
                 btnImport: "📂 Import", btnGenerate: "Vorschau →", btnPdf: "📤 PDF Teilen", noteLabel: "HINWEIS" 
             }
         };
@@ -220,30 +234,30 @@
             lineas.forEach(linea => {
                 let l = linea.trim();
                 
-                // 1. Citas
-                if (l.startsWith('>')) {
+                if (l === '---' || l === '***') {
+                    if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
+                    html += '<hr class="apple-hr">';
+                } else if (l.startsWith('#')) {
+                    if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
+                    let level = l.match(/^#+/)[0].length;
+                    let content = l.replace(/^#+/, '').trim();
+                    if (level > 6) level = 6;
+                    html += `<h${level}>${fmt(content)}</h${level}>`;
+                } else if (l.startsWith('>')) {
                     if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
                     html += `<div class="apple-quote">${fmt(l.substring(1))}</div>`;
-                
-                // 2. Notas Laterales
                 } else if (l.match(/^\*\*(Side note|Sine note|Note|Nota|Hinweis).*:\*\*/i)) {
                     if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
                     let contenido = l.replace(/^\*\*(.*?):\*\*/, '').trim();
                     html += `<div class="apple-sidenote"><span class="sidenote-label">${label}</span>${fmt(contenido)}</div>`;
-                
-                // 3. Título con Checkbox
                 } else if (l.startsWith('- [x]')) {
                     if (dentroDeLista) { html += '</ul>'; dentroDeLista = false; }
                     html += `<div class="apple-header"><input type="checkbox" checked class="apple-checkbox" onclick="return false;"> ${fmt(l.replace('- [x]','').replaceAll('*',''))}</div>`;
-                
-                // 4. Listas (Detecta - * •)
                 } else if (l.match(/^[-*•] /)) {
                     if (!dentroDeLista) { html += '<ul>'; dentroDeLista = true; }
                     let content = l.substring(1).trim(); 
                     let esSub = linea.startsWith('    ') || linea.startsWith('\t');
                     html += esSub ? `<ul><li>${fmt(content)}</li></ul>` : `<li>${fmt(content)}</li>`;
-                
-                // 5. Párrafos
                 } else {
                     if (dentroDeLista && l === "") { html += '</ul>'; dentroDeLista = false; }
                     if (l !== "") html += `<p>${fmt(l)}</p>`;

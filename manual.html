@@ -3,158 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PUMA Notes - Manual</title>
+    <title>SaraPuma - Manual v2.1</title>
     <link rel="apple-touch-icon" href="image_5.png">
     <link rel="icon" href="image_5.png" type="image/png">
     
     <style>
         :root { --bg: #f2f2f7; --blue: #007AFF; --green: #34C759; --puma: #D35400; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg); margin: 0; color: #333; line-height: 1.6;
-        }
-        
-        /* HEADER */
-        .header {
-            background: rgba(255,255,255,0.95); padding: 15px; border-bottom: 1px solid #ddd;
-            position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px);
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); margin: 0; color: #333; line-height: 1.6; }
+        .header { background: rgba(255,255,255,0.95); padding: 15px; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; }
         .brand { font-weight: 900; font-size: 18px; display: flex; align-items: center; gap: 10px; color: #333; text-decoration: none; }
         .brand img { height: 32px; border-radius: 6px; }
-        .back-btn { 
-            background: var(--blue); color: white; text-decoration: none; padding: 8px 15px; 
-            border-radius: 20px; font-weight: 600; font-size: 14px; 
-        }
-
-        /* CONTENT */
+        .back-btn { background: var(--blue); color: white; text-decoration: none; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 14px; }
         .container { max-width: 800px; margin: 0 auto; padding: 20px; }
         .card { background: white; border-radius: 18px; padding: 30px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        
-        /* TYPOGRAPHY */
+        .card-ai { background: #222; color: white; border: 1px solid #444; }
+        .card-ai h3 { color: #51c4d3; } .card-ai p { color: #ccc; }
         h1 { margin-top: 0; color: var(--puma); font-size: 28px; }
-        h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px; color: #333; }
         h3 { color: var(--blue); margin-top: 25px; margin-bottom: 10px; }
-        p { color: #555; }
-        
-        /* PROMPT BOX */
-        .code-block {
-            background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 12px;
-            font-family: 'Menlo', monospace; font-size: 13px; overflow-x: auto; margin: 15px 0;
-            border: 1px solid #444; position: relative;
-        }
-        
-        /* TABLE */
+        .code-block { background: #111; color: #f8f8f2; padding: 20px; border-radius: 12px; font-family: 'Menlo', monospace; font-size: 13px; overflow-x: auto; margin: 15px 0; border: 1px solid #444; position: relative; }
         table { width: 100%; border-collapse: collapse; margin: 20px 0; }
         th { text-align: left; background: #eee; padding: 10px; border-radius: 8px 8px 0 0; }
-        td { border-bottom: 1px solid #eee; padding: 10px; font-size: 14px; }
-        code { background: #eee; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #d63384; }
-
-        /* NAV FLAGS */
+        td { border-bottom: 1px solid #eee; padding: 10px; font-size: 14px; vertical-align: top; }
+        code { background: #eee; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #d63384; display: inline-block; margin-bottom: 4px; }
+        .copy-btn { background: var(--green); color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; float: right; font-size: 12px; }
         .lang-nav { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
-        .lang-nav a { 
-            text-decoration: none; background: #fff; padding: 8px 16px; border-radius: 20px; 
-            font-size: 14px; font-weight: bold; color: #555; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        /* BUTTONS */
-        .copy-btn {
-            background: var(--green); color: white; border: none; padding: 8px 12px; border-radius: 6px;
-            font-weight: bold; cursor: pointer; float: right; font-size: 12px;
-        }
+        .lang-nav a { text-decoration: none; background: #fff; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: bold; color: #555; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
-
     <div class="header">
-        <a href="index.html" class="brand">
-            <img src="image_5.png" alt="Logo"> PUMA MANUAL
-        </a>
-        <a href="index.html" class="back-btn">Open App &rarr;</a>
+        <a href="app.html" class="brand"><img src="image_5.png" alt="Logo"> SaraPuma Manual</a>
+        <a href="app.html" class="back-btn">Open App &rarr;</a>
     </div>
 
     <div class="container">
-        
-        <div class="lang-nav">
-            <a href="#en">🇬🇧 English</a>
-            <a href="#es">🇪🇸 Español</a>
-            <a href="#de">🇩🇪 Deutsch</a>
-        </div>
+        <div class="lang-nav"><a href="#en">🇬🇧 English</a><a href="#es">🇪🇸 Español</a><a href="#de">🇩🇪 Deutsch</a></div>
 
-        <div id="en" class="card">
-            <h1>🇬🇧 PUMA User Manual</h1>
-            <p><strong>Personal Universal Markdown Assistant</strong></p>
-            
-            <h3>🚀 Quick Start</h3>
-            <ol>
-                <li>Upload your PDF to <strong>Google NotebookLM</strong>.</li>
-                <li>Copy the <strong>PUMA Prompt</strong> (below) and paste it into the AI chat.</li>
-                <li>Copy the AI's response.</li>
-                <li>Open PUMA App, paste into <strong>Editor</strong>, and tap <strong>Generate View</strong>.</li>
-                <li>Go to <strong>Preview</strong> and tap <strong>Share PDF</strong>.</li>
-            </ol>
+        <div id="en">
+            <div class="card card-ai">
+                <h3>🤖 1. How to Import from ChatGPT / AI</h3>
+                <p>If you just copy text from ChatGPT, you lose links and headers. Use this prompt to get the perfect format for SaraPuma:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClip('promptAI_en')">COPY</button>
+                    <pre id="promptAI_en">Please rewrite the previous response in strict Markdown format (code block). 
+- Use [Link Text](URL) for all links so they are clickable.
+- Use # and ## for headers.
+- Use **Bold** for emphasis.</pre>
+                </div>
+                <p>Then, simply <strong>copy the code block</strong> from ChatGPT and paste it into SaraPuma.</p>
+            </div>
 
-            <h3>🤖 The PUMA Prompt</h3>
-            <div class="code-block">
-                <button class="copy-btn" onclick="copyPrompt()">COPY</button>
-<pre id="promptText">INSTRUCTION: Analyze the attached document and generate a structured summary.
-IMPORTANT FORMATTING RULES:
-1. Do NOT include reference numbers like [1].
-2. Use Markdown strictly.
-3. For Section Headers use: - [x] **Title**
-4. For details use nested lists with indentations.
-5. For Quotes use: > "Quote text"
-6. For Analytical Notes use: **Side note:** Text
-7. For Key Concepts use: ==Concept== or **Concept**</pre>
+            <div class="card">
+                <h3>🎨 2. Formatting Cheat Sheet</h3>
+                <table>
+                    <tr><th width="40%">Element</th><th>Markdown Code</th></tr>
+                    <tr><td><strong>Header</strong></td><td><code># Title</code></td></tr>
+                    <tr><td><strong>Divider</strong></td><td><code>---</code></td></tr>
+                    <tr><td><strong>Quote</strong></td><td><code>> Quote text</code></td></tr>
+                    <tr><td><strong>Side Note</strong></td><td><code>**Side note:** Text</code></td></tr>
+                    <tr><td><strong>Highlights</strong></td><td><code>==Orange==</code> <code>++Green++</code></td></tr>
+                    <tr><td><strong>Link</strong></td><td><code>[Title](https://...)</code></td></tr>
+                </table>
             </div>
         </div>
 
-        <div id="es" class="card">
-            <h1>🇪🇸 Manual de Usuario</h1>
-            
-            <h3>🚀 Inicio Rápido</h3>
-            <ol>
-                <li>Sube tu PDF a <strong>Google NotebookLM</strong>.</li>
-                <li>Copia el <strong>Prompt PUMA</strong> (arriba) y pégalo en el chat de la IA.</li>
-                <li>Copia la respuesta que te dé la IA.</li>
-                <li>Abre la App PUMA, pega el texto en <strong>Editor</strong> y pulsa <strong>Generar Vista</strong>.</li>
-                <li>Ve a <strong>Vista Previa</strong> y pulsa <strong>Compartir PDF</strong>.</li>
-            </ol>
+        <div id="es">
+            <div class="card card-ai">
+                <h3>🤖 1. Cómo Importar desde ChatGPT / IA</h3>
+                <p>Si copias texto normal de ChatGPT, pierdes los enlaces y títulos. Usa este prompt para obtener el formato perfecto:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClip('promptAI_es')">COPIAR</button>
+                    <pre id="promptAI_es">Por favor, reescribe la respuesta anterior en formato Markdown (bloque de código).
+- Usa [Texto](URL) para todos los enlaces, así no se pierden.
+- Usa # y ## para los títulos.
+- Usa **Negrita** para resaltar.</pre>
+                </div>
+                <p>Luego, simplemente <strong>copia el bloque de código</strong> de ChatGPT y pégalo en SaraPuma.</p>
+            </div>
 
-            <h3>🎨 Guía de Formato</h3>
-            <table>
-                <tr><th>Elemento</th><th>Código Markdown</th></tr>
-                <tr><td>Título</td><td><code>- [x] **Título**</code></td></tr>
-                <tr><td>Cita (Gris)</td><td><code>> Texto aquí</code></td></tr>
-                <tr><td>Nota (Rosa)</td><td><code>**Nota:** Texto</code></td></tr>
-                <tr><td>Resaltar</td><td><code>==Texto==</code></td></tr>
-            </table>
-            
-            <h3>💡 Solución de Problemas</h3>
-            <ul>
-                <li><strong>El PDF sale en blanco y negro:</strong> Cuando le des a imprimir en el iPhone, haz el gesto de <strong>zoom (pellizcar)</strong> sobre la vista previa de la hoja. Eso crea un PDF a color real.</li>
-                <li><strong>La nota rosa no sale:</strong> Asegúrate de usar dos asteriscos: <code>**Nota:**</code>.</li>
-            </ul>
+            <div class="card">
+                <h3>🎨 2. Guía de Formato</h3>
+                <table>
+                    <tr><th width="40%">Elemento</th><th>Código Markdown</th></tr>
+                    <tr><td><strong>Título</strong></td><td><code># Título</code></td></tr>
+                    <tr><td><strong>Separador</strong></td><td><code>---</code></td></tr>
+                    <tr><td><strong>Cita</strong></td><td><code>> Texto cita</code></td></tr>
+                    <tr><td><strong>Nota</strong></td><td><code>**Nota:** Texto</code></td></tr>
+                    <tr><td><strong>Resaltadores</strong></td><td><code>==Naranja==</code> <code>++Verde++</code></td></tr>
+                    <tr><td><strong>Enlace</strong></td><td><code>[Texto](https://...)</code></td></tr>
+                </table>
+            </div>
         </div>
 
         <div id="de" class="card">
-            <h1>🇩🇪 Benutzerhandbuch</h1>
-            <h3>🚀 Kurzanleitung</h3>
-            <ol>
-                <li>Laden Sie Ihr PDF in <strong>Google NotebookLM</strong> hoch.</li>
-                <li>Kopieren Sie den <strong>PUMA-Prompt</strong>.</li>
-                <li>Fügen Sie ihn in den KI-Chat ein.</li>
-                <li>Kopieren Sie das Ergebnis in die PUMA-App und tippen Sie auf <strong>Vorschau</strong>.</li>
-            </ol>
+            <h3>🤖 Importieren von ChatGPT</h3>
+            <p>Bitten Sie die KI: <em>"Bitte schreiben Sie das in Markdown um, mit [Link](url) für Links."</em></p>
         </div>
-
     </div>
 
     <script>
-        function copyPrompt() {
-            navigator.clipboard.writeText(document.getElementById('promptText').innerText).then(() => {
-                alert("Prompt copied!");
-            });
+        function copyToClip(id) {
+            navigator.clipboard.writeText(document.getElementById(id).innerText).then(() => alert("Prompt copied!"));
         }
     </script>
 </body>
