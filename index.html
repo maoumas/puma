@@ -3,97 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaraPuma - Visual Notes for Leaders</title>
+    <title>SaraPuma – Visual Notes for Leaders</title>
+
     <link rel="apple-touch-icon" href="image_5.png">
     <link rel="icon" href="image_5.png" type="image/png">
-    
+
     <style>
-        :root { --brand: #D35400; --dark: #2c3e50; --light: #f8f9fa; --blue: #007AFF; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 1.6; color: #333; background: #fff; }
+        :root {
+            --brand: #D35400;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --blue: #007AFF;
+        }
 
-        header { padding: 20px; display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; }
-        .logo { font-weight: 900; font-size: 24px; display: flex; align-items: center; gap: 10px; color: var(--dark); text-decoration: none; }
-        .logo img { height: 40px; border-radius: 8px; }
-        .nav-link { color: #666; text-decoration: none; font-weight: 600; margin-left: 20px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            color: #333;
+            background: #fff;
+            line-height: 1.6;
+        }
 
-        .hero { text-align: center; padding: 80px 20px; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); }
-        .hero h1 { font-size: 48px; margin-bottom: 15px; color: var(--brand); letter-spacing: -1px; line-height: 1.1; }
-        .hero p { font-size: 20px; color: #555; max-width: 700px; margin: 0 auto 40px auto; }
-        .cta-button { display: inline-block; background: var(--brand); color: white; padding: 18px 45px; border-radius: 40px; text-decoration: none; font-weight: 800; font-size: 18px; box-shadow: 0 8px 25px rgba(211, 84, 0, 0.3); transition: transform 0.2s; }
+        header {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        .section-gray { background: #f9f9f9; padding: 60px 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .split-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; align-items: center; }
-        .comparison-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid #eee; }
-        .bad { color: #e74c3c; font-size: 14px; font-weight: bold; margin-bottom: 5px; }
-        .good { color: var(--brand); font-size: 14px; font-weight: bold; margin-top: 15px; margin-bottom: 5px; }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--dark);
+            text-decoration: none;
+        }
 
-        .ios-feature { background: #fff; padding: 30px; border-radius: 18px; border: 2px solid var(--blue); margin: 40px 0; text-align: center; }
+        .logo img {
+            height: 40px;
+            border-radius: 8px;
+        }
 
-        .prompt-container { background: #2d3436; color: white; padding: 30px; border-radius: 15px; margin: 50px 0; position: relative; }
-        .prompt-code { font-family: 'Menlo', monospace; font-size: 14px; color: #fab1a0; white-space: pre-wrap; line-height: 1.5; }
-        .copy-btn { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .nav-link {
+            margin-left: 20px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #666;
+        }
 
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 40px; }
-        .video-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .video-placeholder { background: #000; height: 160px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; position: relative; }
-        .video-info { padding: 15px; }
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        }
 
-        footer { text-align: center; padding: 50px 20px; color: #999; font-size: 14px; border-top: 1px solid #eee; background: #fff; }
+        .hero h1 {
+            font-size: 48px;
+            color: var(--brand);
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            max-width: 720px;
+            margin: 0 auto 40px;
+            font-size: 20px;
+            color: #555;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 18px 45px;
+            background: var(--brand);
+            color: #fff;
+            font-size: 18px;
+            font-weight: 800;
+            text-decoration: none;
+            border-radius: 40px;
+            box-shadow: 0 8px 25px rgba(211,84,0,.3);
+        }
+
+        .section-gray {
+            background: #f9f9f9;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .split-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+            gap: 40px;
+            align-items: center;
+        }
+
+        .comparison-box {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        }
+
+        .bad {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .good {
+            color: var(--brand);
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .ios-feature {
+            margin: 40px 0;
+            padding: 30px;
+            border-radius: 18px;
+            border: 2px solid var(--blue);
+            text-align: center;
+            background: #fff;
+        }
+
+        .prompt-container {
+            background: #2d3436;
+            color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+            position: relative;
+        }
+
+        .prompt-code {
+            font-family: Menlo, monospace;
+            font-size: 14px;
+            color: #fab1a0;
+            white-space: pre-wrap;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            border: none;
+            background: rgba(255,255,255,.2);
+            color: #fff;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            color: #999;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
     </style>
 </head>
+
 <body>
 
-    <header>
-        <a href="#" class="logo"><img src="image_5.png" alt="Logo"> SaraPuma</a>
-        <nav>
-            <a href="manual.html" class="nav-link">Manual</a>
-            <a href="app.html" class="nav-link" style="color:var(--brand);">Open App</a>
-        </nav>
-    </header>
+<header>
+    <a class="logo" href="#">
+        <img src="image_5.png" alt="SaraPuma Logo">
+        SaraPuma
+    </a>
+    <nav>
+        <a class="nav-link" href="manual.html">Manual</a>
+        <a class="nav-link" href="app.html" style="color:var(--brand)">Open App</a>
+    </nav>
+</header>
 
-    <section class="hero">
-        <h1>Visual Intelligence<br>for Your Notes</h1>
-        <p>Transforma tus notas Markdown en documentos visuales. SaraPuma es la app perfecta para líderes que trabajan con Apple Notes y ChatGPT.</p>
-        <a href="app.html" class="cta-button">🚀 Lanza SaraPuma</a>
-    </section>
+<section class="hero">
+    <h1>Visual Intelligence<br>for Your Notes</h1>
+    <p>
+        El puente entre ChatGPT, Apple Notes y documentos profesionales.
+        Nunca más pierdas formato al copiar y pegar.
+    </p>
+    <a href="app.html" class="cta-button">🚀 Launch SaraPuma</a>
+</section>
 
-    <section class="section-gray">
-        <div class="container">
-            <div class="split-grid">
-                <div class="feature-text">
-                    <h2>¿Por qué se rompe el formato?</h2>
-                    <p>Copiar desde ChatGPT o Apple Notes puede introducir <strong>caracteres invisibles</strong> o arruinar el formato.</p>
-                    <p><strong>SaraPuma</strong> resuelve esto interpretando directamente el código Markdown.</p>
+<section class="section-gray">
+    <div class="container">
+        <div class="split-grid">
+            <div>
+                <h2>¿Por qué se rompe el texto?</h2>
+                <p>
+                    En iPhone, al copiar prompts complejos, el sistema
+                    puede codificar el texto como URL (<code>%20</code>, <code>%0A</code>).
+                </p>
+                <p>
+                    <strong>SaraPuma evita esto leyendo Markdown puro.</strong>
+                </p>
+            </div>
+
+            <div class="comparison-box">
+                <div class="bad">❌ Copiar normal</div>
+                <div style="font-family:serif; color:#666">
+                    instruction:%20Analyze%20the%20document…
                 </div>
-                <div class="comparison-box">
-                    <div class="bad">❌ Copia Normal:</div>
-                    <div style="font-family:serif; color:#666; border-left:3px solid #ccc; padding-left:10px; font-size:14px;"># Título<br>[Enlace](url)</div>
-                    <div class="good">✅ Con SaraPuma:</div>
-                    <div style="font-family:sans-serif; border-left:3px solid var(--brand); padding-left:10px; background:#fff5eb;">
-                        <h3 style="margin:0; font-size:16px;">Título</h3>
-                        <span style="color:var(--blue); text-decoration:underline;">Enlace 🔗</span>
-                    </div>
+
+                <div class="good">✅ SaraPuma</div>
+                <div style="border-left:3px solid var(--brand); padding-left:10px">
+                    Instruction: Analyze the document…
                 </div>
             </div>
         </div>
-    </section>
-
-    <div class="container">
-        <div class="ios-feature">
-            <h2 style="color:var(--blue);">🍎 Compatible con iPhone</h2>
-            <p style="color:#666;">Exporta desde Apple Notes como Markdown y visualízalo en segundos con SaraPuma.</p>
-        </div>
     </div>
+</section>
 
-    <section class="section-gray">
-        <div class="container">
-            <h2 style="text-align:center;">🪄 Magic Prompt</h2>
-            <p style="text-align:center; color:#666;">Copia este prompt y pégalo en ChatGPT para obtener el formato perfecto:</p>
-            
-            <div class="prompt-container">
-                <button class="copy-btn" id="copyBtn" onclick="copyPromptSafe()">COPIAR PROMPT</button>
-                <div class="prompt-code" id="promptText">INSTRUCTION: Analyze the document and output in Markdown Code Block.
+<div class="container">
+    <div class="ios-feature">
+        <h2 style="color:var(--blue)">🍎 Optimizado para iPhone</h2>
+        <p>
+            Copia limpia garantizada incluso en Safari iOS.
+        </p>
+    </div>
+</div>
+
+<section class="section-gray">
+    <div class="container">
+        <h2 style="text-align:center">🪄 The Magic Prompt</h2>
+        <p style="text-align:center;color:#666">
+            Usa este prompt para generar Markdown perfecto
+        </p>
+
+        <div class="prompt-container">
+            <button class="copy-btn" id="copyBtn" onclick="copyPromptSafe()">
+                COPY PROMPT
+            </button>
+
+            <div class="prompt-code">
+INSTRUCTION: Analyze the document and output in Markdown Code Block.
 
 FORMATTING RULES:
 1. Use # for Main Headers and ## for Subheaders.
@@ -102,28 +256,21 @@ FORMATTING RULES:
 4. Use > for quotes.
 5. Use - [x] for checklist items.
 6. Use **Side note:** for marginalia.
-7. Use ==text== for highlights.</div>
+7. Use ==text== for highlights.
             </div>
         </div>
-    </section>
-
-    <div class="container">
-        <h2 style="text-align:center; margin-top:50px;">🎥 Video Tutoriales</h2>
-        <div class="video-grid">
-            <div class="video-card"><div class="video-placeholder">Próximamente</div><div class="video-info"><h4>Flujo con AI</h4></div></div>
-            <div class="video-card"><div class="video-placeholder">Próximamente</div><div class="video-info"><h4>Truco PDF iPhone</h4></div></div>
-            <div class="video-card"><div class="video-placeholder">Próximamente</div><div class="video-info"><h4>Exportar Notas Apple</h4></div></div>
-        </div>
     </div>
+</section>
 
-    <footer>
-        &copy; 2026 SaraPuma Notes. v3.2<br>
-        Construido para líderes aeronáuticos.
-    </footer>
+<footer>
+    © 2026 SaraPuma Notes · v3.2<br>
+    Built for Leaders
+</footer>
 
-    <script>
-        function copyPromptSafe() {
-            let rawText = `INSTRUCTION: Analyze the document and output in Markdown Code Block.
+<script>
+function copyPromptSafe() {
+
+    const text = `INSTRUCTION: Analyze the document and output in Markdown Code Block.
 
 FORMATTING RULES:
 1. Use # for Main Headers and ## for Subheaders.
@@ -134,25 +281,32 @@ FORMATTING RULES:
 6. Use **Side note:** for marginalia.
 7. Use ==text== for highlights.`;
 
-            const cleanText = rawText
-                .replace(/[\u200B-\u200D\uFEFF]/g, '')
-                .replace(/[“”]/g, '"')
-                .replace(/[‘’]/g, "'")
-                .normalize("NFC");
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.top = "0";
+    textarea.style.left = "0";
+    textarea.style.opacity = "0";
 
-            navigator.clipboard.writeText(cleanText).then(() => {
-                const btn = document.getElementById("copyBtn");
-                const originalText = btn.innerText;
-                btn.innerText = "¡COPIADO! ✅";
-                btn.style.background = "#2ecc71";
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.style.background = "rgba(255,255,255,0.2)";
-                }, 2000);
-            }).catch(err => {
-                alert("Error copiando. Intenta seleccionar manualmente.");
-            });
-        }
-    </script>
+    document.body.appendChild(textarea);
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+
+    const success = document.execCommand("copy");
+
+    document.body.removeChild(textarea);
+
+    const btn = document.getElementById("copyBtn");
+    btn.textContent = success ? "COPIED ✅" : "ERROR";
+    btn.style.background = success ? "#2ecc71" : "#e74c3c";
+
+    setTimeout(() => {
+        btn.textContent = "COPY PROMPT";
+        btn.style.background = "rgba(255,255,255,.2)";
+    }, 2000);
+}
+</script>
+
 </body>
 </html>
