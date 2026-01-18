@@ -3,310 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaraPuma – Visual Notes for Leaders</title>
-
-    <link rel="apple-touch-icon" href="image_5.png">
-    <link rel="icon" href="image_5.png" type="image/png">
-
+    <title>Prompt: Estilo Cuaderno de Estudiante</title>
     <style>
+        /* Estilos base para limpieza y legibilidad (Senior Friendly) */
         :root {
-            --brand: #D35400;
-            --dark: #2c3e50;
-            --light: #f8f9fa;
-            --blue: #007AFF;
+            --brand-color: #0056b3; /* Azul sólido para confianza */
+            --bg-color: #f4f4f9;
+            --text-color: #333;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                         Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             margin: 0;
-            color: #333;
-            background: #fff;
-            line-height: 1.6;
-        }
-
-        header {
-            max-width: 1000px;
-            margin: 0 auto;
             padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--dark);
-            text-decoration: none;
-        }
-
-        .logo img {
-            height: 40px;
-            border-radius: 8px;
-        }
-
-        .nav-link {
-            margin-left: 20px;
-            font-weight: 600;
-            text-decoration: none;
-            color: #666;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-        }
-
-        .hero h1 {
-            font-size: 48px;
-            color: var(--brand);
-            margin-bottom: 15px;
-            line-height: 1.1;
-        }
-
-        .hero p {
-            max-width: 720px;
-            margin: 0 auto 40px;
-            font-size: 20px;
-            color: #555;
-        }
-
-        .cta-button {
-            display: inline-block;
-            padding: 18px 45px;
-            background: var(--brand);
-            color: #fff;
-            font-size: 18px;
-            font-weight: 800;
-            text-decoration: none;
-            border-radius: 40px;
-            box-shadow: 0 8px 25px rgba(211,84,0,.3);
-        }
-
-        .section-gray {
-            background: #f9f9f9;
-            padding: 60px 20px;
         }
 
         .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .split-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
-            gap: 40px;
-            align-items: center;
-        }
-
-        .comparison-box {
-            background: #fff;
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid #eee;
-            box-shadow: 0 10px 30px rgba(0,0,0,.08);
-        }
-
-        .bad {
-            color: #e74c3c;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .good {
-            color: var(--brand);
-            font-weight: bold;
-            font-size: 14px;
-            margin-top: 15px;
-        }
-
-        .ios-feature {
-            margin: 40px 0;
-            padding: 30px;
-            border-radius: 18px;
-            border: 2px solid var(--blue);
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
             text-align: center;
-            background: #fff;
         }
 
-        .prompt-container {
-            background: #2d3436;
-            color: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            margin-top: 40px;
-            position: relative;
+        h1 {
+            color: var(--brand-color);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
         }
 
-        .prompt-code {
-            font-family: Menlo, monospace;
-            font-size: 14px;
-            color: #fab1a0;
-            white-space: pre-wrap;
+        p.instruction {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 2rem;
+            line-height: 1.5;
         }
 
-        .copy-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 8px 15px;
-            font-weight: bold;
-            border-radius: 6px;
+        /* Caja visual del prompt (solo para leer, no para editar) */
+        .prompt-preview {
+            background-color: #eef2f5;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+            font-family: monospace;
+            font-size: 0.95rem;
+            color: #444;
+            border: 1px solid #d1d9e6;
+            margin-bottom: 2rem;
+            white-space: pre-wrap; /* Mantiene los saltos de línea visualmente */
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        /* BOTÓN GIGANTE DE ACCIÓN */
+        .btn-copy {
+            background-color: var(--brand-color);
+            color: white;
             border: none;
-            background: rgba(255,255,255,.2);
-            color: #fff;
+            padding: 18px 32px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-radius: 50px;
             cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3);
+            transition: transform 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        footer {
-            text-align: center;
-            padding: 50px 20px;
-            color: #999;
-            font-size: 14px;
-            border-top: 1px solid #eee;
+        .btn-copy:active {
+            transform: scale(0.96);
         }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
     </style>
 </head>
-
 <body>
 
-<header>
-    <a class="logo" href="#">
-        <img src="image_5.png" alt="SaraPuma Logo">
-        SaraPuma
-    </a>
-    <nav>
-        <a class="nav-link" href="manual.html">Manual</a>
-        <a class="nav-link" href="app.html" style="color:var(--brand)">Open App</a>
-    </nav>
-</header>
-
-<section class="hero">
-    <h1>Visual Intelligence<br>for Your Notes</h1>
-    <p>
-        El puente entre ChatGPT, Apple Notes y documentos profesionales.
-        Nunca más pierdas formato al copiar y pegar.
-    </p>
-    <a href="app.html" class="cta-button">🚀 Launch SaraPuma</a>
-</section>
-
-<section class="section-gray">
     <div class="container">
-        <div class="split-grid">
-            <div>
-                <h2>¿Por qué se rompe el texto?</h2>
-                <p>
-                    En iPhone, al copiar prompts complejos, el sistema
-                    puede codificar el texto como URL (<code>%20</code>, <code>%0A</code>).
-                </p>
-                <p>
-                    <strong>SaraPuma evita esto leyendo Markdown puro.</strong>
-                </p>
-            </div>
-
-            <div class="comparison-box">
-                <div class="bad">❌ Copiar normal</div>
-                <div style="font-family:serif; color:#666">
-                    instruction:%20Analyze%20the%20document…
-                </div>
-
-                <div class="good">✅ SaraPuma</div>
-                <div style="border-left:3px solid var(--brand); padding-left:10px">
-                    Instruction: Analyze the document…
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<div class="container">
-    <div class="ios-feature">
-        <h2 style="color:var(--blue)">🍎 Optimizado para iPhone</h2>
-        <p>
-            Copia limpia garantizada incluso en Safari iOS.
-        </p>
-    </div>
-</div>
-
-<section class="section-gray">
-    <div class="container">
-        <h2 style="text-align:center">🪄 The Magic Prompt</h2>
-        <p style="text-align:center;color:#666">
-            Usa este prompt para generar Markdown perfecto
+        <h1>Generador de Diapositivas<br>Estilo "Cuaderno"</h1>
+        <p class="instruction">
+            Usa este botón para copiar el texto mágico. Luego pégalo en el chat de <strong>NotebookLM</strong>.
         </p>
 
-        <div class="prompt-container">
-            <button class="copy-btn" id="copyBtn" onclick="copyPromptSafe()">
-                COPY PROMPT
-            </button>
+        <div class="prompt-preview">Actúa como un estudiante experto creando apuntes de estudio visuales... (Haz clic abajo para copiar todo)</div>
 
-            <div class="prompt-code">
-INSTRUCTION: Analyze the document and output in Markdown Code Block.
+        <button class="btn-copy" id="copyBtn" onclick="copyPromptSafe()">
+            COPIAR EL PROMPT
+        </button>
 
-FORMATTING RULES:
-1. Use # for Main Headers and ## for Subheaders.
-2. Use [Link Title](URL) for all links.
-3. Use **Bold** for emphasis.
-4. Use > for quotes.
-5. Use - [x] for checklist items.
-6. Use **Side note:** for marginalia.
-7. Use ==text== for highlights.
-            </div>
+        <div class="footer">
+            Funciona en iPhone, Android y PC
         </div>
     </div>
-</section>
 
-<footer>
-    © 2026 SaraPuma Notes · v3.2<br>
-    Built for Leaders
-</footer>
+    <script>
+        function copyPromptSafe() {
+            // 1. AQUÍ ESTÁ EL TEXTO LIMPIO (Source of Truth)
+            // Usamos backticks (`) para mantener los saltos de línea exactos.
+            const textToCopy = `Actúa como un estudiante experto creando apuntes de estudio visuales y esquemáticos. Basándote en las fuentes proporcionadas, genera el contenido para una serie de diapositivas sobre [TU TEMA AQUÍ].
 
-<script>
-function copyPromptSafe() {
+Para cada diapositiva, sigue estrictamente este formato de "Hoja de Cuaderno":
 
-    const text = `INSTRUCTION: Analyze the document and output in Markdown Code Block.
+1. Texto Manuscrito: Escribe una explicación breve, clara y con un tono natural (ligeramente imperfecto, no robótico) en español.
+2. Resaltador Amarillo Neón: Identifica y escribe entre corchetes las palabras clave que deben ir resaltadas. Ejemplo: [RESALTAR: Término Clave].
+3. Círculo Rojo: Identifica y escribe entre llaves las fechas o datos cruciales que deben ir rodeados. Ejemplo: {CIRCULAR: 1492}.
+4. Garabatos/Bocetos: Describe detalladamente qué pequeño dibujo o esquema explicativo debería ir en el margen para ilustrar el concepto (colorido y estilo boceto).
 
-FORMATTING RULES:
-1. Use # for Main Headers and ## for Subheaders.
-2. Use [Link Title](URL) for all links.
-3. Use **Bold** for emphasis.
-4. Use > for quotes.
-5. Use - [x] for checklist items.
-6. Use **Side note:** for marginalia.
-7. Use ==text== for highlights.`;
+El objetivo es que el contenido parezca una nota de estudio auténtica, legible y organizada.`;
 
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    textarea.setAttribute("readonly", "");
-    textarea.style.position = "fixed";
-    textarea.style.top = "0";
-    textarea.style.left = "0";
-    textarea.style.opacity = "0";
+            // 2. EL HACK DEL TEXTAREA (La técnica que arregla el iPhone)
+            // Creamos un elemento invisible temporalmente
+            const textarea = document.createElement("textarea");
+            textarea.value = textToCopy;
+            
+            // Lo hacemos solo lectura para evitar que el teclado del móvil salte
+            textarea.setAttribute("readonly", "");
+            
+            // Lo sacamos del flujo visual pero lo mantenemos en el DOM
+            textarea.style.position = "fixed";
+            textarea.style.top = "0";
+            textarea.style.left = "0";
+            textarea.style.opacity = "0";
 
-    document.body.appendChild(textarea);
-    textarea.select();
-    textarea.setSelectionRange(0, textarea.value.length);
+            document.body.appendChild(textarea);
+            
+            // 3. SELECCIÓN FORZADA (Crítico para iOS)
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); // Rango explícito para móviles
 
-    const success = document.execCommand("copy");
+            // 4. EJECUTAR COPIA
+            try {
+                const success = document.execCommand("copy");
+                const btn = document.getElementById("copyBtn");
+                
+                if (success) {
+                    btn.innerText = "¡COPIADO CON ÉXITO! ✅";
+                    btn.style.backgroundColor = "#28a745"; // Verde
+                } else {
+                    btn.innerText = "ERROR AL COPIAR ❌";
+                    btn.style.backgroundColor = "#dc3545"; // Rojo
+                }
 
-    document.body.removeChild(textarea);
+                // Restaurar el botón después de 2 segundos
+                setTimeout(() => {
+                    btn.innerText = "COPIAR EL PROMPT";
+                    btn.style.backgroundColor = "#0056b3"; // Vuelta al azul
+                }, 2500);
 
-    const btn = document.getElementById("copyBtn");
-    btn.textContent = success ? "COPIED ✅" : "ERROR";
-    btn.style.background = success ? "#2ecc71" : "#e74c3c";
+            } catch (err) {
+                console.error("Error al copiar", err);
+                alert("No se pudo copiar automáticamente. Por favor intenta hacerlo manualmente.");
+            }
 
-    setTimeout(() => {
-        btn.textContent = "COPY PROMPT";
-        btn.style.background = "rgba(255,255,255,.2)";
-    }, 2000);
-}
-</script>
+            // 5. LIMPIEZA
+            document.body.removeChild(textarea);
+        }
+    </script>
 
 </body>
 </html>
