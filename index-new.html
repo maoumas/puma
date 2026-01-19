@@ -1,269 +1,377 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Markdown Bridge — Why This Exists</title>
-
-  <meta name="description" content="Why Markdown Bridge exists: a human explanation of Markdown, copy-paste frustration, and the modern text world." />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SaraPuma Suite – Visual Tools</title>
+  
+  <link rel="icon" href="image_5.png" type="image/png" />
+  <link rel="apple-touch-icon" href="image_5.png" />
+  <meta name="theme-color" content="#D35400" />
 
   <style>
-    :root{
-      --bg:#0b0d12;
-      --panel:#12162a;
-      --text:#e9eefc;
-      --muted:#a8b3d6;
-      --accent:#7aa6ff;
-      --line:rgba(255,255,255,.1);
-      --radius:18px;
-      --shadow:0 10px 30px rgba(0,0,0,.45);
-      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    :root {
+      --brand: #D35400;      /* Puma Orange */
+      --brand-dark: #A04000;
+      --accent: #2c3e50;     /* Dark Blue-Grey */
+      --bg-light: #f8f9fa;
+      --bg-white: #ffffff;
+      --text-main: #333;
+      --text-muted: #666;
+      --radius: 12px;
+      --shadow: 0 4px 20px rgba(0,0,0,0.06);
     }
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:var(--sans);
-      background:
-        radial-gradient(900px 600px at 15% 10%, rgba(122,166,255,.15), transparent 60%),
-        radial-gradient(900px 600px at 85% 30%, rgba(168,211,255,.08), transparent 55%),
-        var(--bg);
-      color:var(--text);
-      line-height:1.6;
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      color: var(--text-main);
+      background: var(--bg-light);
+      line-height: 1.5;
     }
 
-    header{
-      border-bottom:1px solid var(--line);
-      background:rgba(0,0,0,.45);
-      backdrop-filter:blur(10px);
+    /* --- SUITE NAVIGATION (THE DOCK) --- */
+    /* Mantiene las 3 apps en una línea siempre */
+    .app-dock {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #e0e0e0;
+      padding: 10px 15px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
-    .wrap{max-width:980px;margin:0 auto;padding:28px 20px}
-
-    h1,h2,h3{line-height:1.25}
-    h1{font-size:32px;margin:0 0 12px}
-    h2{font-size:22px;margin:36px 0 12px}
-    h3{font-size:18px;margin:22px 0 8px}
-
-    p{margin:10px 0;color:var(--text)}
-    .muted{color:var(--muted)}
-
-    .hero{
-      padding:42px 20px 48px;
+    .dock-container {
+      display: flex;
+      justify-content: space-between; /* Distribuye espacio */
+      align-items: center;
+      width: 100%;
+      max-width: 600px; /* Ancho máximo controlado */
+      position: relative;
     }
 
-    .hero p{
-      font-size:18px;
-      max-width:72ch;
+    .app-link {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 600;
+      transition: all 0.2s;
+      flex: 1; /* Todos ocupan el mismo ancho base */
+      text-align: center;
+      padding: 5px;
+      border-radius: 8px;
     }
 
-    .card{
-      background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:22px;
-      margin:20px 0;
-      box-shadow:var(--shadow);
+    .app-link:hover { background: #f0f0f0; color: var(--accent); }
+    
+    .app-link svg { width: 20px; height: 20px; margin-bottom: 3px; fill: currentColor; }
+
+    /* SaraPuma Central (Destacada) */
+    .app-link.central {
+      color: var(--brand);
+      transform: scale(1.1); /* Ligeramente más grande */
+      font-weight: 800;
+    }
+    .app-link.central svg { width: 24px; height: 24px; }
+    
+    /* Idioma flotante */
+    .lang-switch {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 11px;
+      padding: 4px;
+      cursor: pointer;
+      z-index: 101;
     }
 
-    ul{padding-left:22px}
-    li{margin:8px 0}
-
-    .quote{
-      font-style:italic;
-      border-left:4px solid var(--accent);
-      padding-left:14px;
-      margin:20px 0;
-      color:var(--muted);
+    /* --- HERO SECTION --- */
+    .hero {
+      text-align: center;
+      padding: 60px 20px 40px; /* Reducido para compactar */
+      background: #fff;
+      border-radius: 0 0 30px 30px;
+      box-shadow: var(--shadow);
+      margin-bottom: 30px;
     }
 
-    .cta{
-      display:inline-block;
-      margin-top:18px;
-      padding:14px 18px;
-      border-radius:14px;
-      background:rgba(122,166,255,.14);
-      border:1px solid rgba(122,166,255,.4);
-      color:var(--text);
-      font-weight:600;
-      text-decoration:none;
-    }
-    .cta:hover{background:rgba(122,166,255,.2)}
+    .hero-logo img { width: 60px; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+    
+    h1 { margin: 10px 0; font-size: 2.2rem; letter-spacing: -1px; color: var(--accent); }
+    p.subtitle { max-width: 500px; margin: 0 auto 25px; color: var(--text-muted); font-size: 1.1rem; }
 
-    footer{
-      border-top:1px solid var(--line);
-      margin-top:60px;
-      padding:24px 20px 40px;
-      font-size:13px;
-      color:var(--muted);
+    .cta-btn {
+      background: var(--brand); color: white;
+      padding: 12px 30px; border-radius: 25px;
+      text-decoration: none; font-weight: bold;
+      display: inline-block;
+      box-shadow: 0 4px 15px rgba(211, 84, 0, 0.3);
+      transition: transform 0.2s;
+    }
+    .cta-btn:active { transform: scale(0.96); }
+
+    /* --- CARDS & GRID --- */
+    .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px; /* Gap reducido */
+      margin-bottom: 40px;
     }
 
-    code{
-      font-family:var(--mono);
-      background:rgba(255,255,255,.06);
-      padding:2px 6px;
-      border-radius:6px;
+    .card {
+      background: var(--bg-white);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    h2 { font-size: 1.4rem; color: var(--accent); margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
+
+    /* --- MAGIC PROMPT BOX --- */
+    .prompt-box {
+      background: #2b303b;
+      color: #c0c5ce;
+      padding: 0;
+      border-radius: var(--radius);
+      position: relative;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .prompt-header {
+      background: rgba(0,0,0,0.2);
+      padding: 8px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #8fa1b3;
+    }
+    .prompt-content {
+      padding: 15px;
+      font-family: 'Menlo', 'Monaco', monospace;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+      line-height: 1.4;
+      color: #a3be8c; /* Greenish code color */
+    }
+    .btn-copy {
+      background: rgba(255,255,255,0.1); border: none; color: white;
+      padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;
+    }
+    .btn-copy:hover { background: rgba(255,255,255,0.2); }
+
+    /* --- VISUAL COMPARISON --- */
+    .visual-comp { display: flex; gap: 10px; flex-direction: column; }
+    .comp-row { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; }
+    .icon { font-size: 1.2rem; min-width: 25px; }
+    .sample-bad { color: #e74c3c; text-decoration: line-through; opacity: 0.7; }
+    .sample-good { 
+      background: #FFF3E0; color: #E65100; 
+      padding: 2px 8px; border-radius: 4px; border-left: 3px solid var(--brand);
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 0.8rem;
+      color: #999;
+      border-top: 1px solid #e0e0e0;
+      margin-top: 40px;
+      background: #fff;
+    }
+
+    @media (max-width: 400px) {
+      .dock-container { gap: 5px; }
+      .app-link span { display: none; } /* Ocultar texto en pantallas muy pequeñas */
+      .app-link svg { width: 24px; height: 24px; margin: 0; }
     }
   </style>
 </head>
-
 <body>
 
-<header>
-  <div class="wrap">
-    <strong>Markdown Bridge</strong><br>
-    <span class="muted">A human bridge to structured text</span>
-  </div>
-</header>
+  <nav class="app-dock">
+    <div class="dock-container">
+      
+      <a href="/tp/index.html" class="app-link">
+        <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM8 15c0-1.66 1.34-3 3-3 .35 0 .69.07 1 .18V6h5v2h-3v7.03A3.003 3.003 0 0 1 11 18c-1.66 0-3-1.34-3-3z"/></svg>
+        <span>Teleprompter</span>
+      </a>
 
-<section class="hero wrap">
-  <h1>Why this application exists</h1>
+      <a href="app.html" class="app-link central">
+        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        <span>SaraPuma</span>
+      </a>
 
-  <p>
-    Modern digital life is built on text.  
-    Messages, notes, documentation, emails, AI outputs, knowledge bases, and even books are now written,
-    copied, transformed, and moved between tools every day.
-  </p>
+      <a href="/video-gen/index.html" class="app-link">
+        <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+        <span>VideoGen</span>
+      </a>
 
-  <p>
-    And yet, something strange keeps happening:
-  </p>
-
-  <div class="quote">
-    “I just copied the text… why does it look broken now?”
-  </div>
-</section>
-
-<section class="wrap">
-
-  <div class="card">
-    <h2>The invisible problem</h2>
-
-    <p>
-      Most modern applications no longer store text as “rich formatting”.
-      Instead, they rely on a lightweight structure called <strong>Markdown</strong>.
-    </p>
-
-    <p>
-      Markdown is everywhere:
-    </p>
-
-    <ul>
-      <li>AI tools generate it by default</li>
-      <li>Note-taking apps increasingly store notes as Markdown</li>
-      <li>Documentation, wikis, and knowledge bases rely on it</li>
-      <li>Even major platforms now export notes as Markdown</li>
-    </ul>
-
-    <p class="muted">
-      The problem is not Markdown itself — the problem is that most users were never told
-      that they are using it.
-    </p>
-  </div>
-
-  <div class="card">
-    <h2>Why copy & paste became frustrating</h2>
-
-    <p>
-      When you copy text today, you are not copying “plain text”.
-      You are copying <em>structured intent</em>.
-    </p>
-
-    <p>
-      Headings, lists, quotes, code blocks, links — they all follow rules.
-      When those rules are misunderstood, the result feels random and broken.
-    </p>
-
-    <ul>
-      <li>Lists suddenly change shape</li>
-      <li>Spacing collapses or explodes</li>
-      <li>Text becomes code</li>
-      <li>Formatting disappears or multiplies</li>
-    </ul>
-
-    <p class="muted">
-      This is not user error.  
-      It is a missing translation layer.
-    </p>
-  </div>
-
-  <div class="card">
-    <h2>What Markdown Bridge does</h2>
-
-    <p>
-      Markdown Bridge was created to solve one very specific problem:
-    </p>
-
-    <div class="quote">
-      “Help humans understand what is happening to their text — before it is exported, published, or broken.”
     </div>
 
-    <p>
-      The application does not try to be smart behind your back.
-      It does not auto-fix things silently.
-    </p>
+    <select class="lang-switch" id="langSelect" onchange="setLanguage(this.value)">
+      <option value="en" selected>EN</option>
+      <option value="es">ES</option>
+      <option value="de">DE</option>
+    </select>
+  </nav>
 
-    <ul>
-      <li>You paste text safely</li>
-      <li>You see what the structure actually is</li>
-      <li>You decide when and how it is normalized</li>
-      <li>You export something stable and predictable</li>
-    </ul>
-  </div>
+  <header class="hero">
+    <div class="hero-logo"><img src="image_5.png" alt="Logo"></div>
+    <h1 id="heroTitle">Visual Intelligence</h1>
+    <p class="subtitle" id="heroSubtitle">The professional bridge between AI and formatted documents.</p>
+    <a href="app.html" class="cta-btn" id="heroBtn">🚀 Launch SaraPuma Log</a>
+  </header>
 
-  <div class="card">
-    <h2>Who this is for</h2>
+  <div class="container">
+    <div class="feature-grid">
+      
+      <div class="card">
+        <h2 id="whyTitle">Why SaraPuma?</h2>
+        <div class="visual-comp">
+          <div class="comp-row">
+            <span class="icon">❌</span>
+            <span class="sample-bad" id="badSample">Text%20broken%20url</span>
+          </div>
+          <div class="comp-row">
+            <span class="icon">✅</span>
+            <span class="sample-good" id="goodSample">Clean Visual Card</span>
+          </div>
+        </div>
+        <p style="font-size: 0.9rem; margin-top: 15px; color: #666;" id="whyText">
+          Eliminates formatting errors when copying from ChatGPT to iPhone Notes or Docs.
+        </p>
+      </div>
 
-    <ul>
-      <li>Everyday users who copy text from AI tools</li>
-      <li>People who write notes, manuals, or documentation</li>
-      <li>Students and educators</li>
-      <li>Writers who want future-proof text</li>
-      <li>Anyone tired of “why did this change?”</li>
-    </ul>
+      <div class="card">
+        <h2 id="promptTitle">The Magic Prompt</h2>
+        <p style="font-size: 0.85rem; margin-bottom: 10px; color: #666;" id="promptDesc">
+          Copy this into ChatGPT/Claude to get perfect output.
+        </p>
+        
+        <div class="prompt-box">
+          <div class="prompt-header">
+            <span>SYSTEM PROMPT V4</span>
+            <button class="btn-copy" onclick="copyPrompt()" id="copyBtn">COPY</button>
+          </div>
+          <div class="prompt-content" id="promptCode">INSTRUCTION: Analyze request and output in Markdown Code Block.
 
-    <p class="muted">
-      You do not need to learn Markdown first.  
-      Understanding comes naturally, by seeing.
-    </p>
-  </div>
+RULES:
+1. HEADERS: # Pink (Main), ## Violet (Sub).
+2. TABLES: | A | B | (Data tables).
+3. LISTS: - [ ] Task, - [x] Done.
+4. HIGHLIGHTS: ==Yellow==, ++Green++.
+5. BLOCKS: > Quote (Yellow Box), ``` Code.
+6. NOTES: **Side note:** (Marginalia).</div>
+        </div>
+      </div>
 
-  <div class="card">
-    <h2>A quiet philosophy</h2>
-
-    <p>
-      This application follows a simple rule:
-    </p>
-
-    <div class="quote">
-      Nothing should change without being visible and explainable.
     </div>
-
-    <p>
-      Text is knowledge.  
-      Knowledge deserves stability.
-    </p>
   </div>
 
-  <a class="cta" href="app.html">
-    Open the application →
-  </a>
+  <footer>
+    <div id="copyright">© 2026 SaraPuma Suite. All Rights Reserved.</div>
+    <div style="margin-top: 5px; font-size: 0.7rem; color: #ccc;">
+      Protected Proprietary Software · Developed for Leadership.
+    </div>
+  </footer>
 
-</section>
+  <script>
+    // --- TRANSLATIONS ---
+    const i18n = {
+      en: {
+        heroTitle: "Visual Intelligence",
+        heroSubtitle: "The professional bridge between AI and formatted documents.",
+        heroBtn: "🚀 Launch SaraPuma Log",
+        whyTitle: "Why SaraPuma?",
+        badSample: "Broken%20Text%20Format",
+        goodSample: "Clean Visual Card",
+        whyText: "Eliminates formatting errors when copying from ChatGPT to iPhone Notes or Docs.",
+        promptTitle: "The Magic Prompt",
+        promptDesc: "Copy this into ChatGPT/Claude to get perfect output.",
+        copyBtn: "COPY",
+        copyright: "© 2026 SaraPuma Suite. All Rights Reserved."
+      },
+      es: {
+        heroTitle: "Inteligencia Visual",
+        heroSubtitle: "El puente profesional entre IA y documentos con formato.",
+        heroBtn: "🚀 Abrir SaraPuma Log",
+        whyTitle: "¿Por qué SaraPuma?",
+        badSample: "Texto%20roto%20sin%20formato",
+        goodSample: "Tarjeta Visual Limpia",
+        whyText: "Elimina errores de formato al copiar de ChatGPT a Notas iPhone o Docs.",
+        promptTitle: "El Prompt Mágico",
+        promptDesc: "Copia esto en ChatGPT/Claude para obtener el formato perfecto.",
+        copyBtn: "COPIAR",
+        copyright: "© 2026 SaraPuma Suite. Todos los derechos reservados."
+      },
+      de: {
+        heroTitle: "Visuelle Intelligenz",
+        heroSubtitle: "Die professionelle Brücke zwischen KI und formatierten Dokumenten.",
+        heroBtn: "🚀 SaraPuma Log Starten",
+        whyTitle: "Warum SaraPuma?",
+        badSample: "Text%20kaputt%20Format",
+        goodSample: "Saubere Visuelle Karte",
+        whyText: "Beseitigt Formatierungsfehler beim Kopieren von ChatGPT in iPhone Notes.",
+        promptTitle: "Der Magische Prompt",
+        promptDesc: "Kopieren Sie dies in ChatGPT/Claude für perfekte Ergebnisse.",
+        copyBtn: "KOPIEREN",
+        copyright: "© 2026 SaraPuma Suite. Alle Rechte vorbehalten."
+      }
+    };
 
-<footer class="wrap">
-  <div>
-    © <span id="year"></span> Markdown Bridge. All rights reserved.
-  </div>
-  <div class="muted" style="margin-top:6px;">
-    Markdown reference: https://spec.commonmark.org/
-  </div>
-</footer>
+    function setLanguage(lang) {
+      const t = i18n[lang];
+      if (!t) return;
+      
+      document.getElementById('heroTitle').innerText = t.heroTitle;
+      document.getElementById('heroSubtitle').innerText = t.heroSubtitle;
+      document.getElementById('heroBtn').innerText = t.heroBtn;
+      document.getElementById('whyTitle').innerText = t.whyTitle;
+      document.getElementById('badSample').innerText = t.badSample;
+      document.getElementById('goodSample').innerText = t.goodSample;
+      document.getElementById('whyText').innerText = t.whyText;
+      document.getElementById('promptTitle').innerText = t.promptTitle;
+      document.getElementById('promptDesc').innerText = t.promptDesc;
+      document.getElementById('copyBtn').innerText = t.copyBtn;
+      document.getElementById('copyright').innerText = t.copyright;
+    }
 
-<script>
-  document.getElementById("year").textContent = new Date().getFullYear();
-</script>
+    function copyPrompt() {
+      const text = document.getElementById('promptCode').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyBtn');
+        const originalText = btn.innerText;
+        btn.innerText = "✅";
+        btn.style.background = "#4CAF50";
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.style.background = "";
+        }, 1500);
+      });
+    }
+
+    // Initialize (Optional: Detect browser lang)
+    // setLanguage('en'); 
+  </script>
 
 </body>
 </html>
