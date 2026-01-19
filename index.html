@@ -1,305 +1,269 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SaraPuma – Visual Markdown Viewer</title>
-  <link rel="icon" href="image_5.png" type="image/png" />
-  <link rel="apple-touch-icon" href="image_5.png" />
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#D35400" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Markdown Bridge — Why This Exists</title>
+
+  <meta name="description" content="Why Markdown Bridge exists: a human explanation of Markdown, copy-paste frustration, and the modern text world." />
+
   <style>
-    :root {
-      --brand: #D35400;
-      --dark: #2c3e50;
-      --light: #f8f9fa;
-      --blue: #007AFF;
+    :root{
+      --bg:#0b0d12;
+      --panel:#12162a;
+      --text:#e9eefc;
+      --muted:#a8b3d6;
+      --accent:#7aa6ff;
+      --line:rgba(255,255,255,.1);
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,.45);
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      color: #333;
-      background: #fff;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background:
+        radial-gradient(900px 600px at 15% 10%, rgba(122,166,255,.15), transparent 60%),
+        radial-gradient(900px 600px at 85% 30%, rgba(168,211,255,.08), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.6;
     }
 
-    header {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    header{
+      border-bottom:1px solid var(--line);
+      background:rgba(0,0,0,.45);
+      backdrop-filter:blur(10px);
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--dark);
-      text-decoration: none;
+    .wrap{max-width:980px;margin:0 auto;padding:28px 20px}
+
+    h1,h2,h3{line-height:1.25}
+    h1{font-size:32px;margin:0 0 12px}
+    h2{font-size:22px;margin:36px 0 12px}
+    h3{font-size:18px;margin:22px 0 8px}
+
+    p{margin:10px 0;color:var(--text)}
+    .muted{color:var(--muted)}
+
+    .hero{
+      padding:42px 20px 48px;
     }
 
-    .logo img {
-      height: 36px;
-      border-radius: 6px;
+    .hero p{
+      font-size:18px;
+      max-width:72ch;
     }
 
-    nav a {
-      margin-left: 20px;
-      font-weight: 600;
-      text-decoration: none;
-      color: #666;
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:22px;
+      margin:20px 0;
+      box-shadow:var(--shadow);
     }
 
-    .hero {
-      text-align: center;
-      padding: 60px 20px 40px;
-      background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    ul{padding-left:22px}
+    li{margin:8px 0}
+
+    .quote{
+      font-style:italic;
+      border-left:4px solid var(--accent);
+      padding-left:14px;
+      margin:20px 0;
+      color:var(--muted);
     }
 
-    .hero h1 {
-      font-size: 40px;
-      color: var(--brand);
-      margin-bottom: 10px;
+    .cta{
+      display:inline-block;
+      margin-top:18px;
+      padding:14px 18px;
+      border-radius:14px;
+      background:rgba(122,166,255,.14);
+      border:1px solid rgba(122,166,255,.4);
+      color:var(--text);
+      font-weight:600;
+      text-decoration:none;
+    }
+    .cta:hover{background:rgba(122,166,255,.2)}
+
+    footer{
+      border-top:1px solid var(--line);
+      margin-top:60px;
+      padding:24px 20px 40px;
+      font-size:13px;
+      color:var(--muted);
     }
 
-    .hero p {
-      max-width: 680px;
-      margin: 0 auto 30px;
-      font-size: 18px;
-      color: #555;
-    }
-
-    .cta-button {
-      background: var(--brand);
-      color: #fff;
-      padding: 14px 32px;
-      border-radius: 30px;
-      font-weight: bold;
-      font-size: 16px;
-      text-decoration: none;
-      box-shadow: 0 6px 20px rgba(211, 84, 0, 0.3);
-    }
-
-    .section {
-      padding: 40px 20px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .section h2 {
-      font-size: 28px;
-      color: var(--brand);
-      margin-bottom: 10px;
-    }
-
-    .section p {
-      font-size: 16px;
-      color: #444;
-      margin-bottom: 15px;
-    }
-
-    .prompt-container {
-      background: #2d3436;
-      color: white;
-      padding: 20px;
-      border-radius: 12px;
-      margin-top: 20px;
-      position: relative;
-    }
-
-    .prompt-code {
-      font-family: Menlo, monospace;
-      font-size: 14px;
-      white-space: pre-wrap;
-      color: #fab1a0;
-    }
-
-    .copy-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      padding: 6px 12px;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.2);
-      color: white;
-      cursor: pointer;
-    }
-
-    .lang-selector {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .lang-selector button {
-      padding: 6px 16px;
-      border: none;
-      border-radius: 20px;
-      font-weight: bold;
-      background: #eee;
-      color: #555;
-      cursor: pointer;
-    }
-
-    .footer {
-      text-align: center;
-      padding: 30px 20px;
-      color: #aaa;
-      font-size: 14px;
-      border-top: 1px solid #eee;
-    }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin-top: 30px;
-    }
-
-    .video-card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      overflow: hidden;
-    }
-
-    .video-placeholder {
-      background: #000;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 140px;
-      font-weight: bold;
-    }
-
-    .video-info {
-      text-align: center;
-      padding: 10px;
+    code{
+      font-family:var(--mono);
+      background:rgba(255,255,255,.06);
+      padding:2px 6px;
+      border-radius:6px;
     }
   </style>
 </head>
-<body>
-  <header>
-    <a href="#" class="logo"><img src="image_5.png" alt="Logo">SaraPuma</a>
-    <nav>
-      <a href="manual.html">Manual</a>
-      <a href="app.html" style="color: var(--brand)">Open App</a>
-    </nav>
-    <div style="font-size:12px; color:white;">© 2026 SaraPuma</div>
-  </header>
 
-  <div class="lang-selector">
-    <button onclick="setLang('en')">🇬🇧 English</button>
-    <button onclick="setLang('es')">🇪🇸 Español</button>
-    <button onclick="setLang('de')">🇩🇪 Deutsch</button>
+<body>
+
+<header>
+  <div class="wrap">
+    <strong>Markdown Bridge</strong><br>
+    <span class="muted">A human bridge to structured text</span>
+  </div>
+</header>
+
+<section class="hero wrap">
+  <h1>Why this application exists</h1>
+
+  <p>
+    Modern digital life is built on text.  
+    Messages, notes, documentation, emails, AI outputs, knowledge bases, and even books are now written,
+    copied, transformed, and moved between tools every day.
+  </p>
+
+  <p>
+    And yet, something strange keeps happening:
+  </p>
+
+  <div class="quote">
+    “I just copied the text… why does it look broken now?”
+  </div>
+</section>
+
+<section class="wrap">
+
+  <div class="card">
+    <h2>The invisible problem</h2>
+
+    <p>
+      Most modern applications no longer store text as “rich formatting”.
+      Instead, they rely on a lightweight structure called <strong>Markdown</strong>.
+    </p>
+
+    <p>
+      Markdown is everywhere:
+    </p>
+
+    <ul>
+      <li>AI tools generate it by default</li>
+      <li>Note-taking apps increasingly store notes as Markdown</li>
+      <li>Documentation, wikis, and knowledge bases rely on it</li>
+      <li>Even major platforms now export notes as Markdown</li>
+    </ul>
+
+    <p class="muted">
+      The problem is not Markdown itself — the problem is that most users were never told
+      that they are using it.
+    </p>
   </div>
 
-  <section class="hero">
-    <h1 id="hero-title">Visual Markdown Viewer</h1>
-    <p id="hero-desc">The perfect bridge between AI content, Apple Notes, and professional output.</p>
-    <a href="app.html" class="cta-button" id="cta-btn">🚀 Launch App</a>
-  </section>
+  <div class="card">
+    <h2>Why copy & paste became frustrating</h2>
 
-  <section class="section">
-    <h2 id="prompt-title">🪄 The Magic Prompt</h2>
-    <p id="prompt-desc">Use this prompt to ensure your AI outputs perfect Markdown formatting.</p>
-    
-    <div class="prompt-container">
-      <button class="copy-btn" onclick="copyPrompt()">COPY</button>
-      <div class="prompt-code" id="prompt-text">
-INSTRUCTION: Please output your answer in Markdown format using a code block.
+    <p>
+      When you copy text today, you are not copying “plain text”.
+      You are copying <em>structured intent</em>.
+    </p>
 
-MARKDOWN SYNTAX TO APPLY:
-1. # Main Header, ## Subheader
-2. **Bold**, *Italic*, ~~Strikethrough~~, <u>Underline</u>
-3. [Link Text](URL)
-4. > Blockquote
-5. - Bullet list, 1. Ordered list
-6. `Inline code`, ```Code block```
-7. - [x] Checklist
-8. **Side note:** This is a margin note
-9. ==Highlight== and ++Green highlight++
-10. --- Divider
-      </div>
+    <p>
+      Headings, lists, quotes, code blocks, links — they all follow rules.
+      When those rules are misunderstood, the result feels random and broken.
+    </p>
+
+    <ul>
+      <li>Lists suddenly change shape</li>
+      <li>Spacing collapses or explodes</li>
+      <li>Text becomes code</li>
+      <li>Formatting disappears or multiplies</li>
+    </ul>
+
+    <p class="muted">
+      This is not user error.  
+      It is a missing translation layer.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>What Markdown Bridge does</h2>
+
+    <p>
+      Markdown Bridge was created to solve one very specific problem:
+    </p>
+
+    <div class="quote">
+      “Help humans understand what is happening to their text — before it is exported, published, or broken.”
     </div>
-  </section>
 
-  <section class="section">
-    <h2 id="video-title">🎥 Video Tutorials</h2>
-    <div class="video-grid">
-      <div class="video-card">
-        <div class="video-placeholder">Coming Soon</div>
-        <div class="video-info"><h4>AI Workflow</h4></div>
-      </div>
-      <div class="video-card">
-        <div class="video-placeholder">Coming Soon</div>
-        <div class="video-info"><h4>PDF iPhone Trick</h4></div>
-      </div>
-      <div class="video-card">
-        <div class="video-placeholder">Coming Soon</div>
-        <div class="video-info"><h4>Export Apple Notes</h4></div>
-      </div>
+    <p>
+      The application does not try to be smart behind your back.
+      It does not auto-fix things silently.
+    </p>
+
+    <ul>
+      <li>You paste text safely</li>
+      <li>You see what the structure actually is</li>
+      <li>You decide when and how it is normalized</li>
+      <li>You export something stable and predictable</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Who this is for</h2>
+
+    <ul>
+      <li>Everyday users who copy text from AI tools</li>
+      <li>People who write notes, manuals, or documentation</li>
+      <li>Students and educators</li>
+      <li>Writers who want future-proof text</li>
+      <li>Anyone tired of “why did this change?”</li>
+    </ul>
+
+    <p class="muted">
+      You do not need to learn Markdown first.  
+      Understanding comes naturally, by seeing.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>A quiet philosophy</h2>
+
+    <p>
+      This application follows a simple rule:
+    </p>
+
+    <div class="quote">
+      Nothing should change without being visible and explainable.
     </div>
-  </section>
 
-  <div>© 2026 SaraPuma Notes · All rights reserved.</div>
-<div style="font-size:12px; margin-top:5px;">
-  This app is provided “as is” without warranty of any kind. All content remains property of its respective authors.
-</div>
+    <p>
+      Text is knowledge.  
+      Knowledge deserves stability.
+    </p>
+  </div>
 
-  <script>
-    const strings = {
-      en: {
-        'hero-title': 'Visual Markdown Viewer',
-        'hero-desc': 'The perfect bridge between AI content, Apple Notes, and professional output.',
-        'cta-btn': '🚀 Launch App',
-        'prompt-title': '🪄 The Magic Prompt',
-        'prompt-desc': 'Use this prompt to ensure your AI outputs perfect Markdown formatting.',
-        'video-title': '🎥 Video Tutorials'
-      },
-      es: {
-        'hero-title': 'Visualizador de Markdown',
-        'hero-desc': 'El puente perfecto entre IA, Apple Notes y documentos profesionales.',
-        'cta-btn': '🚀 Lanzar App',
-        'prompt-title': '🪄 El Magic Prompt',
-        'prompt-desc': 'Usa este prompt para lograr formato Markdown perfecto desde IA.',
-        'video-title': '🎥 Tutoriales en Video'
-      },
-      de: {
-        'hero-title': 'Markdown-Viewer',
-        'hero-desc': 'Die perfekte Brücke zwischen KI-Inhalten, Apple Notes und Profi-Dokumenten.',
-        'cta-btn': '🚀 App starten',
-        'prompt-title': '🪄 Der Magic Prompt',
-        'prompt-desc': 'Nutze diesen Prompt für korrektes Markdown-Format aus KI.',
-        'video-title': '🎥 Video-Tutorials'
-      }
-    };
+  <a class="cta" href="app.html">
+    Open the application →
+  </a>
 
-    function setLang(lang) {
-      const elements = document.querySelectorAll('[id]');
-      elements.forEach(el => {
-        const key = el.id;
-        if (strings[lang] && strings[lang][key]) {
-          el.textContent = strings[lang][key];
-        }
-      });
-    }
+</section>
 
-    function copyPrompt() {
-      const text = document.getElementById("prompt-text").innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        alert("✅ Prompt copied to clipboard");
-      });
-    }
-  </script>
+<footer class="wrap">
+  <div>
+    © <span id="year"></span> Markdown Bridge. All rights reserved.
+  </div>
+  <div class="muted" style="margin-top:6px;">
+    Markdown reference: https://spec.commonmark.org/
+  </div>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
 </body>
 </html>
