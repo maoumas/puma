@@ -17,21 +17,22 @@
   </script>
   <style>
     :root {
-      --brand: #D35400;
+      --brand: #D35400; /* Naranja Puma */
       --dark: #2c3e50;
       --light: #f8f9fa;
       --blue: #007AFF;
+      --green: #34C759;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       margin: 0;
       color: #333;
       background: #fff;
       line-height: 1.6;
     }
 
+    /* --- HEADER --- */
     header {
       max-width: 1000px;
       margin: 0 auto;
@@ -49,24 +50,25 @@
       font-weight: 900;
       color: var(--dark);
       text-decoration: none;
+      letter-spacing: -0.5px;
     }
 
-    .logo img {
-      height: 40px;
-      border-radius: 8px;
-    }
+    .logo img { height: 40px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
     .nav-link {
       margin-left: 20px;
       font-weight: 600;
       text-decoration: none;
       color: #666;
+      transition: color 0.2s;
     }
+    .nav-link:hover { color: var(--brand); }
 
+    /* --- HERO --- */
     .hero {
       text-align: center;
       padding: 80px 20px;
-      background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+      background: linear-gradient(180deg, #FFF 0%, #FFF8F0 100%); /* Sutil degradado naranja */
     }
 
     .hero h1 {
@@ -74,6 +76,7 @@
       color: var(--brand);
       margin-bottom: 15px;
       line-height: 1.1;
+      letter-spacing: -1px;
     }
 
     .hero p {
@@ -92,19 +95,19 @@
       font-weight: 800;
       text-decoration: none;
       border-radius: 40px;
-      box-shadow: 0 8px 25px rgba(211, 84, 0, 0.3);
+      box-shadow: 0 8px 25px rgba(211, 84, 0, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(211, 84, 0, 0.6);
     }
 
-    .section-gray {
-      background: #f9f9f9;
-      padding: 60px 20px;
-    }
+    /* --- SECTIONS --- */
+    .section-gray { background: #f9f9f9; padding: 60px 20px; }
+    .container { max-width: 900px; margin: 0 auto; }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
+    /* --- COMPARISON --- */
     .split-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -115,33 +118,15 @@
     .comparison-box {
       background: #fff;
       padding: 25px;
-      border-radius: 12px;
+      border-radius: 16px;
       border: 1px solid #eee;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
     }
 
-    .bad {
-      color: #e74c3c;
-      font-weight: bold;
-      font-size: 14px;
-    }
+    .bad { color: #e74c3c; font-weight: bold; font-size: 14px; margin-bottom: 5px; }
+    .good { color: var(--green); font-weight: bold; font-size: 14px; margin-top: 20px; margin-bottom: 5px;}
 
-    .good {
-      color: var(--brand);
-      font-weight: bold;
-      font-size: 14px;
-      margin-top: 15px;
-    }
-
-    .ios-feature {
-      margin: 40px 0;
-      padding: 30px;
-      border-radius: 18px;
-      border: 2px solid var(--blue);
-      text-align: center;
-      background: #fff;
-    }
-
+    /* --- MAGIC PROMPT --- */
     .prompt-container {
       background: #2d3436;
       color: #fff;
@@ -149,13 +134,15 @@
       border-radius: 15px;
       margin-top: 40px;
       position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
 
     .prompt-code {
-      font-family: Menlo, monospace;
+      font-family: 'Menlo', 'Monaco', monospace;
       font-size: 14px;
-      color: #fab1a0;
+      color: #fab1a0; /* Tono salmón legible */
       white-space: pre-wrap;
+      line-height: 1.5;
     }
 
     .copy-btn {
@@ -169,37 +156,46 @@
       background: rgba(255, 255, 255, 0.2);
       color: #fff;
       cursor: pointer;
+      backdrop-filter: blur(5px);
+      transition: background 0.2s;
     }
+    .copy-btn:hover { background: rgba(255, 255, 255, 0.3); }
 
+    /* --- VIDEO GRID --- */
     .video-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+      gap: 25px;
       margin-top: 40px;
     }
 
     .video-card {
       background: white;
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      border: 1px solid #eee;
+      transition: transform 0.2s;
     }
+    .video-card:hover { transform: translateY(-5px); }
 
     .video-placeholder {
-      background: #000;
+      background: #eee;
       height: 160px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
+      color: #999;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 14px;
+      background-image: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 9V15L15 12L10 9Z" fill="%23999"/><circle cx="12" cy="12" r="10" stroke="%23999" stroke-width="2"/></svg>');
+      background-repeat: no-repeat;
+      background-position: center;
     }
 
-    .video-info {
-      padding: 15px;
-      text-align: center;
-    }
+    .video-info { padding: 15px; text-align: center; }
+    .video-info h4 { margin: 0; font-size: 16px; color: var(--dark); }
+    .video-info p { margin: 5px 0 0; font-size: 13px; color: #777; }
 
     footer {
       text-align: center;
@@ -207,6 +203,7 @@
       color: #999;
       font-size: 14px;
       border-top: 1px solid #eee;
+      margin-top: 60px;
     }
   </style>
 </head>
@@ -226,55 +223,50 @@
   <section class="hero">
     <h1>Visual Intelligence<br />for Your Notes</h1>
     <p>
-      El puente entre ChatGPT, Apple Notes y documentos profesionales.
-      Nunca más pierdas formato al copiar y pegar.
+      El puente entre ChatGPT, Markdown y tus documentos profesionales.<br>
+      Optimizado para iPhone y liderazgo visual.
     </p>
-    <a href="app.html" class="cta-button">🚀 Launch SaraPuma</a>
+    <a href="app.html" class="cta-button">🚀 Abrir SaraPuma App</a>
   </section>
 
   <section class="section-gray">
     <div class="container">
       <div class="split-grid">
         <div>
-          <h2>¿Por qué se rompe el texto?</h2>
+          <h2>¿Por qué Markdown?</h2>
           <p>
-            En iPhone, al copiar prompts complejos, el sistema puede codificar
-            el texto como URL (<code>%20</code>, <code>%0A</code>).
+            Copiar texto normal desde ChatGPT suele perder formato o crear bloques de texto difíciles de leer.
           </p>
           <p>
-            <strong>SaraPuma evita esto leyendo Markdown puro.</strong>
+            <strong>SaraPuma transforma Markdown simple en tarjetas visuales de alto impacto.</strong>
           </p>
         </div>
 
         <div class="comparison-box">
-          <div class="bad">❌ Copiar normal</div>
-          <div style="font-family: serif; color: #666">
-            instruction:%20Analyze%20the%20document…
+          <div class="bad">❌ Texto Plano</div>
+          <div style="font-family: monospace; color: #666; font-size: 13px; background: #eee; padding: 10px; border-radius: 6px;">
+            Resumen del proyecto:<br>
+            Importante: Revisar presupuesto.<br>
+            Tarea pendiente: Llamar al cliente.
           </div>
 
-          <div class="good">✅ SaraPuma</div>
-          <div
-            style="border-left: 3px solid var(--brand); padding-left: 10px"
-          >
-            Instruction: Analyze the document…
+          <div class="good">✅ SaraPuma Visual</div>
+          <div style="border-left: 4px solid var(--brand); padding: 10px; background: #FFF8E1; border-radius: 0 8px 8px 0; font-size: 14px;">
+            <strong style="color: #D32F2F">Importante:</strong> Revisar presupuesto.
+          </div>
+          <div style="margin-top: 8px; display: flex; align-items: center; gap: 8px; font-size: 14px;">
+             <input type="checkbox" checked onclick="return false"> Llamar al cliente
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <div class="container">
-    <div class="ios-feature">
-      <h2 style="color: var(--blue)">🍎 Optimizado para iPhone</h2>
-      <p>Copia limpia garantizada incluso en Safari iOS.</p>
-    </div>
-  </div>
-
   <section class="section-gray">
     <div class="container">
-      <h2 style="text-align: center">🪄 The Magic Prompt</h2>
-      <p style="text-align: center; color: #666">
-        Usa este prompt para generar Markdown perfecto
+      <h2 style="text-align: center">🪄 The Magic Prompt (V3)</h2>
+      <p style="text-align: center; color: #666; max-width: 600px; margin: 0 auto 20px;">
+        Copia este prompt y pégalo en tu IA favorita (ChatGPT, Claude, Ollama) para obtener el formato perfecto compatible con SaraPuma.
       </p>
 
       <div class="prompt-container">
@@ -282,57 +274,82 @@
           COPY PROMPT
         </button>
 
-        <div class="prompt-code">
-INSTRUCTION: Analyze the document and output in Markdown Code Block.
+        <div class="prompt-code">INSTRUCTION: Analyze the text and output in Markdown Code Block for SaraPuma.
 
 FORMATTING RULES:
-1. Use # for Main Headers and ## for Subheaders.
-2. Use [Link Title](URL) for all links.
-3. Use **Bold** for emphasis.
-4. Use > for quotes.
-5. Use - [x] for checklist items.
-6. Use **Side note:** for marginalia.
-7. Use ==text== for highlights.
-        </div>
+1. HEADERS: Use # for Main Title (Pink) and ## for Subtitles (Violet).
+2. TABLES: Use | Col1 | Col2 | syntax for data tables.
+3. TASKS: Use - [ ] for pending and - [x] for done.
+4. QUOTES: Use > for important blocks (Yellow box).
+5. HIGHLIGHTS: Use ==text== for Yellow and ++text++ for Green highlights.
+6. NOTES: Use **Side note:** for marginalia notes.
+7. CODE: Use ``` for technical blocks.
+8. IMAGES: Use ![Alt](URL) if needed.</div>
       </div>
     </div>
   </section>
 
   <div class="container" style="margin-top: 60px">
     <h2 style="text-align: center">🎬 Video Tutoriales</h2>
+    <p style="text-align: center; color: #666; margin-bottom: 40px;">Aprende a sacar el máximo provecho.</p>
+    
     <div class="video-grid">
       <div class="video-card">
-        <div class="video-placeholder">Próximamente</div>
-        <div class="video-info"><h4>🧠 AI Workflow</h4></div>
+        <div class="video-placeholder">
+          </div>
+        <div class="video-info">
+          <h4>🧠 AI Workflow</h4>
+          <p>De ChatGPT a SaraPuma en segundos.</p>
+        </div>
       </div>
+      
       <div class="video-card">
-        <div class="video-placeholder">Próximamente</div>
-        <div class="video-info"><h4>📄 iPhone PDF Trick</h4></div>
+        <div class="video-placeholder"></div>
+        <div class="video-info">
+          <h4>📊 Tablas y Datos</h4>
+          <p>Organiza información compleja visualmente.</p>
+        </div>
       </div>
+      
       <div class="video-card">
-        <div class="video-placeholder">Próximamente</div>
-        <div class="video-info"><h4>📝 Apple Notes Export</h4></div>
+        <div class="video-placeholder"></div>
+        <div class="video-info">
+          <h4>📱 iPhone Tips</h4>
+          <p>Trucos para guardar en pantalla de inicio.</p>
+        </div>
+      </div>
+
+      <div class="video-card" style="border: 2px dashed #ddd; box-shadow: none;">
+        <div class="video-placeholder" style="background: transparent; color: #ddd;">
+           Coming Soon
+        </div>
+        <div class="video-info">
+          <h4 style="color: #999;">Nuevo Contenido</h4>
+          <p>Próximamente más guías.</p>
+        </div>
       </div>
     </div>
   </div>
 
   <footer>
-    © 2026 SaraPuma Notes · v3.2<br />
-    Built for Leaders
+    <p>© 2026 SaraPuma Notes · v3.2</p>
+    <p style="font-size: 12px; color: #bbb;">Designed for visual thinkers.</p>
   </footer>
 
   <script>
     function copyPromptSafe() {
-      const text = `INSTRUCTION: Analyze the document and output in Markdown Code Block.
+      // El texto exacto que se copiará al portapapeles
+      const text = `INSTRUCTION: Analyze the text and output in Markdown Code Block for SaraPuma.
 
 FORMATTING RULES:
-1. Use # for Main Headers and ## for Subheaders.
-2. Use [Link Title](URL) for all links.
-3. Use **Bold** for emphasis.
-4. Use > for quotes.
-5. Use - [x] for checklist items.
-6. Use **Side note:** for marginalia.
-7. Use ==text== for highlights.`;
+1. HEADERS: Use # for Main Title (Pink) and ## for Subtitles (Violet).
+2. TABLES: Use | Col1 | Col2 | syntax for data tables.
+3. TASKS: Use - [ ] for pending and - [x] for done.
+4. QUOTES: Use > for important blocks (Yellow box).
+5. HIGHLIGHTS: Use ==text== for Yellow and ++text++ for Green highlights.
+6. NOTES: Use **Side note:** for marginalia notes.
+7. CODE: Use \`\`\` for technical blocks.
+8. IMAGES: Use ![Alt](URL) if needed.`;
 
       const textarea = document.createElement("textarea");
       textarea.value = text;
@@ -346,18 +363,27 @@ FORMATTING RULES:
       textarea.select();
       textarea.setSelectionRange(0, textarea.value.length);
 
-      const success = document.execCommand("copy");
+      try {
+        const success = document.execCommand("copy");
+        const btn = document.getElementById("copyBtn");
+        
+        if (success) {
+          btn.textContent = "COPIED! ✅";
+          btn.style.background = "#2ecc71"; // Verde éxito
+        } else {
+          btn.textContent = "ERROR ❌";
+          btn.style.background = "#e74c3c";
+        }
+
+        setTimeout(() => {
+          btn.textContent = "COPY PROMPT";
+          btn.style.background = "rgba(255,255,255,.2)";
+        }, 2500);
+      } catch (err) {
+        console.error("Error al copiar", err);
+      }
 
       document.body.removeChild(textarea);
-
-      const btn = document.getElementById("copyBtn");
-      btn.textContent = success ? "COPIED ✅" : "ERROR";
-      btn.style.background = success ? "#2ecc71" : "#e74c3c";
-
-      setTimeout(() => {
-        btn.textContent = "COPY PROMPT";
-        btn.style.background = "rgba(255,255,255,.2)";
-      }, 2000);
     }
   </script>
 </body>
