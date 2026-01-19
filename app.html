@@ -1,202 +1,980 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>SaraPuma – Markdown Viewer</title>
-  <link rel="icon" href="image_5.png" />
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#D35400" />
-  <link rel="apple-touch-icon" href="image_5.png" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Markdown Bridge — Stable Interpreter</title>
+  <meta name="description" content="A safe place to paste, understand, normalize, and export Markdown reliably." />
   <style>
-    :root {
-      --brand: #D35400;
-      --bg-light: #ffffff;
-      --bg-dark: #1e1e1e;
-      --text-light: #333;
-      --text-dark: #f5f5f5;
-      --note-bg: #fff9f0;
-      --note-dark-bg: #3b2e1e;
+    :root{
+      --bg:#0b0d12;
+      --panel:#111525;
+      --panel2:#0f1320;
+      --text:#e9eefc;
+      --muted:#a8b3d6;
+      --line:rgba(255,255,255,.09);
+      --accent:#7aa6ff;
+      --ok:#57d39a;
+      --warn:#ffd27a;
+      --bad:#ff7a7a;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --radius:16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(122,166,255,.16), transparent 60%),
+                  radial-gradient(900px 700px at 80% 30%, rgba(87,211,154,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(11,13,18,.9), rgba(11,13,18,.55));
+      border-bottom: 1px solid var(--line);
+    }
+    .wrap{max-width:1200px; margin:0 auto; padding:18px 16px}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px; min-width:240px;
+    }
+    .logo{
+      width:38px; height:38px; border-radius:12px;
+      background: linear-gradient(145deg, rgba(122,166,255,.22), rgba(87,211,154,.18));
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow: var(--shadow);
+      display:grid; place-items:center;
+      font-weight:800;
+      letter-spacing:.5px;
+    }
+    .titleblock{line-height:1.1}
+    .titleblock .t1{font-size:15px; font-weight:750}
+    .titleblock .t2{font-size:12px; color:var(--muted)}
+    .top-actions{
+      display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:flex-end;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      font-size:12px;
+      user-select:none;
+    }
+    .pill b{font-weight:750}
+    .btn{
+      appearance:none; border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:650;
+      font-size:13px;
+      display:inline-flex; align-items:center; gap:8px;
+      transition: transform .06s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
+    }
+    .btn:hover{background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.14)}
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{
+      border-color: rgba(122,166,255,.35);
+      background: rgba(122,166,255,.12);
+    }
+    .btn.primary:hover{background: rgba(122,166,255,.16)}
+    .btn.good{
+      border-color: rgba(87,211,154,.35);
+      background: rgba(87,211,154,.12);
+    }
+    .btn.bad{
+      border-color: rgba(255,122,122,.35);
+      background: rgba(255,122,122,.10);
+    }
+    .btn:disabled{
+      opacity:.55; cursor:not-allowed;
+      transform:none;
     }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: var(--bg-light);
-      color: var(--text-light);
-      transition: all 0.3s ease;
+    main{padding:18px 16px 28px}
+    .grid{
+      max-width:1200px; margin:0 auto;
+      display:grid;
+      grid-template-columns: 1.25fr .85fr;
+      gap:16px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+      .brand{min-width:auto}
     }
 
-    body.dark {
-      background: var(--bg-dark);
-      color: var(--text-dark);
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
     }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      background: var(--brand);
-      color: white;
+    .card .hd{
+      padding:14px 14px 12px;
+      border-bottom: 1px solid var(--line);
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+      background: rgba(0,0,0,.10);
     }
-
-    .controls {
-      display: flex;
-      gap: 10px;
+    .card .hd h2{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.2px;
     }
-
-    .controls button {
-      border: none;
-      background: white;
-      color: var(--brand);
-      padding: 6px 12px;
-      font-weight: bold;
-      border-radius: 20px;
-      cursor: pointer;
+    .card .hd p{
+      margin:6px 0 0;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+      max-width: 68ch;
     }
+    .card .bd{padding:12px 14px 14px}
 
-    .main {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      max-width: 800px;
-      margin: auto;
+    textarea{
+      width:100%;
+      min-height: 360px;
+      resize: vertical;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(10,12,18,.55);
+      color: var(--text);
+      padding: 12px 12px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.4;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
     }
+    textarea:focus{border-color: rgba(122,166,255,.30)}
+    .row{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+    .row + .row{margin-top:10px}
 
-    textarea {
-      width: 100%;
-      min-height: 220px;
+    .field{
+      display:flex; flex-direction:column; gap:6px;
+      min-width: 220px;
+      flex: 1;
+    }
+    label{font-size:12px; color:var(--muted)}
+    input[type="text"], select{
+      width:100%;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(10,12,18,.42);
+      color: var(--text);
+      padding:10px 10px;
+      font-size:13px;
+      outline:none;
+    }
+    input[type="text"]:focus, select:focus{border-color: rgba(122,166,255,.30)}
+    .toggle{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 12px;
+      user-select:none;
+    }
+    .toggle input{transform: scale(1.1)}
+    .toggle span{font-size:13px; color:var(--text)}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+    }
+    .badge.ok{color: rgba(87,211,154,.95); border-color: rgba(87,211,154,.25); background: rgba(87,211,154,.08)}
+    .badge.warn{color: rgba(255,210,122,.95); border-color: rgba(255,210,122,.25); background: rgba(255,210,122,.08)}
+    .badge.bad{color: rgba(255,122,122,.95); border-color: rgba(255,122,122,.25); background: rgba(255,122,122,.08)}
+
+    .panel{
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(10,12,18,.38);
       padding: 12px;
-      font-family: Menlo, monospace;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+    }
+    .kvs{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    .kv{
+      padding:10px 10px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,.02);
+    }
+    .kv .k{font-size:12px; color:var(--muted)}
+    .kv .v{margin-top:6px; font-size:13px; line-height:1.35}
+    .mono{font-family:var(--mono)}
+    .list{
+      margin:8px 0 0;
+      padding-left: 18px;
+      color: var(--text);
+    }
+    .list li{margin:6px 0}
+    .subtle{color: var(--muted)}
+    .hr{height:1px; background: var(--line); margin:12px 0}
+    pre{
+      margin:0;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(10,12,18,.55);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12.75px;
+      line-height:1.45;
+      overflow:auto;
+      white-space: pre;
     }
 
-    .output {
-      border: 1px solid #eee;
-      border-radius: 8px;
-      padding: 20px;
-      background: #fdfdfd;
-      overflow-x: auto;
-    }
-
-    body.dark .output {
-      background: #2e2e2e;
-      border-color: #555;
-    }
-
-    .note {
-      background: var(--note-bg);
-      border-left: 5px solid var(--brand);
-      padding: 10px;
-      border-radius: 6px;
-      margin: 10px 0;
-    }
-
-    body.dark .note {
-      background: var(--note-dark-bg);
-    }
-
-    footer {
-      text-align: center;
+    .footer{
+      max-width:1200px;
+      margin: 0 auto;
+      padding: 10px 16px 22px;
+      color: var(--muted);
       font-size: 12px;
-      padding: 30px 20px;
-      color: #888;
+      line-height: 1.45;
     }
+    .legal{
+      border-top: 1px solid var(--line);
+      margin-top: 18px;
+      padding-top: 12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:space-between;
+      align-items:flex-start;
+    }
+    .toast{
+      position: fixed;
+      bottom: 16px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(17,21,37,.92);
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      display:none;
+      z-index: 1000;
+      max-width: 92vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sr{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0}
   </style>
 </head>
+
 <body>
   <header>
-    <div><strong>SaraPuma</strong></div>
-    <div class="controls">
-      <button onclick="toggleTheme()">🌗</button>
-      <button onclick="setLang('en')">EN</button>
-      <button onclick="setLang('es')">ES</button>
-      <button onclick="setLang('de')">DE</button>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">©</div>
+          <div class="titleblock">
+            <div class="t1">Markdown Bridge</div>
+            <div class="t2">Paste → Understand → Normalize → Export</div>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <span class="pill" title="A predictable workflow: nothing changes without showing you.">
+            Mode: <b>Explain</b>
+          </span>
+          <button class="btn" id="btnUndo" disabled title="Undo the last change (Ctrl/⌘ + Z)">↶ Undo</button>
+          <button class="btn" id="btnRedo" disabled title="Redo (Ctrl/⌘ + Shift + Z)">↷ Redo</button>
+          <button class="btn bad" id="btnClear" title="Clear input safely">✕ Clear</button>
+          <button class="btn primary" id="btnNormalize" title="Normalize and update the output (Ctrl/⌘ + Enter)">⚙ Normalize</button>
+        </div>
+      </div>
     </div>
   </header>
 
-  <div class="main">
-    <label id="editor-label" for="md-input"><strong>Paste or write your Markdown below:</strong></label>
-    <textarea id="md-input">
-# SaraPuma Magic Prompt
+  <main>
+    <div class="grid">
 
-INSTRUCTION: Please output your answer in Markdown format using a code block.
+      <!-- LEFT: Input -->
+      <section class="card">
+        <div class="hd">
+          <div>
+            <h2>1) Safe Input</h2>
+            <p>Paste anything here. This area never “auto-magically” changes your text. Normalization happens only when you ask for it.</p>
+          </div>
+          <div class="row">
+            <span class="badge" id="badgeInput">Ready</span>
+          </div>
+        </div>
 
-MARKDOWN SYNTAX TO APPLY:
-1. # Main Header, ## Subheader
-2. **Bold**, *Italic*, ~~Strikethrough~~, <u>Underline</u>
-3. [Link Text](URL)
-4. > Blockquote
-5. - Bullet list, 1. Ordered list
-6. \`Inline code\`, \`\`\`Code block\`\`\`
-7. - [x] Checklist
-8. **Side note:** This is a margin note
-9. ==Highlight== and ++Green highlight++
-10. --- Divider
-    </textarea>
+        <div class="bd">
+          <div class="row">
+            <div class="field">
+              <label for="docTitle">Document title (used for file export)</label>
+              <input type="text" id="docTitle" value="markdown-bridge" autocomplete="off" spellcheck="false" />
+            </div>
 
-    <div class="output" id="rendered-output"></div>
-  </div>
+            <div class="field">
+              <label for="newlineMode">Newlines</label>
+              <select id="newlineMode" title="Choose how the app normalizes line endings">
+                <option value="auto" selected>Auto (keep)</option>
+                <option value="lf">LF (Unix)</option>
+                <option value="crlf">CRLF (Windows)</option>
+              </select>
+            </div>
 
-  <footer>
-    <div>© 2026 SaraPuma Notes · All rights reserved.</div>
-    <div id="footer-legal" style="font-size:12px; margin-top:5px;">
-      This app is provided “as is” without warranty of any kind.
+            <div class="field">
+              <label for="listMode">List normalization</label>
+              <select id="listMode" title="Standardize list markers">
+                <option value="keep" selected>Keep as-is</option>
+                <option value="dash">Use “-” for unordered lists</option>
+                <option value="asterisk">Use “*” for unordered lists</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="toggle" title="Preserve fenced code blocks (``` ... ```).">
+              <input type="checkbox" id="keepCodeFences" checked />
+              <span>Protect fenced code blocks</span>
+            </label>
+
+            <label class="toggle" title="Trim trailing spaces at line ends (but keeps indentation).">
+              <input type="checkbox" id="trimTrailing" checked />
+              <span>Trim trailing spaces</span>
+            </label>
+
+            <label class="toggle" title="Convert fancy quotes and some typographic characters into safer ASCII equivalents (optional).">
+              <input type="checkbox" id="normalizeTypography" />
+              <span>Normalize typography</span>
+            </label>
+
+            <label class="toggle" title="Normalize multiple blank lines down to a maximum of 2.">
+              <input type="checkbox" id="collapseBlanks" checked />
+              <span>Collapse blank lines</span>
+            </label>
+          </div>
+
+          <textarea id="input" spellcheck="false" placeholder="Paste text or Markdown here…"></textarea>
+
+          <div class="row">
+            <button class="btn" id="btnExplain" title="Analyze and explain what the input contains">🔎 Explain</button>
+            <button class="btn" id="btnCopyIn" title="Copy input to clipboard">📋 Copy input</button>
+            <span class="subtle" id="hintKeys">Tip: Ctrl/⌘ + Enter to Normalize</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Interpretation + Output -->
+      <aside class="card">
+        <div class="hd">
+          <div>
+            <h2>2) Interpretation & 3) Normalized Output</h2>
+            <p>Nothing changes invisibly. You can see what the app detected and what it will export.</p>
+          </div>
+          <div class="row">
+            <span class="badge" id="badgeOut">Not normalized</span>
+          </div>
+        </div>
+
+        <div class="bd">
+          <div class="panel">
+            <div class="kvs" id="explainPanel">
+              <div class="kv">
+                <div class="k">Detected structure</div>
+                <div class="v subtle">Run “Explain” to see a human-readable breakdown.</div>
+              </div>
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="row" style="justify-content:space-between; align-items:center;">
+              <span class="badge" id="statsBadge">0 lines</span>
+              <div class="row">
+                <button class="btn good" id="btnCopyOut" disabled title="Copy normalized output">📋 Copy output</button>
+                <button class="btn" id="btnDownloadMd" disabled title="Download as .md">⬇ .md</button>
+                <button class="btn" id="btnDownloadTxt" disabled title="Download as .txt">⬇ .txt</button>
+              </div>
+            </div>
+
+            <pre id="output" aria-label="Normalized output preview"></pre>
+          </div>
+        </div>
+      </aside>
+
     </div>
-  </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
+    <div class="footer">
+      <div class="legal">
+        <div>
+          <div><strong>© <span id="year"></span> Markdown Bridge.</strong> All rights reserved.</div>
+          <div class="subtle">
+            Markdown reference: CommonMark specification
+            (<a href="https://spec.commonmark.org/" target="_blank" rel="noopener">https://spec.commonmark.org/</a>)
+          </div>
+        </div>
+        <div class="subtle" style="max-width: 72ch;">
+          <strong>Legal note:</strong> This tool provides best-effort text normalization and explanation. It does not guarantee correctness for every Markdown dialect
+          (apps may render differently). Always review exported content before publishing or distributing.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
   <script>
-    const md = window.markdownit({html: true});
-    const input = document.getElementById('md-input');
-    const output = document.getElementById('rendered-output');
+    "use strict";
 
-    function render() {
-      let text = input.value;
+    // -------------------------
+    // DOM helpers
+    // -------------------------
+    const $ = (id) => document.getElementById(id);
 
-      // Convert side notes
-      text = text.replace(/\*\*(Side note|Nota|Hinweis):\*\*(.*)/gi,
-        '<div class="note"><strong>$1:</strong> $2</div>');
+    const els = {
+      year: $("year"),
+      input: $("input"),
+      output: $("output"),
+      docTitle: $("docTitle"),
+      newlineMode: $("newlineMode"),
+      listMode: $("listMode"),
+      keepCodeFences: $("keepCodeFences"),
+      trimTrailing: $("trimTrailing"),
+      normalizeTypography: $("normalizeTypography"),
+      collapseBlanks: $("collapseBlanks"),
+      explainPanel: $("explainPanel"),
 
-      output.innerHTML = md.render(text);
-    }
+      badgeInput: $("badgeInput"),
+      badgeOut: $("badgeOut"),
+      statsBadge: $("statsBadge"),
 
-    input.addEventListener('input', render);
-    window.onload = render;
+      btnExplain: $("btnExplain"),
+      btnNormalize: $("btnNormalize"),
+      btnClear: $("btnClear"),
+      btnCopyIn: $("btnCopyIn"),
+      btnCopyOut: $("btnCopyOut"),
+      btnDownloadMd: $("btnDownloadMd"),
+      btnDownloadTxt: $("btnDownloadTxt"),
+      btnUndo: $("btnUndo"),
+      btnRedo: $("btnRedo"),
 
-    function toggleTheme() {
-      document.body.classList.toggle('dark');
-    }
-
-    const translations = {
-      en: {
-        "editor-label": "Paste or write your Markdown below:",
-        "footer-legal": "This app is provided “as is” without warranty of any kind."
-      },
-      es: {
-        "editor-label": "Pega o escribe tu Markdown aquí:",
-        "footer-legal": "Esta app se proporciona “tal cual” sin garantía de ningún tipo."
-      },
-      de: {
-        "editor-label": "Markdown hier einfügen oder schreiben:",
-        "footer-legal": "Diese App wird „wie besehen“ ohne jegliche Gewährleistung bereitgestellt."
-      }
+      toast: $("toast"),
     };
 
-    function setLang(lang) {
-      for (const id in translations[lang]) {
-        document.getElementById(id).textContent = translations[lang][id];
+    // -------------------------
+    // App state (simple & stable)
+    // -------------------------
+    const state = {
+      normalizedText: "",
+      explanation: null,
+      history: [],
+      future: [],
+      lastSavedInput: "",
+    };
+
+    // -------------------------
+    // Toast
+    // -------------------------
+    let toastTimer = null;
+    function toast(msg) {
+      els.toast.textContent = msg;
+      els.toast.style.display = "block";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        els.toast.style.display = "none";
+      }, 2200);
+    }
+
+    // -------------------------
+    // Safe clipboard
+    // -------------------------
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        toast("Copied to clipboard");
+        return true;
+      } catch (e) {
+        // Fallback
+        try {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "absolute";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          toast("Copied to clipboard");
+          return true;
+        } catch (e2) {
+          toast("Clipboard copy blocked by browser");
+          return false;
+        }
       }
     }
 
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
+    // -------------------------
+    // History (undo/redo on input ONLY)
+    // -------------------------
+    function pushHistory(newValue) {
+      // Avoid noisy duplicates
+      const last = state.history[state.history.length - 1];
+      if (last === newValue) return;
+
+      state.history.push(newValue);
+      if (state.history.length > 200) state.history.shift(); // cap
+      state.future = [];
+      updateUndoRedoButtons();
     }
+
+    function updateUndoRedoButtons() {
+      els.btnUndo.disabled = state.history.length <= 1;
+      els.btnRedo.disabled = state.future.length === 0;
+    }
+
+    function undo() {
+      if (state.history.length <= 1) return;
+      const cur = state.history.pop();
+      state.future.push(cur);
+      const prev = state.history[state.history.length - 1];
+      els.input.value = prev;
+      markDirty();
+      updateUndoRedoButtons();
+      toast("Undo");
+    }
+
+    function redo() {
+      if (state.future.length === 0) return;
+      const next = state.future.pop();
+      state.history.push(next);
+      els.input.value = next;
+      markDirty();
+      updateUndoRedoButtons();
+      toast("Redo");
+    }
+
+    // -------------------------
+    // Parsing / Explaining (human-friendly)
+    // -------------------------
+    function analyzeMarkdown(text) {
+      const lines = text.split(/\r\n|\n|\r/);
+      let headings = 0, lists = 0, codeFences = 0, blockQuotes = 0, tables = 0, links = 0, emphasis = 0;
+
+      let inFence = false;
+      for (const line of lines) {
+        const trimmed = line.trim();
+
+        if (/^```/.test(trimmed)) {
+          codeFences++;
+          inFence = !inFence;
+          continue;
+        }
+        if (inFence) continue;
+
+        if (/^#{1,6}\s+/.test(trimmed)) headings++;
+        if (/^>\s+/.test(trimmed)) blockQuotes++;
+        if (/^(\-|\*|\+)\s+/.test(trimmed) || /^\d+\.\s+/.test(trimmed)) lists++;
+        if (/\|/.test(line) && /\|/.test(line.replace(/\s/g,""))) tables += 0.1; // heuristic, low weight
+        if (/\[[^\]]+\]\([^)]+\)/.test(line)) links++;
+        if (/(\*\*[^*]+\*\*)|(\*[^*]+\*)|(__[^_]+__)|(_[^_]+_)/.test(line)) emphasis++;
+      }
+
+      const blankLines = lines.filter(l => l.trim()==="").length;
+      const nonEmpty = lines.length - blankLines;
+
+      // Simple classification hints (not perfect, but helpful)
+      const traits = [];
+      if (headings) traits.push(`${headings} heading line(s)`);
+      if (lists) traits.push(`${lists} list item line(s)`);
+      if (codeFences) traits.push(`${codeFences} code fence marker(s)`);
+      if (blockQuotes) traits.push(`${blockQuotes} block quote line(s)`);
+      if (links) traits.push(`${links} Markdown link(s)`);
+      if (emphasis) traits.push(`${emphasis} emphasis/bold cue(s)`);
+
+      const tableHint = tables >= 1 ? "Possible table-like rows detected" : "No table-like patterns detected";
+
+      return {
+        lines: lines.length,
+        nonEmpty,
+        blankLines,
+        traits,
+        tableHint,
+      };
+    }
+
+    // -------------------------
+    // Normalization (predictable)
+    // -------------------------
+    function normalizeText(input) {
+      let text = input;
+
+      // Normalize line endings
+      const newlineMode = els.newlineMode.value;
+      if (newlineMode === "lf") {
+        text = text.replace(/\r\n|\r/g, "\n");
+      } else if (newlineMode === "crlf") {
+        text = text.replace(/\r\n|\r/g, "\n").replace(/\n/g, "\r\n");
+      } else {
+        // auto: keep, but we standardize internally to "\n" for processing then restore original style later
+        // We'll treat it as LF output (most stable for web + Markdown).
+        text = text.replace(/\r\n|\r/g, "\n");
+      }
+
+      const protectFences = !!els.keepCodeFences.checked;
+
+      // Split into segments, optionally protecting fenced blocks
+      const segments = [];
+      if (protectFences) {
+        const lines = text.split("\n");
+        let buf = [];
+        let inFence = false;
+
+        function flush(type) {
+          if (!buf.length) return;
+          segments.push({ type, text: buf.join("\n") });
+          buf = [];
+        }
+
+        for (const line of lines) {
+          const isFence = line.trim().startsWith("```");
+          if (isFence) {
+            // fence line itself belongs to the fence segment
+            if (!inFence) {
+              flush("normal");
+              inFence = true;
+              buf.push(line);
+            } else {
+              buf.push(line);
+              flush("fence");
+              inFence = false;
+            }
+            continue;
+          }
+
+          buf.push(line);
+        }
+        flush(inFence ? "fence" : "normal");
+      } else {
+        segments.push({ type: "normal", text });
+      }
+
+      const listMode = els.listMode.value;
+      const trimTrailing = !!els.trimTrailing.checked;
+      const collapseBlanks = !!els.collapseBlanks.checked;
+      const normalizeTypography = !!els.normalizeTypography.checked;
+
+      function normalizeTypographyFn(s) {
+        // Conservative replacements
+        return s
+          .replace(/[“”]/g, '"')
+          .replace(/[‘’]/g, "'")
+          .replace(/[—]/g, "--")
+          .replace(/[–]/g, "-")
+          .replace(/\u00A0/g, " "); // non-breaking space
+      }
+
+      function normalizeNormalSegment(segText) {
+        let lines = segText.split("\n");
+
+        // Trim trailing spaces
+        if (trimTrailing) {
+          lines = lines.map(l => l.replace(/[ \t]+$/g, ""));
+        }
+
+        // Normalize typography
+        if (normalizeTypography) {
+          lines = lines.map(normalizeTypographyFn);
+        }
+
+        // Normalize unordered list markers (only at start of line)
+        if (listMode === "dash") {
+          lines = lines.map(l => l.replace(/^(\s*)(\*|\+)\s+/, "$1- "));
+        } else if (listMode === "asterisk") {
+          lines = lines.map(l => l.replace(/^(\s*)(\-|\+)\s+/, "$1* "));
+        }
+
+        // Collapse excessive blank lines
+        if (collapseBlanks) {
+          const out = [];
+          let blankRun = 0;
+          for (const l of lines) {
+            if (l.trim() === "") {
+              blankRun++;
+              if (blankRun <= 2) out.push("");
+            } else {
+              blankRun = 0;
+              out.push(l);
+            }
+          }
+          lines = out;
+        }
+
+        // Ensure final newline is not mandatory, but nice: keep as-is.
+        return lines.join("\n").trimEnd();
+      }
+
+      function normalizeFenceSegment(segText) {
+        // Fence segments: keep almost untouched; only fix line endings already done above.
+        // Optionally typography normalization inside code can be harmful, so we skip it.
+        // Trailing spaces may matter in code, so skip trimming too.
+        return segText.replace(/\n+$/g, "").trimEnd();
+      }
+
+      const normalizedSegments = segments.map(seg => {
+        return seg.type === "normal"
+          ? normalizeNormalSegment(seg.text)
+          : normalizeFenceSegment(seg.text);
+      });
+
+      let out = normalizedSegments.join("\n");
+      out = out.replace(/\n{3,}/g, "\n\n"); // extra safeguard
+
+      // Output newlines: we keep LF for stability, unless user explicitly chose CRLF.
+      if (newlineMode === "crlf") {
+        out = out.replace(/\n/g, "\r\n");
+      }
+      return out;
+    }
+
+    // -------------------------
+    // UI updates
+    // -------------------------
+    function setBadge(el, kind, text) {
+      el.className = "badge" + (kind ? (" " + kind) : "");
+      el.textContent = text;
+    }
+
+    function updateStats(text) {
+      const lines = text ? text.split(/\r\n|\n|\r/).length : 0;
+      const chars = text ? text.length : 0;
+      els.statsBadge.textContent = `${lines} line(s) • ${chars} char(s)`;
+    }
+
+    function markDirty() {
+      setBadge(els.badgeOut, "warn", "Not normalized");
+      els.btnCopyOut.disabled = true;
+      els.btnDownloadMd.disabled = true;
+      els.btnDownloadTxt.disabled = true;
+    }
+
+    function renderOutput(text) {
+      state.normalizedText = text;
+      els.output.textContent = text || "";
+      updateStats(text);
+      if (text && text.length) {
+        setBadge(els.badgeOut, "ok", "Normalized");
+        els.btnCopyOut.disabled = false;
+        els.btnDownloadMd.disabled = false;
+        els.btnDownloadTxt.disabled = false;
+      } else {
+        setBadge(els.badgeOut, "", "Not normalized");
+        els.btnCopyOut.disabled = true;
+        els.btnDownloadMd.disabled = true;
+        els.btnDownloadTxt.disabled = true;
+      }
+    }
+
+    function renderExplain(expl) {
+      els.explainPanel.innerHTML = "";
+
+      const structure = document.createElement("div");
+      structure.className = "kv";
+      structure.innerHTML = `
+        <div class="k">Detected structure</div>
+        <div class="v">
+          <div><span class="subtle">Lines:</span> <span class="mono">${expl.lines}</span> •
+               <span class="subtle">Non-empty:</span> <span class="mono">${expl.nonEmpty}</span> •
+               <span class="subtle">Blank:</span> <span class="mono">${expl.blankLines}</span></div>
+          <div style="margin-top:8px">${expl.traits.length ? "Highlights:" : "No special Markdown cues detected."}</div>
+          ${expl.traits.length ? `<ul class="list">${expl.traits.map(t => `<li>${escapeHtml(t)}</li>`).join("")}</ul>` : ""}
+          <div style="margin-top:8px" class="subtle">${escapeHtml(expl.tableHint)}</div>
+        </div>
+      `;
+      els.explainPanel.appendChild(structure);
+
+      const behavior = document.createElement("div");
+      behavior.className = "kv";
+      behavior.innerHTML = `
+        <div class="k">What normalization will do</div>
+        <div class="v">
+          <ul class="list">
+            <li>It will apply your selected rules <span class="subtle">(never silently)</span>.</li>
+            <li>Fenced code blocks are ${els.keepCodeFences.checked ? "<b>protected</b> (kept stable)" : "<b>not protected</b>"}.</li>
+            <li>Line endings: <span class="mono">${escapeHtml(els.newlineMode.value)}</span>, Lists: <span class="mono">${escapeHtml(els.listMode.value)}</span>.</li>
+          </ul>
+        </div>
+      `;
+      els.explainPanel.appendChild(behavior);
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // -------------------------
+    // Downloads
+    // -------------------------
+    function safeFilename(name) {
+      const base = (name || "markdown-bridge")
+        .trim()
+        .toLowerCase()
+        .replace(/[^\w\-]+/g, "-")
+        .replace(/\-+/g, "-")
+        .replace(/^\-+|\-+$/g, "");
+      return base || "markdown-bridge";
+    }
+
+    function downloadText(filename, text) {
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // -------------------------
+    // Actions
+    // -------------------------
+    function doExplain() {
+      const input = els.input.value || "";
+      state.explanation = analyzeMarkdown(input);
+      renderExplain(state.explanation);
+      setBadge(els.badgeInput, input.trim() ? "ok" : "warn", input.trim() ? "Input loaded" : "Empty");
+      toast("Explained");
+    }
+
+    function doNormalize() {
+      const input = els.input.value || "";
+      const out = normalizeText(input);
+      renderOutput(out);
+      toast("Normalized");
+    }
+
+    function doClear() {
+      els.input.value = "";
+      pushHistory("");
+      markDirty();
+      renderOutput("");
+      els.explainPanel.innerHTML = `
+        <div class="kv">
+          <div class="k">Detected structure</div>
+          <div class="v subtle">Run “Explain” to see a human-readable breakdown.</div>
+        </div>`;
+      setBadge(els.badgeInput, "warn", "Cleared");
+      toast("Cleared");
+    }
+
+    // -------------------------
+    // Events
+    // -------------------------
+    function init() {
+      els.year.textContent = String(new Date().getFullYear());
+
+      // Seed history with initial value
+      pushHistory(els.input.value);
+
+      // Input changes: save to history with debounce
+      let debounce = null;
+      els.input.addEventListener("input", () => {
+        markDirty();
+        setBadge(els.badgeInput, els.input.value.trim() ? "ok" : "warn", els.input.value.trim() ? "Typing…" : "Empty");
+
+        clearTimeout(debounce);
+        debounce = setTimeout(() => {
+          pushHistory(els.input.value);
+          state.lastSavedInput = els.input.value;
+          setBadge(els.badgeInput, els.input.value.trim() ? "ok" : "warn", els.input.value.trim() ? "Saved" : "Empty");
+        }, 260);
+      });
+
+      // Buttons
+      els.btnExplain.addEventListener("click", doExplain);
+      els.btnNormalize.addEventListener("click", doNormalize);
+      els.btnClear.addEventListener("click", doClear);
+
+      els.btnCopyIn.addEventListener("click", () => copyToClipboard(els.input.value || ""));
+      els.btnCopyOut.addEventListener("click", () => copyToClipboard(state.normalizedText || ""));
+
+      els.btnDownloadMd.addEventListener("click", () => {
+        const name = safeFilename(els.docTitle.value);
+        downloadText(`${name}.md`, state.normalizedText || "");
+        toast("Downloaded .md");
+      });
+
+      els.btnDownloadTxt.addEventListener("click", () => {
+        const name = safeFilename(els.docTitle.value);
+        downloadText(`${name}.txt`, state.normalizedText || "");
+        toast("Downloaded .txt");
+      });
+
+      // Undo/Redo
+      els.btnUndo.addEventListener("click", undo);
+      els.btnRedo.addEventListener("click", redo);
+
+      // Keyboard shortcuts
+      document.addEventListener("keydown", (e) => {
+        const meta = e.metaKey || e.ctrlKey;
+
+        if (meta && !e.shiftKey && e.key.toLowerCase() === "z") {
+          e.preventDefault();
+          undo();
+          return;
+        }
+        if (meta && (e.key.toLowerCase() === "y" || (e.shiftKey && e.key.toLowerCase() === "z"))) {
+          e.preventDefault();
+          redo();
+          return;
+        }
+        if (meta && e.key === "Enter") {
+          e.preventDefault();
+          doNormalize();
+          return;
+        }
+      });
+
+      // Settings changes: do not auto-normalize, only mark dirty
+      const settings = [els.newlineMode, els.listMode, els.keepCodeFences, els.trimTrailing, els.normalizeTypography, els.collapseBlanks];
+      settings.forEach(el => el.addEventListener("change", () => {
+        markDirty();
+        toast("Settings updated (normalize when ready)");
+      }));
+
+      // Initial view
+      renderOutput("");
+      setBadge(els.badgeInput, "warn", "Empty");
+      updateUndoRedoButtons();
+    }
+
+    init();
   </script>
 </body>
 </html>
