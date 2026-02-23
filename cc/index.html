@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Editor LRC/SRT — iPhone/Mac (Bottom Transport)</title>
+  <title>Editor LRC/SRT — iPhone/Mac (Bottom Transport + Progress)</title>
   <style>
     :root{
       --bg:#0b1020; --panel:#121a33; --text:#e8ecff; --muted:#aab3d6;
       --line:rgba(255,255,255,0.10); --accent:#7aa2ff; --ok:#5dffb0; --bad:#ff6b6b;
       --safeTop: env(safe-area-inset-top, 0px);
       --safeBottom: env(safe-area-inset-bottom, 0px);
-      --transportH: 190px; /* reserva de espacio para barra inferior */
+      --transportH: 190px;
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
@@ -39,7 +39,7 @@
     .top{
       position: sticky;
       top: 0;
-      z-index: 30;
+      z-index: 50;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       background: rgba(11,16,32,0.60);
@@ -103,6 +103,74 @@
       -webkit-tap-highlight-color: transparent;
     }
     .banner .x:active{ transform: scale(0.98); }
+
+    /* ✅ Progress panel sticky (always visible while scrolling) */
+    .progress-wrap{
+      padding: 8px 12px 0;
+      position: sticky;
+      top: 56px; /* debajo del top bar */
+      z-index: 45;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .progress{
+      border: 1px solid var(--line);
+      background: rgba(18,26,51,0.78);
+      border-radius: 14px;
+      padding: 10px 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.14);
+    }
+    .prow{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding: 8px 8px;
+      border-radius: 12px;
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+      border: 1px solid transparent;
+    }
+    .prow:active{ transform: scale(0.995); }
+    .ptag{
+      min-width: 64px;
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .2px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      text-align:center;
+      user-select:none;
+    }
+    .ptag.ok{
+      border-color: rgba(93,255,176,0.35);
+      background: rgba(93,255,176,0.08);
+      color: rgba(93,255,176,0.95);
+    }
+    .ptag.next{
+      border-color: rgba(122,162,255,0.35);
+      background: rgba(122,162,255,0.10);
+      color: rgba(122,162,255,0.95);
+    }
+    .pbody{ flex:1; min-width:0; }
+    .ptime{
+      font-size: 12px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      margin-bottom: 2px;
+    }
+    .ptext{
+      font-size: 13px;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      color: var(--text);
+    }
+    .prow.okline{ border-color: rgba(93,255,176,0.20); background: rgba(93,255,176,0.06); }
+    .prow.nextline{ border-color: rgba(122,162,255,0.22); background: rgba(122,162,255,0.08); }
 
     .content{
       padding: 10px 12px 0;
@@ -203,7 +271,6 @@
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.02);
       -webkit-overflow-scrolling: touch;
-      /* importante: la lista NO se oculta bajo la barra inferior */
       padding-bottom: calc(var(--safeBottom) + var(--transportH) + 24px);
     }
     .line{
@@ -259,12 +326,12 @@
       background: rgba(255,255,255,0.02);
     }
 
-    /* ✅ Bottom transport fixed */
+    /* Bottom transport fixed */
     .bottom{
       position: fixed;
       left:0; right:0;
       bottom:0;
-      z-index: 40;
+      z-index: 60;
       padding-bottom: var(--safeBottom);
       background: rgba(11,16,32,0.78);
       backdrop-filter: blur(12px);
@@ -316,7 +383,7 @@
     #tScrub{
       width:100%;
       accent-color: var(--accent);
-      height: 30px; /* grande para dedo */
+      height: 30px;
     }
     .mark{
       width:100%;
@@ -347,7 +414,7 @@
     <div class="top-inner">
       <div>
         <div class="title">Editor LRC/SRT — iPhone/Mac</div>
-        <div class="sub" id="subtitle">Play + Marcar abajo fijo · Texto fluye arriba</div>
+        <div class="sub" id="subtitle">Progreso arriba · Play/Marcar abajo fijo</div>
       </div>
       <div class="pill">
         <span id="dot" class="dot"></span>
@@ -365,6 +432,27 @@
         </div>
         <button class="x" id="bannerClose" type="button">OK</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ✅ NEW: Progress panel (last marked + next) -->
+  <div class="progress-wrap">
+    <div class="progress" id="progress">
+      <div class="prow okline" id="pLast">
+        <div class="ptag ok">Último</div>
+        <div class="pbody">
+          <div class="ptime" id="pLastTime">--:--.--</div>
+          <div class="ptext" id="pLastText">Aún no has marcado nada</div>
+        </div>
+      </div>
+      <div class="prow nextline" id="pNext">
+        <div class="ptag next">Sigue</div>
+        <div class="pbody">
+          <div class="ptime" id="pNextTime">--:--.--</div>
+          <div class="ptext" id="pNextText">Carga un TXT para empezar</div>
+        </div>
+      </div>
+      <div class="mini" style="margin-top:6px;">Tip: toca “Último” o “Sigue” para saltar a esa línea.</div>
     </div>
   </div>
 
@@ -433,10 +521,9 @@
       </div>
 
       <div class="mini" style="margin-top:8px;">
-        Tip: toca el <b>tiempo verde</b> para escuchar esa marca (A/B).
+        Tip: toca el <b>tiempo verde</b> en la lista para escuchar con A/B.
       </div>
 
-      <!-- hidden audio element -->
       <audio id="player" preload="metadata"></audio>
     </section>
 
@@ -446,7 +533,7 @@
   </div>
 </div>
 
-<!-- ✅ Bottom fixed transport -->
+<!-- Bottom fixed transport -->
 <div class="bottom" id="bottomBar">
   <div class="bottom-inner">
     <div class="trow">
@@ -473,12 +560,9 @@
 </div>
 
 <script>
-  // ---------------------------
   // Helpers
-  // ---------------------------
   const $ = (id) => document.getElementById(id);
   const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
-
   function formatTime(t){
     if (!isFinite(t) || t < 0) t = 0;
     const mm = Math.floor(t / 60);
@@ -516,15 +600,12 @@
     return isFinite(v) ? v : fallback;
   }
 
-  // ---------------------------
-  // Banner toast (no overlap)
-  // ---------------------------
+  // Banner toast
   const bannerEl = $('banner');
   const bannerMainEl = $('bannerMain');
   const bannerSubEl = $('bannerSub');
   const bannerCloseEl = $('bannerClose');
   let bannerTimer = 0;
-
   function toast(main, sub=''){
     bannerMainEl.textContent = main;
     bannerSubEl.textContent = sub;
@@ -534,20 +615,12 @@
   }
   bannerCloseEl.addEventListener('click', () => bannerEl.classList.remove('show'));
 
-  // ---------------------------
   // Splitting
-  // ---------------------------
   const HEADING_RE = /^\s*\[[^\]]+\]\s*$/;
-
   function normalizeNewlines(text){
-    return text
-      .replace(/\r/g, '')
-      .replace(/\u00A0/g, ' ')
-      .replace(/[ \t]+\n/g, '\n')
-      .replace(/\n{3,}/g, '\n\n')
-      .trim();
+    return text.replace(/\r/g,'').replace(/\u00A0/g,' ')
+      .replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
   }
-
   function splitIntoSentences(paragraph){
     const p = paragraph.trim();
     if (!p) return [];
@@ -562,11 +635,9 @@
     }
     return p.split(/(?<=[.!?])\s+/).map(x=>x.trim()).filter(Boolean);
   }
-
   function chunkLine(line, maxLen = 86){
     const s = line.trim();
     if (s.length <= maxLen) return [s];
-
     const parts = s.split(/,\s+/);
     const chunks = [];
     let cur = '';
@@ -582,15 +653,12 @@
             start += maxLen;
           }
           cur = '';
-        } else {
-          cur = part;
-        }
+        } else cur = part;
       }
     }
     if (cur) chunks.push(cur.trim());
     return chunks.filter(Boolean);
   }
-
   function buildLinesFromText(text, mode){
     const cleaned = normalizeNewlines(text);
     const rawLines = cleaned.split('\n').map(s => s.trimEnd());
@@ -616,7 +684,6 @@
           for (const c of chunkLine(sent)) out.push({ text: c, t: null, heading: false });
         }
       };
-
       for (const ln of rawLines) {
         const t = ln.trim();
         if (!t) { flush(); continue; }
@@ -639,7 +706,6 @@
         for (const c of chunkLine(s, 86)) out.push({ text: c, t: null, heading: false });
       }
     };
-
     for (const ln of rawLines) {
       const t = ln.trim();
       if (!t) { flush(); continue; }
@@ -650,13 +716,10 @@
     return out;
   }
 
-  // ---------------------------
   // DOM
-  // ---------------------------
   const audioInput = $('audioInput');
   const txtInput = $('txtInput');
   const splitModeEl = $('splitMode');
-
   const player = $('player');
 
   const lyricsEl = $('lyrics');
@@ -667,7 +730,6 @@
 
   const autoAdvanceEl = $('autoAdvance');
   const autoScrollEl = $('autoScroll');
-
   const abEnabledEl = $('abEnabled');
   const preRollEl = $('preRoll');
   const postRollEl = $('postRoll');
@@ -688,36 +750,36 @@
   const tPct = $('tPct');
   const markBtn = $('markBtn');
   const tUnmark = $('tUnmark');
-
   const nBack02 = $('nBack02');
   const nBack2  = $('nBack2');
   const nFwd2   = $('nFwd2');
   const nFwd02  = $('nFwd02');
 
-  // ---------------------------
+  // Progress panel
+  const pLast = $('pLast');
+  const pNext = $('pNext');
+  const pLastTime = $('pLastTime');
+  const pLastText = $('pLastText');
+  const pNextTime = $('pNextTime');
+  const pNextText = $('pNextText');
+
   // State
-  // ---------------------------
   let lines = [];
   let nodes = [];
   let selected = 0;
 
   let scrubbing = false;
   let abStopTimer = 0;
+  function clearAbStopTimer(){ if (abStopTimer) { clearTimeout(abStopTimer); abStopTimer = 0; } }
 
-  function clearAbStopTimer(){
-    if (abStopTimer) { clearTimeout(abStopTimer); abStopTimer = 0; }
-  }
-
-  // ---------------------------
   // Autosave
-  // ---------------------------
-  const DRAFT_KEY = 'lrc_editor_draft_v6';
+  const DRAFT_KEY = 'lrc_editor_draft_v7';
 
   function saveDraft(){
     if (!lines.length) return;
     try{
       const payload = {
-        version: 6,
+        version: 7,
         savedAt: Date.now(),
         splitMode: splitModeEl.value,
         autoAdvance: !!autoAdvanceEl.checked,
@@ -734,17 +796,15 @@
       updateMeta();
     }catch{}
   }
-
   function loadDraft(){
     const raw = localStorage.getItem(DRAFT_KEY);
     if (!raw) return null;
     try{
       const payload = JSON.parse(raw);
-      if (!payload || payload.version !== 6 || !Array.isArray(payload.lines)) return null;
+      if (!payload || payload.version !== 7 || !Array.isArray(payload.lines)) return null;
       return payload;
     }catch{ return null; }
   }
-
   function applyDraft(payload){
     lines = payload.lines.map(l => ({
       text: String(l.text ?? ''),
@@ -764,33 +824,28 @@
     if (payload.subtitle) subtitleEl.textContent = payload.subtitle;
 
     render();
+    updateProgressPanel();
     toast('Recuperado', `${lines.length} líneas (vuelve a cargar el audio)`);
   }
-
   function discardDraft(){
     localStorage.removeItem(DRAFT_KEY);
     dotEl.classList.remove('warn');
     toast('Borrador eliminado');
     updateMeta();
+    updateProgressPanel();
   }
 
-  // ---------------------------
-  // UI updates
-  // ---------------------------
   function updateMeta(){
     const marked = lines.filter(l => !l.heading && l.t != null).length;
     metaEl.textContent = `${lines.length} líneas · ${marked} marcadas · ${lines.length ? (selected+1)+'/'+lines.length : '0/0'}`;
     dotEl.className = 'dot' + (player.src ? ' ok' : '') + (localStorage.getItem(DRAFT_KEY) ? ' warn' : '');
   }
-
   function isSkippable(i){ return !!lines[i]?.heading; }
 
-  // Scroll helper: keep selected line near top (not hidden at bottom)
+  // Scroll helper: keep selected line near top
   function keepSelectedHigh(i, behavior='smooth'){
     const node = nodes[i];
     if (!node) return;
-
-    // Put the line at ~18% from top of viewport
     const y = node.getBoundingClientRect().top + window.scrollY;
     const target = Math.max(0, y - window.innerHeight * 0.18);
     window.scrollTo({ top: target, behavior });
@@ -804,11 +859,10 @@
     const node = nodes[selected];
     if (node) node.classList.add('sel');
 
-    if (doScroll && autoScrollEl.checked) {
-      keepSelectedHigh(selected, behavior);
-    }
+    if (doScroll && autoScrollEl.checked) keepSelectedHigh(selected, behavior);
 
     updateMeta();
+    updateProgressPanel();
     saveDraft();
   }
 
@@ -818,9 +872,64 @@
     return clamp(j, 0, lines.length - 1);
   }
 
-  // ---------------------------
+  // ✅ NEW: progress logic
+  function computeNextIdx(){
+    if (!lines.length) return -1;
+    if (lines[selected]?.heading) return nextNonHeading(selected);
+    return selected;
+  }
+  function computeLastMarkedIdx(nextIdx){
+    // Prefer the nearest marked before the "next"
+    if (!lines.length) return -1;
+    if (nextIdx > 0){
+      for (let i = nextIdx - 1; i >= 0; i--){
+        if (!lines[i].heading && lines[i].t != null) return i;
+      }
+    }
+    // else fallback: last marked anywhere
+    for (let i = lines.length - 1; i >= 0; i--){
+      if (!lines[i].heading && lines[i].t != null) return i;
+    }
+    return -1;
+  }
+
+  function updateProgressPanel(){
+    const nextIdx = computeNextIdx();
+    const lastIdx = computeLastMarkedIdx(nextIdx);
+
+    if (lastIdx >= 0){
+      pLastTime.textContent = formatTime(lines[lastIdx].t);
+      pLastText.textContent = lines[lastIdx].text;
+      pLast.dataset.idx = String(lastIdx);
+    } else {
+      pLastTime.textContent = '--:--.--';
+      pLastText.textContent = 'Aún no has marcado nada';
+      pLast.dataset.idx = '';
+    }
+
+    if (nextIdx >= 0 && lines[nextIdx]){
+      const l = lines[nextIdx];
+      pNextTime.textContent = l.heading ? '—' : (l.t == null ? '--:--.--' : formatTime(l.t));
+      pNextText.textContent = l.text;
+      pNext.dataset.idx = String(nextIdx);
+    } else {
+      pNextTime.textContent = '--:--.--';
+      pNextText.textContent = 'Carga un TXT para empezar';
+      pNext.dataset.idx = '';
+    }
+  }
+
+  function gotoIdxFromPanel(el){
+    const raw = el.dataset.idx;
+    if (!raw) return;
+    const idx = Number(raw);
+    if (!isFinite(idx)) return;
+    selectIndex(idx, true, 'smooth');
+  }
+  pLast.addEventListener('click', ()=>gotoIdxFromPanel(pLast));
+  pNext.addEventListener('click', ()=>gotoIdxFromPanel(pNext));
+
   // Playback controls
-  // ---------------------------
   function playPause(){
     if (!player.src) return toast('Carga un audio primero');
     clearAbStopTimer();
@@ -863,9 +972,7 @@
     }
   }
 
-  // ---------------------------
   // Marking
-  // ---------------------------
   function mark(){
     if (!lines.length) return toast('Carga un TXT primero');
     if (!player.src) return toast('Carga un audio primero');
@@ -879,7 +986,8 @@
 
     const t = player.currentTime || 0;
     lines[selected].t = t;
-    render(); // rebuild list (updates time colors)
+
+    render();
     toast('Marcado', `${selected+1}/${lines.length} → ${formatTime(t)}`);
     saveDraft();
 
@@ -887,7 +995,6 @@
       const j = nextNonHeading(selected + 1);
       selectIndex(j, true);
     } else {
-      // keep current visible high
       selectIndex(selected, true);
     }
   }
@@ -902,9 +1009,7 @@
     selectIndex(selected, true);
   }
 
-  // ---------------------------
   // Export
-  // ---------------------------
   function exportLRC(ext){
     const marked = lines
       .map((l, idx) => ({...l, idx}))
@@ -978,14 +1083,13 @@
     player.load();
     audioInput.value = '';
     txtInput.value = '';
-    subtitleEl.textContent = 'Play + Marcar abajo fijo · Texto fluye arriba';
+    subtitleEl.textContent = 'Progreso arriba · Play/Marcar abajo fijo';
     render();
+    updateProgressPanel();
     toast('Listo', 'Todo limpio');
   }
 
-  // ---------------------------
   // Render
-  // ---------------------------
   function render(){
     lyricsEl.innerHTML = '';
     nodes = [];
@@ -993,10 +1097,11 @@
     if (!lines.length){
       lyricsEl.innerHTML = `<div style="color:var(--muted); padding:12px; font-size:13px; line-height:1.35;">
         1) Carga audio (.mp3 / .m4a) y TXT.<br/>
-        2) Usa el scrub <b>abajo</b> para buscar el punto.<br/>
-        3) Pulsa <b>MARCAR</b> (abajo) y la selección se mantiene alta.
+        2) Usa el scrub <b>abajo</b>.<br/>
+        3) Mira tu progreso <b>arriba</b>: Último marcado + Siguiente.
       </div>`;
       updateMeta();
+      updateProgressPanel();
       return;
     }
 
@@ -1018,14 +1123,12 @@
 
       row.addEventListener('click', () => selectIndex(i, true));
 
-      // tap time => A/B
       time.addEventListener('click', (ev) => {
         ev.stopPropagation();
         selectIndex(i, true);
         seekToLine(i);
       });
 
-      // double tap row => A/B
       let lastTap = 0;
       row.addEventListener('touchend', () => {
         const now = Date.now();
@@ -1044,15 +1147,15 @@
     }
 
     lyricsEl.appendChild(frag);
-    // reselect highlight
+
     nodes.forEach(n => n.classList.remove('sel'));
     if (nodes[selected]) nodes[selected].classList.add('sel');
+
     updateMeta();
+    updateProgressPanel();
   }
 
-  // ---------------------------
   // Bottom transport loop
-  // ---------------------------
   function updateTransport(){
     const ct = player.currentTime || 0;
     const dur = isFinite(player.duration) ? player.duration : 0;
@@ -1085,9 +1188,7 @@
     scrubbing = false;
   });
 
-  // ---------------------------
-  // Events / bindings
-  // ---------------------------
+  // Bindings
   tPlay.addEventListener('click', playPause);
   markBtn.addEventListener('click', mark);
   tUnmark.addEventListener('click', unmark);
@@ -1106,7 +1207,6 @@
     const payload = loadDraft();
     if (!payload) return toast('Sin borrador', 'No hay nada que recuperar');
     applyDraft(payload);
-    // keep selection high after recover
     setTimeout(()=>selectIndex(selected, true, 'auto'), 0);
   });
   discardBtn.addEventListener('click', discardDraft);
@@ -1142,13 +1242,12 @@
   audioInput.addEventListener('change', () => {
     const file = audioInput.files?.[0];
     if (!file) return;
-
     const url = URL.createObjectURL(file);
     player.src = url;
-
     subtitleEl.textContent = `Audio: ${file.name}`;
     toast('Audio cargado', file.name);
     updateMeta();
+    updateProgressPanel();
     saveDraft();
   });
 
@@ -1156,15 +1255,11 @@
     const text = await file.text();
     const mode = splitModeEl.value;
     lines = buildLinesFromText(text, mode);
-
     selected = 0;
     if (lines.length && lines[0].heading) selected = nextNonHeading(0);
-
     render();
     toast('TXT cargado', `${lines.length} líneas (${mode})`);
     saveDraft();
-
-    // keep selection high immediately (no animation)
     setTimeout(()=>selectIndex(selected, true, 'auto'), 0);
   }
 
@@ -1180,7 +1275,7 @@
     await loadTxtFile(file);
   });
 
-  // Keyboard shortcuts (Mac)
+  // Keyboard (Mac)
   window.addEventListener('keydown', (e) => {
     if (e.repeat) return;
     if (e.code === 'Space') { e.preventDefault(); playPause(); }
@@ -1192,9 +1287,7 @@
     if (e.key === 'ArrowDown') { selectIndex(selected + 1, true); }
   });
 
-  // ---------------------------
   // Boot
-  // ---------------------------
   function bootDraftHint(){
     const payload = loadDraft();
     if (payload && payload.lines?.length) {
@@ -1206,6 +1299,7 @@
     }
     render();
     updateMeta();
+    updateProgressPanel();
   }
   bootDraftHint();
 </script>
