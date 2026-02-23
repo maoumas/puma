@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Editor LRC/SRT — iPhone/Mac</title>
+  <title>Editor LRC/SRT — iPhone/Mac (Bottom Transport)</title>
   <style>
     :root{
       --bg:#0b1020; --panel:#121a33; --text:#e8ecff; --muted:#aab3d6;
       --line:rgba(255,255,255,0.10); --accent:#7aa2ff; --ok:#5dffb0; --bad:#ff6b6b;
       --safeTop: env(safe-area-inset-top, 0px);
       --safeBottom: env(safe-area-inset-bottom, 0px);
+      --transportH: 190px; /* reserva de espacio para barra inferior */
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
@@ -29,11 +30,9 @@
     }
 
     .app{
-      height:100%;
-      display:flex;
-      flex-direction:column;
+      min-height:100%;
       padding-top: var(--safeTop);
-      padding-bottom: calc(var(--safeBottom) + 14px);
+      padding-bottom: calc(var(--safeBottom) + var(--transportH) + 12px);
     }
 
     /* Top bar */
@@ -105,14 +104,11 @@
     }
     .banner .x:active{ transform: scale(0.98); }
 
-    /* Content */
     .content{
-      flex: 1;
+      padding: 10px 12px 0;
       display:flex;
       flex-direction:column;
       gap: 10px;
-      padding: 10px 12px 0;
-      min-height: 0;
     }
 
     .card{
@@ -195,83 +191,20 @@
       font-weight: 800;
       outline:none;
     }
-    input[type="number"]{ width: 110px; }
+    input[type="number"]{ width: 92px; }
 
     .mini{ font-size:12px; color: var(--muted); }
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
 
-    /* ✅ Transport sticky */
-    .transport{
-      position: sticky;
-      top: 58px; /* just under top bar; good enough for iPhone */
-      z-index: 20;
-      border: 1px solid var(--line);
-      background: rgba(18,26,51,0.78);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 14px;
-      padding: 10px;
-      margin-top: 10px;
-    }
-    .trow{ display:flex; gap:10px; align-items:center; }
-    .tbtn{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,0.05);
-      color: var(--text);
-      padding: 12px 12px;
-      border-radius: 14px;
-      font-weight: 900;
-      font-size: 13px;
-      -webkit-tap-highlight-color: transparent;
-      cursor:pointer;
-      user-select:none;
-    }
-    .tbtn:active{ transform: scale(0.98); }
-    .tmeta{ flex:1; display:flex; flex-direction:column; gap:6px; min-width:0; }
-    .ttime{
-      font-variant-numeric: tabular-nums;
-      font-size: 12px; color: var(--muted);
-      display:flex; gap:8px; align-items:center; justify-content:space-between;
-    }
-    #tScrub{
-      width:100%;
-      accent-color: var(--accent);
-      height: 28px;
-    }
-    .trow2{ margin-top:8px; }
-    .mark{
-      width:100%;
-      padding: 14px 14px;
-      border-radius: 16px;
-      font-size: 16px;
-      font-weight: 1000;
-      border: 1px solid rgba(93,255,176,0.55);
-      background: linear-gradient(180deg, rgba(93,255,176,0.18), rgba(255,255,255,0.05));
-      color: var(--text);
-      cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
-      user-select:none;
-    }
-    .mark:active{ transform: scale(0.99); }
-
-    .trow3{
-      margin-top:8px;
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      gap: 8px;
-    }
-
     /* Lyrics list */
     .lyrics{
-      flex: 1;
-      min-height: 0;
-      overflow:auto;
       padding: 8px;
       border-radius: 14px;
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.02);
       -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
+      /* importante: la lista NO se oculta bajo la barra inferior */
+      padding-bottom: calc(var(--safeBottom) + var(--transportH) + 24px);
     }
     .line{
       display:flex;
@@ -325,6 +258,86 @@
       border-color: rgba(255,255,255,0.08);
       background: rgba(255,255,255,0.02);
     }
+
+    /* ✅ Bottom transport fixed */
+    .bottom{
+      position: fixed;
+      left:0; right:0;
+      bottom:0;
+      z-index: 40;
+      padding-bottom: var(--safeBottom);
+      background: rgba(11,16,32,0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--line);
+    }
+    .bottom-inner{
+      padding: 10px 12px 12px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    .trow{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+    }
+    .tbtn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      padding: 12px 12px;
+      border-radius: 14px;
+      font-weight: 900;
+      font-size: 13px;
+      -webkit-tap-highlight-color: transparent;
+      cursor:pointer;
+      user-select:none;
+      min-width: 54px;
+      text-align:center;
+    }
+    .tbtn:active{ transform: scale(0.98); }
+    .tmeta{
+      flex: 1;
+      display:flex;
+      flex-direction:column;
+      gap: 6px;
+      min-width: 0;
+    }
+    .ttime{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    #tScrub{
+      width:100%;
+      accent-color: var(--accent);
+      height: 30px; /* grande para dedo */
+    }
+    .mark{
+      width:100%;
+      padding: 14px 14px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 1000;
+      border: 1px solid rgba(93,255,176,0.55);
+      background: linear-gradient(180deg, rgba(93,255,176,0.18), rgba(255,255,255,0.05));
+      color: var(--text);
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+    }
+    .mark:active{ transform: scale(0.99); }
+
+    .nudgeRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 8px;
+    }
   </style>
 </head>
 
@@ -334,7 +347,7 @@
     <div class="top-inner">
       <div>
         <div class="title">Editor LRC/SRT — iPhone/Mac</div>
-        <div class="sub" id="subtitle">Carga audio + TXT · Marca con precisión</div>
+        <div class="sub" id="subtitle">Play + Marcar abajo fijo · Texto fluye arriba</div>
       </div>
       <div class="pill">
         <span id="dot" class="dot"></span>
@@ -356,13 +369,11 @@
   </div>
 
   <div class="content">
-
     <section class="card">
       <div class="files">
         <div class="filebox">
           <label>Audio (.mp3 / .m4a)</label>
-          <input id="audioInput" type="file"
-                 accept="audio/mpeg,audio/mp3,audio/mp4,audio/x-m4a,.mp3,.m4a"/>
+          <input id="audioInput" type="file" accept="audio/mpeg,audio/mp3,audio/mp4,audio/x-m4a,.mp3,.m4a"/>
         </div>
         <div class="filebox">
           <label>TXT (sin tiempos)</label>
@@ -378,7 +389,7 @@
           </label>
           <label class="toggle">
             <input id="autoScroll" type="checkbox" checked>
-            Auto-scroll
+            Mantener selección arriba
           </label>
         </div>
         <div class="right">
@@ -406,31 +417,6 @@
         </div>
       </div>
 
-      <!-- ✅ Transport sticky: Play + Scrub + Mark just below -->
-      <div class="transport" id="transport">
-        <div class="trow">
-          <button class="tbtn" id="tPlay" type="button">⏯</button>
-          <div class="tmeta">
-            <div class="ttime mono">
-              <span><span id="tNow">00:00.00</span> / <span id="tDur">00:00.00</span></span>
-              <span id="tPct" class="mini">0%</span>
-            </div>
-            <input id="tScrub" type="range" min="0" max="1000" value="0" />
-          </div>
-        </div>
-
-        <div class="trow2">
-          <button class="mark" id="markTop" type="button">✅ MARCAR</button>
-        </div>
-
-        <div class="trow3">
-          <button class="tbtn" id="nBack02" type="button">⟵ 0.5s</button>
-          <button class="tbtn" id="nBack2" type="button">⟵ 2s</button>
-          <button class="tbtn" id="nFwd2" type="button">2s ⟶</button>
-          <button class="tbtn" id="nFwd02" type="button">0.5s ⟶</button>
-        </div>
-      </div>
-
       <div class="controls" style="margin-top: 10px;">
         <div class="left">
           <button class="btn accent" id="exportLRC">.lrc</button>
@@ -447,17 +433,42 @@
       </div>
 
       <div class="mini" style="margin-top:8px;">
-        Tip: toca el <b>tiempo verde</b> de una línea marcada para escuchar con A/B.
+        Tip: toca el <b>tiempo verde</b> para escuchar esa marca (A/B).
       </div>
 
-      <!-- Hidden audio element (custom UI above) -->
+      <!-- hidden audio element -->
       <audio id="player" preload="metadata"></audio>
     </section>
 
-    <section class="card" style="padding: 12px; min-height: 220px;">
+    <section class="card" style="padding: 12px;">
       <div class="lyrics" id="lyrics"></div>
     </section>
+  </div>
+</div>
 
+<!-- ✅ Bottom fixed transport -->
+<div class="bottom" id="bottomBar">
+  <div class="bottom-inner">
+    <div class="trow">
+      <button class="tbtn" id="tPlay" type="button">⏯</button>
+      <div class="tmeta">
+        <div class="ttime mono">
+          <span><span id="tNow">00:00.00</span> / <span id="tDur">00:00.00</span></span>
+          <span id="tPct" class="mini">0%</span>
+        </div>
+        <input id="tScrub" type="range" min="0" max="1000" value="0" />
+      </div>
+      <button class="tbtn" id="tUnmark" type="button">⌫</button>
+    </div>
+
+    <button class="mark" id="markBtn" type="button">✅ MARCAR</button>
+
+    <div class="nudgeRow">
+      <button class="tbtn" id="nBack02" type="button">⟵ 0.5s</button>
+      <button class="tbtn" id="nBack2"  type="button">⟵ 2s</button>
+      <button class="tbtn" id="nFwd2"   type="button">2s ⟶</button>
+      <button class="tbtn" id="nFwd02"  type="button">0.5s ⟶</button>
+    </div>
   </div>
 </div>
 
@@ -506,7 +517,7 @@
   }
 
   // ---------------------------
-  // Banner (non-overlapping toast)
+  // Banner toast (no overlap)
   // ---------------------------
   const bannerEl = $('banner');
   const bannerMainEl = $('bannerMain');
@@ -669,13 +680,14 @@
   const copyBtn = $('copy');
   const clearBtn = $('clear');
 
-  // Transport UI
+  // Bottom transport
   const tPlay = $('tPlay');
   const tScrub = $('tScrub');
   const tNow = $('tNow');
   const tDur = $('tDur');
   const tPct = $('tPct');
-  const markTop = $('markTop');
+  const markBtn = $('markBtn');
+  const tUnmark = $('tUnmark');
 
   const nBack02 = $('nBack02');
   const nBack2  = $('nBack2');
@@ -685,7 +697,7 @@
   // ---------------------------
   // State
   // ---------------------------
-  let lines = []; // {text, t:number|null, heading:boolean}
+  let lines = [];
   let nodes = [];
   let selected = 0;
 
@@ -699,13 +711,13 @@
   // ---------------------------
   // Autosave
   // ---------------------------
-  const DRAFT_KEY = 'lrc_editor_draft_v5';
+  const DRAFT_KEY = 'lrc_editor_draft_v6';
 
   function saveDraft(){
     if (!lines.length) return;
     try{
       const payload = {
-        version: 5,
+        version: 6,
         savedAt: Date.now(),
         splitMode: splitModeEl.value,
         autoAdvance: !!autoAdvanceEl.checked,
@@ -728,7 +740,7 @@
     if (!raw) return null;
     try{
       const payload = JSON.parse(raw);
-      if (!payload || payload.version !== 5 || !Array.isArray(payload.lines)) return null;
+      if (!payload || payload.version !== 6 || !Array.isArray(payload.lines)) return null;
       return payload;
     }catch{ return null; }
   }
@@ -773,18 +785,29 @@
 
   function isSkippable(i){ return !!lines[i]?.heading; }
 
-  function selectIndex(i, scroll=true){
+  // Scroll helper: keep selected line near top (not hidden at bottom)
+  function keepSelectedHigh(i, behavior='smooth'){
+    const node = nodes[i];
+    if (!node) return;
+
+    // Put the line at ~18% from top of viewport
+    const y = node.getBoundingClientRect().top + window.scrollY;
+    const target = Math.max(0, y - window.innerHeight * 0.18);
+    window.scrollTo({ top: target, behavior });
+  }
+
+  function selectIndex(i, doScroll=true, behavior='smooth'){
     if (!lines.length) return;
     selected = clamp(i, 0, lines.length - 1);
+
     nodes.forEach(n => n.classList.remove('sel'));
     const node = nodes[selected];
-    if (node){
-      node.classList.add('sel');
-      if (scroll && autoScrollEl.checked){
-        const top = node.offsetTop - lyricsEl.clientHeight * 0.35;
-        lyricsEl.scrollTo({ top, behavior: 'smooth' });
-      }
+    if (node) node.classList.add('sel');
+
+    if (doScroll && autoScrollEl.checked) {
+      keepSelectedHigh(selected, behavior);
     }
+
     updateMeta();
     saveDraft();
   }
@@ -813,7 +836,6 @@
     toast(sec < 0 ? '⟵' : '⟶', formatTime(player.currentTime));
   }
 
-  // A/B seek
   function seekToLine(i){
     const l = lines[i];
     if (!l || l.heading || l.t == null) return;
@@ -850,20 +872,23 @@
 
     if (lines[selected].heading) {
       const j = nextNonHeading(selected + 1);
-      selectIndex(j);
+      selectIndex(j, true);
       toast('Salté título', `${selected+1}/${lines.length}`);
       return;
     }
 
     const t = player.currentTime || 0;
     lines[selected].t = t;
-    render();
+    render(); // rebuild list (updates time colors)
     toast('Marcado', `${selected+1}/${lines.length} → ${formatTime(t)}`);
     saveDraft();
 
     if (autoAdvanceEl.checked) {
-      let j = nextNonHeading(selected + 1);
-      selectIndex(j);
+      const j = nextNonHeading(selected + 1);
+      selectIndex(j, true);
+    } else {
+      // keep current visible high
+      selectIndex(selected, true);
     }
   }
 
@@ -874,6 +899,7 @@
     render();
     toast('Desmarcado', `${selected+1}/${lines.length}`);
     saveDraft();
+    selectIndex(selected, true);
   }
 
   // ---------------------------
@@ -952,7 +978,7 @@
     player.load();
     audioInput.value = '';
     txtInput.value = '';
-    subtitleEl.textContent = 'Carga audio + TXT · Marca con precisión';
+    subtitleEl.textContent = 'Play + Marcar abajo fijo · Texto fluye arriba';
     render();
     toast('Listo', 'Todo limpio');
   }
@@ -967,9 +993,8 @@
     if (!lines.length){
       lyricsEl.innerHTML = `<div style="color:var(--muted); padding:12px; font-size:13px; line-height:1.35;">
         1) Carga audio (.mp3 / .m4a) y TXT.<br/>
-        2) Usa el scrub (arriba) para buscar el punto.<br/>
-        3) Pulsa <b>MARCAR</b> debajo del play.<br/>
-        4) Toca un <b>tiempo verde</b> para A/B.
+        2) Usa el scrub <b>abajo</b> para buscar el punto.<br/>
+        3) Pulsa <b>MARCAR</b> (abajo) y la selección se mantiene alta.
       </div>`;
       updateMeta();
       return;
@@ -991,16 +1016,16 @@
       text.className = 'text';
       text.textContent = l.text;
 
-      row.addEventListener('click', () => selectIndex(i));
+      row.addEventListener('click', () => selectIndex(i, true));
 
-      // tap on time => seek+play A/B
+      // tap time => A/B
       time.addEventListener('click', (ev) => {
         ev.stopPropagation();
         selectIndex(i, true);
         seekToLine(i);
       });
 
-      // double tap row => seek+play A/B
+      // double tap row => A/B
       let lastTap = 0;
       row.addEventListener('touchend', () => {
         const now = Date.now();
@@ -1019,13 +1044,14 @@
     }
 
     lyricsEl.appendChild(frag);
+    // reselect highlight
     nodes.forEach(n => n.classList.remove('sel'));
     if (nodes[selected]) nodes[selected].classList.add('sel');
     updateMeta();
   }
 
   // ---------------------------
-  // Transport loop (sticky controls)
+  // Bottom transport loop
   // ---------------------------
   function updateTransport(){
     const ct = player.currentTime || 0;
@@ -1048,9 +1074,6 @@
   }
   requestAnimationFrame(updateTransport);
 
-  tPlay.addEventListener('click', () => playPause());
-  markTop.addEventListener('click', () => mark());
-
   // Scrub
   tScrub.addEventListener('input', () => { scrubbing = true; });
   tScrub.addEventListener('change', () => {
@@ -1062,15 +1085,41 @@
     scrubbing = false;
   });
 
-  // Nudges
+  // ---------------------------
+  // Events / bindings
+  // ---------------------------
+  tPlay.addEventListener('click', playPause);
+  markBtn.addEventListener('click', mark);
+  tUnmark.addEventListener('click', unmark);
+
   nBack02.addEventListener('click', () => jump(-0.5));
   nBack2.addEventListener('click', () => jump(-2));
   nFwd2.addEventListener('click', () => jump(2));
   nFwd02.addEventListener('click', () => jump(0.5));
 
-  // ---------------------------
-  // Pull-to-refresh reduce
-  // ---------------------------
+  exportLRCBtn.addEventListener('click', () => exportLRC('lrc'));
+  exportSRTBtn.addEventListener('click', exportSRT);
+  exportLECBtn.addEventListener('click', () => exportLRC('lec'));
+  copyBtn.addEventListener('click', copyLRC);
+
+  recoverBtn.addEventListener('click', () => {
+    const payload = loadDraft();
+    if (!payload) return toast('Sin borrador', 'No hay nada que recuperar');
+    applyDraft(payload);
+    // keep selection high after recover
+    setTimeout(()=>selectIndex(selected, true, 'auto'), 0);
+  });
+  discardBtn.addEventListener('click', discardDraft);
+  clearBtn.addEventListener('click', clearAll);
+
+  // Persist settings
+  abEnabledEl.addEventListener('change', saveDraft);
+  preRollEl.addEventListener('change', saveDraft);
+  postRollEl.addEventListener('change', saveDraft);
+  autoAdvanceEl.addEventListener('change', saveDraft);
+  autoScrollEl.addEventListener('change', saveDraft);
+
+  // Reduce pull-to-refresh at top
   let ptrStartY = 0, ptrMaybe = false;
   window.addEventListener('touchstart', (e) => {
     if (e.touches.length !== 1) return;
@@ -1089,9 +1138,7 @@
   });
   window.addEventListener('pagehide', () => saveDraft());
 
-  // ---------------------------
-  // Inputs / file loads
-  // ---------------------------
+  // Files
   audioInput.addEventListener('change', () => {
     const file = audioInput.files?.[0];
     if (!file) return;
@@ -1109,11 +1156,16 @@
     const text = await file.text();
     const mode = splitModeEl.value;
     lines = buildLinesFromText(text, mode);
+
     selected = 0;
     if (lines.length && lines[0].heading) selected = nextNonHeading(0);
+
     render();
     toast('TXT cargado', `${lines.length} líneas (${mode})`);
     saveDraft();
+
+    // keep selection high immediately (no animation)
+    setTimeout(()=>selectIndex(selected, true, 'auto'), 0);
   }
 
   txtInput.addEventListener('change', async () => {
@@ -1128,28 +1180,7 @@
     await loadTxtFile(file);
   });
 
-  // Persist settings
-  abEnabledEl.addEventListener('change', saveDraft);
-  preRollEl.addEventListener('change', saveDraft);
-  postRollEl.addEventListener('change', saveDraft);
-  autoAdvanceEl.addEventListener('change', saveDraft);
-  autoScrollEl.addEventListener('change', saveDraft);
-
-  // Buttons
-  exportLRCBtn.addEventListener('click', () => exportLRC('lrc'));
-  exportSRTBtn.addEventListener('click', exportSRT);
-  exportLECBtn.addEventListener('click', () => exportLRC('lec'));
-  copyBtn.addEventListener('click', copyLRC);
-
-  recoverBtn.addEventListener('click', () => {
-    const payload = loadDraft();
-    if (!payload) return toast('Sin borrador', 'No hay nada que recuperar');
-    applyDraft(payload);
-  });
-  discardBtn.addEventListener('click', discardDraft);
-  clearBtn.addEventListener('click', clearAll);
-
-  // Extra: keyboard shortcuts (Mac)
+  // Keyboard shortcuts (Mac)
   window.addEventListener('keydown', (e) => {
     if (e.repeat) return;
     if (e.code === 'Space') { e.preventDefault(); playPause(); }
@@ -1157,8 +1188,8 @@
     if (e.key === 'Backspace') { unmark(); }
     if (e.key === 'ArrowLeft') { jump(-0.5); }
     if (e.key === 'ArrowRight') { jump(0.5); }
-    if (e.key === 'ArrowUp') { selectIndex(selected - 1); }
-    if (e.key === 'ArrowDown') { selectIndex(selected + 1); }
+    if (e.key === 'ArrowUp') { selectIndex(selected - 1, true); }
+    if (e.key === 'ArrowDown') { selectIndex(selected + 1, true); }
   });
 
   // ---------------------------
