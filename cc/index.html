@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Auto SRT con IA (GitHub Pages)</title>
+  <style>
+    :root { --bg:#0b1020; --panel:#121a33; --text:#e8ecff; --muted:#aab3d6; --line:rgba(255,255,255,.12); --ok:#5dffb0; --bad:#ff6b6b; }
+    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text); padding:18px; }
+    .card{ max-width:760px; margin:0 auto; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px; box-shadow:0 12px 30px rgba(0,0,0,.25); }
+    h1{ font-size:16px; margin:0 0 6px; }
+    p{ margin:0 0 12px; color:var(--muted); font-size:13px; line-height:1.35; }
+    label{ display:block; margin:10px 0 6px; color:var(--muted); font-size:13px; }
+    input[type=file], select, button, textarea{
+      width:100%; border-radius:12px; border:1px solid var(--line);
+      background:rgba(255,255,255,.04); color:var(--text);
+      padding:12px; font-size:14px;
+    }
+    textarea{ min-height:110px; resize:vertical; }
+    button{ cursor:pointer; font-weight:900; }
+    .row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .status{ margin-top:12px; font-size:13px; color:var(--muted); white-space:pre-wrap; }
+    .ok{ color:var(--ok); }
+    .bad{ color:var(--bad); }
+    .small{ font-size:12px; color:var(--muted); margin-top:8px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Auto-generar subtítulos (.srt) con IA</h1>
+    <p>Sube un audio (.mp3/.m4a) y tu lírica (.txt/.md). La API transcribe con timestamps y genera un .srt.</p>
+
+    <div class="row">
+      <div>
+        <label>Audio (.mp3 / .m4a)</label>
+        <input id="audio" type="file" accept="audio/mpeg,audio/mp3,audio/mp4,audio/x-m4a,.mp3,.m4a" />
+      </div>
+      <div>
+        <label>Lírica (.txt / .md)</label>
+        <input id="lyrics" type="file" accept=".txt,.md,text/plain,text/markdown" />
+      </div>
+    </div>
+
+    <label>Modo</label>
+    <select id="mode">
+      <option value="asr_only" selected>SRT por transcripción (rápido)</option>
+      <option value="align_lyrics">Alinear con mi lírica (mejor si coincide)</option>
+    </select>
+
+    <label>Idioma (opcional, mejora precisión)</label>
+    <select id="lang">
+      <option value="">Auto</option>
+      <option value="es">Español</option>
+      <option value="en">Inglés</option>
+      <option value="pt">Portugués</option>
+    </select>
+
+    <button id="go">Generar .srt</button>
+
+    <div class="small">
+      Tip iPhone: si el audio pesa mucho, recórtalo o exporta a menor bitrate para bajar de 25MB.
+    </div>
+
+    <div id="status" class="status"></div>
+  </div>
+
+<script>
+  // 🔧 Pega aquí la URL de tu Worker (la creas en el paso 2)
+  const API_URL = "https://TU-WORKER.tuusuario.workers.dev/api/auto-srt";
+
+  const $ = (id) => document.getElementById(id);
+  const statusEl = $("status");
+
+  function setStatus(msg, cls=""){
+    statusEl.className = "status " + cls;
+    statusEl.textContent = msg;
+  }
+
+  async function downloadBlob(blob, filename){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  $("go").addEventListener("click", async () => {
+    const audio = $("audio").files?.[0];
+    const lyrics = $("lyrics").files?.[0];
+    const mode = $("mode").value;
+    const lang = $("lang").value;
+
+    if (!audio) return setStatus("❗ Sube un audio primero.", "bad");
+    if (mode === "align_lyrics" && !lyrics) return setStatus("❗ Para alinear, sube también la lírica.", "bad");
+
+    setStatus("Procesando… subiendo archivos y generando SRT.");
+    $("go").disabled = true;
+
+    try{
+      const fd = new FormData();
+      fd.append("audio", audio);
+      if (lyrics) fd.append("lyrics", lyrics);
+      fd.append("mode", mode);
+      if (lang) fd.append("lang", lang);
+
+      const resp = await fetch(API_URL, { method:"POST", body: fd });
+      if (!resp.ok){
+        const err = await resp.text().catch(()=>"(sin detalle)");
+        throw new Error(err);
+      }
+
+      const blob = await resp.blob();
+      await downloadBlob(blob, "subtitles.srt");
+      setStatus("✅ Listo. Descargado subtitles.srt", "ok");
+    }catch(e){
+      setStatus("❌ Error:\n" + (e?.message || e), "bad");
+    }finally{
+      $("go").disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
