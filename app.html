@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>SaraPuma App</title>
+<meta name="theme-color" content="#D35400">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --brand: #D35400;
+  --dark:  #1a1f2e;
+  --border:#e0dbd4;
+  --green: #27ae60;
+  --blue:  #2980b9;
+  --codebg:#1e2436;
+}
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f5f3f0;
+  color: var(--dark);
+  overflow: hidden;
+}
+#root { display: flex; flex-direction: column; height: 100dvh; }
+
+/* HEADER */
+#hdr {
+flex-shrink: 0;
+background: #fff;
+border-bottom: 1px solid var(–border);
+padding: 12px 16px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.logo { font-size: 20px; font-weight: 800; color: var(–dark); text-decoration: none; }
+.logo b { color: var(–brand); }
+.badge { font-size: 11px; background: var(–brand); color: #fff; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
+.hl { font-size: 13px; color: #888; text-decoration: none; margin-left: 8px; }
+
+/* TABS */
+#tabs { flex-shrink: 0; display: flex; background: #fff; border-bottom: 1px solid var(–border); }
+.tab {
+flex: 1; padding: 11px 0; border: none; background: none;
+font-family: inherit; font-size: 13px; font-weight: 700;
+color: #aaa; cursor: pointer; border-bottom: 3px solid transparent;
+}
+.tab.on { color: var(–brand); border-bottom-color: var(–brand); }
+
+/* PANELS */
+#panels { flex: 1; overflow: hidden; position: relative; }
+.panel {
+position: absolute; inset: 0;
+display: flex; flex-direction: column;
+visibility: hidden; pointer-events: none;
+}
+.panel.on { visibility: visible; pointer-events: auto; }
+
+/* TOOLBAR */
+.tb {
+flex-shrink: 0; background: #fff;
+border-bottom: 1px solid var(–border);
+padding: 8px 12px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.tbtitle { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #bbb; margin-right: 4px; }
+
+/* BUTTONS */
+.btn {
+display: inline-flex; align-items: center; gap: 4px;
+padding: 7px 12px; border-radius: 7px; border: 1px solid var(–border);
+background: #fff; font-family: inherit; font-size: 12px; font-weight: 700;
+color: var(–dark); cursor: pointer; white-space: nowrap;
+-webkit-tap-highlight-color: transparent;
+}
+.btn:active { opacity: .7; }
+.p { background: var(–brand); color: #fff; border-color: var(–brand); }
+.g { background: var(–green); color: #fff; border-color: var(–green); }
+.b { background: var(–blue);  color: #fff; border-color: var(–blue); }
+.r { color: #e74c3c; border-color: rgba(231,76,60,.25); }
+
+/* TEXTAREA */
+#inp {
+flex: 1; width: 100%; border: none; outline: none; resize: none;
+padding: 16px; font-family: “Menlo”,“Monaco”,monospace;
+font-size: 14px; line-height: 1.75;
+background: #faf9f7; color: var(–dark);
+-webkit-overflow-scrolling: touch; overflow-y: auto;
+}
+
+/* STATUS BAR */
+.sb {
+flex-shrink: 0; padding: 6px 14px; background: #fff;
+border-top: 1px solid var(–border);
+display: flex; justify-content: space-between; font-size: 11px; color: #bbb;
+}
+.ok  { color: var(–green); font-weight: 700; }
+.err { color: #e74c3c; font-weight: 700; }
+
+/* PREVIEW AREA */
+#pv {
+flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+padding: 20px 18px 40px; background: #fff;
+}
+
+/* ── RENDERED MARKDOWN STYLES ── */
+#pv h1 { font-size: 22px; font-weight: 800; color: var(–brand); border-bottom: 2px solid var(–brand); padding-bottom: 6px; margin: 20px 0 10px; }
+#pv h2 { font-size: 17px; font-weight: 700; border-left: 4px solid var(–brand); padding-left: 10px; margin: 18px 0 8px; }
+#pv h3 { font-size: 15px; font-weight: 700; color: #555; margin: 14px 0 6px; }
+#pv p  { font-size: 15px; line-height: 1.75; margin: 6px 0; }
+#pv strong { color: var(–brand); font-weight: 700; }
+#pv em { font-style: italic; color: #666; }
+#pv a  { color: var(–blue); text-underline-offset: 3px; }
+#pv ul, #pv ol { margin: 6px 0 6px 22px; line-height: 1.8; }
+#pv li { font-size: 15px; margin: 2px 0; }
+#pv blockquote { border-left: 4px solid #f0a07a; background: #fff8f5; padding: 10px 14px; margin: 12px 0; border-radius: 0 8px 8px 0; color: #666; font-style: italic; }
+#pv mark { background: #fff3cd; color: #856404; padding: 1px 4px; border-radius: 3px; }
+#pv hr   { border: none; border-top: 2px dashed var(–border); margin: 18px 0; }
+#pv del  { opacity: .5; }
+#pv .sn  { background: #eef5ff; border-left: 4px solid var(–blue); padding: 10px 13px; border-radius: 0 8px 8px 0; font-size: 13px; color: #2c5f8a; margin: 10px 0; }
+
+/* Task list */
+#pv ul.tl { list-style: none; padding-left: 2px; }
+#pv ul.tl li { display: flex; align-items: flex-start; gap: 8px; margin: 5px 0; }
+#pv ul.tl li input { margin-top: 3px; accent-color: var(–brand); flex-shrink: 0; }
+
+/* ── CODE BLOCKS ── */
+#pv pre {
+background: var(–codebg); border-radius: 10px;
+margin: 14px 0; overflow: hidden;
+box-shadow: 0 4px 14px rgba(0,0,0,.2);
+}
+.cb {
+background: #2a3148; padding: 7px 14px;
+display: flex; justify-content: space-between; align-items: center;
+}
+.cl { font-size: 11px; font-weight: 700; color: #fab1a0; letter-spacing: .06em; text-transform: uppercase; font-family: monospace; }
+
+/* Copy-code button — bigger tap target for mobile */
+.cc {
+background: rgba(255,255,255,.12);
+border: 1px solid rgba(255,255,255,.2);
+color: #ddd; padding: 5px 14px; border-radius: 6px;
+font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+display: flex; align-items: center; gap: 5px;
+-webkit-tap-highlight-color: transparent;
+min-height: 32px;
+}
+.cc:active { background: rgba(255,255,255,.25); color: #fff; }
+.cc.done { background: var(–green); border-color: var(–green); color: #fff; }
+
+#pv pre code {
+display: block; padding: 14px 16px;
+font-family: “Menlo”,“Monaco”,monospace; font-size: 13px;
+line-height: 1.65; overflow-x: auto; white-space: pre;
+color: #e8d5b7; background: none;
+}
+#pv code { background: #f0ebe3; color: #c0392b; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; font-weight: 600; }
+#pv pre code { background: none; color: #e8d5b7; padding: 0; }
+
+/* Tables */
+#pv table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+#pv th { background: var(–brand); color: #fff; padding: 8px 12px; text-align: left; font-weight: 700; }
+#pv td { padding: 8px 12px; border-bottom: 1px solid var(–border); }
+#pv tr:nth-child(even) td { background: #faf9f7; }
+
+/* Syntax tokens */
+.kw  { color: #85c1e9; }
+.str { color: #a9dfbf; }
+.cmt { color: #7f8c8d; font-style: italic; }
+.num { color: #f9ca74; }
+
+/* Empty state */
+#es {
+display: flex; flex-direction: column; align-items: center;
+justify-content: center; height: 100%; gap: 10px;
+color: #ccc; text-align: center; padding: 30px;
+}
+#es svg { opacity: .25; }
+#es p { font-size: 14px; line-height: 1.6; }
+
+/* TOAST */
+#toast {
+position: fixed; bottom: 24px; left: 50%;
+transform: translateX(-50%) translateY(70px);
+background: var(–dark); color: #fff;
+padding: 11px 22px; border-radius: 50px;
+font-size: 13px; font-weight: 700;
+transition: transform .25s ease;
+z-index: 999; pointer-events: none; white-space: nowrap;
+}
+#toast.show  { transform: translateX(-50%) translateY(0); }
+#toast.green { background: var(–green); }
+#toast.red   { background: #e74c3c; }
+</style>
+
+</head>
+<body>
+
+<div id="root">
+
+  <!-- HEADER -->
+
+  <div id="hdr">
+    <a class="logo" href="index.html">Sara<b>Puma</b></a>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="badge">v3.4</span>
+      <a class="hl" href="index.html">&#8592; Home</a>
+    </div>
+  </div>
+
+  <!-- TABS -->
+
+  <div id="tabs">
+    <button class="tab on" id="ti" onclick="goTab('i')">&#128229; Input</button>
+    <button class="tab"    id="tp" onclick="goTab('p')">&#128065; Preview</button>
+  </div>
+
+  <!-- PANELS -->
+
+  <div id="panels">
+
+```
+<!-- INPUT PANEL -->
+<div class="panel on" id="pi">
+  <div class="tb">
+    <span class="tbtitle">Markdown</span>
+    <button class="btn r" onclick="doClear()">&#128465; Clear</button>
+    <button class="btn"   onclick="doPaste()">&#128203; Paste</button>
+    <button class="btn p" onclick="doRender()">&#9654; Render</button>
+  </div>
+  <textarea id="inp" placeholder="Pega tu Markdown aqui y pulsa Render…" oninput="onType()"></textarea>
+  <div class="sb">
+    <span id="si">0 palabras</span>
+    <span id="ss">Listo</span>
+  </div>
+</div>
+
+<!-- PREVIEW PANEL -->
+<div class="panel" id="pp">
+  <div class="tb">
+    <span class="tbtitle">Preview</span>
+    <button class="btn"   onclick="doSelAll()">&#9745; Sel. Todo</button>
+    <button class="btn g" onclick="doCopyFmt()">&#128196; Copiar</button>
+    <button class="btn b" onclick="doCopyTxt()">&#128221; Txt</button>
+    <button class="btn"   onclick="doPDF()">&#11015; PDF</button>
+  </div>
+  <div id="pv">
+    <div id="es">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+      <p>Pega tu Markdown<br>y pulsa <strong>&#9654; Render</strong></p>
+    </div>
+  </div>
+  <div class="sb">
+    <span id="so">Sin contenido</span>
+    <span id="sr">&#8212;</span>
+  </div>
+</div>
+```
+
+  </div><!-- /panels -->
+</div><!-- /root -->
+
+<div id="toast"></div>
+
+<script>
+// ── TABS ────────────────────────────────────────────────
+function goTab(n) {
+  document.getElementById('ti').className = 'tab' + (n==='i' ? ' on' : '');
+  document.getElementById('tp').className = 'tab' + (n==='p' ? ' on' : '');
+  document.getElementById('pi').className = 'panel' + (n==='i' ? ' on' : '');
+  document.getElementById('pp').className = 'panel' + (n==='p' ? ' on' : '');
+}
+
+// ── MARKDOWN PARSER ─────────────────────────────────────
+function parse(raw) {
+  if (!raw.trim()) return '';
+
+  // 1. Extract fenced code blocks  ```lang\ncode\n```
+  var blocks = [];
+  var t = raw.replace(/```(\w*)\r?\n([\s\S]*?)```/g, function(_, lang, code) {
+    blocks.push({ lang: lang.trim(), code: code });
+    return '\x01B' + (blocks.length - 1) + '\x01';
+  });
+
+  // 2. Extract inline code  `code`
+  var inlines = [];
+  t = t.replace(/`([^`\n]+)`/g, function(_, c) {
+    inlines.push(c);
+    return '\x01I' + (inlines.length - 1) + '\x01';
+  });
+
+  var lines = t.split('\n');
+  var out = [];
+  var inUL = false, inOL = false, inTL = false;
+  var tbl = [], inTbl = false;
+
+  function closeList() {
+    if (inTL) { out.push('</ul>'); inTL = false; }
+    if (inUL) { out.push('</ul>'); inUL = false; }
+    if (inOL) { out.push('</ol>'); inOL = false; }
+  }
+
+  function flushTbl() {
+    if (!inTbl) return;
+    inTbl = false;
+    if (!tbl.length) { tbl = []; return; }
+    var h = '<table>';
+    tbl.forEach(function(row, i) {
+      var cells = row.split('|').map(function(c){ return c.trim(); }).filter(Boolean);
+      if (cells.every(function(c){ return /^[-:]+$/.test(c); })) return;
+      var tag = i === 0 ? 'th' : 'td';
+      h += '<tr>' + cells.map(function(c){ return '<' + tag + '>' + il(c) + '</' + tag + '>'; }).join('') + '</tr>';
+    });
+    out.push(h + '</table>');
+    tbl = [];
+  }
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+
+    // Code block placeholder
+    if (/\x01B(\d+)\x01/.test(line)) {
+      closeList(); flushTbl();
+      var m   = line.match(/\x01B(\d+)\x01/);
+      var blk = blocks[+m[1]];
+      var esc = eh(blk.code);
+      var langLabel = blk.lang || 'code';
+      // SVG clipboard icon for the Copy button
+      var icon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:middle"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+      out.push(
+        '<pre>' +
+          '<div class="cb">' +
+            '<span class="cl">' + langLabel + '</span>' +
+            '<button class="cc" onclick="cpCode(this)">' + icon + ' Copiar</button>' +
+          '</div>' +
+          '<code>' + hi(esc, blk.lang) + '</code>' +
+        '</pre>'
+
+```
+  );
+  continue;
+}
+
+// Table row
+if (/^\|.+\|/.test(line)) { closeList(); inTbl = true; tbl.push(line); continue; }
+else if (inTbl) flushTbl();
+
+// Horizontal rule
+if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line.trim())) { closeList(); out.push('<hr>'); continue; }
+
+// Headers
+var hm = line.match(/^(#{1,6})\s+(.+)/);
+if (hm) { closeList(); flushTbl(); out.push('<h' + hm[1].length + '>' + il(hm[2]) + '</h' + hm[1].length + '>'); continue; }
+
+// Blockquote
+if (line.startsWith('> ')) { closeList(); out.push('<blockquote>' + il(line.slice(2)) + '</blockquote>'); continue; }
+
+// Task list  - [x] or - [ ]
+var tm = line.match(/^[-*] \[( |x|X)\] (.+)/);
+if (tm) {
+  if (!inTL) { closeList(); out.push('<ul class="tl">'); inTL = true; }
+  var chk = tm[1].toLowerCase() === 'x' ? ' checked' : '';
+  out.push('<li><input type="checkbox"' + chk + ' onclick="return false"><span>' + il(tm[2]) + '</span></li>');
+  continue;
+}
+
+// Unordered list
+var um = line.match(/^[-*+] (.+)/);
+if (um) {
+  if (inOL) { out.push('</ol>'); inOL = false; }
+  if (inTL) { out.push('</ul>'); inTL = false; }
+  if (!inUL) { out.push('<ul>'); inUL = true; }
+  out.push('<li>' + il(um[1]) + '</li>'); continue;
+}
+
+// Ordered list
+var om = line.match(/^\d+\. (.+)/);
+if (om) {
+  if (inUL) { out.push('</ul>'); inUL = false; }
+  if (inTL) { out.push('</ul>'); inTL = false; }
+  if (!inOL) { out.push('<ol>'); inOL = true; }
+  out.push('<li>' + il(om[1]) + '</li>'); continue;
+}
+
+// Empty line
+if (!line.trim()) { closeList(); flushTbl(); out.push('<div style="height:8px"></div>'); continue; }
+
+// Paragraph
+closeList(); flushTbl();
+out.push('<p>' + il(line) + '</p>');
+```
+
+}
+closeList(); flushTbl();
+
+var r = out.join(’\n’);
+// Restore inline codes
+r = r.replace(/\x01I(\d+)\x01/g, function(_, i) {
+return ‘<code>’ + eh(inlines[+i]) + ‘</code>’;
+});
+return r;
+}
+
+// ── INLINE FORMATTING ────────────────────────────────────
+function il(t) {
+t = t.replace(/**Side note:**\s*(.*)/gi, ‘<span class="sn">📌 <strong>Side note:</strong> $1</span>’);
+t = t.replace(/==(.+?)==/g, ‘<mark>$1</mark>’);
+t = t.replace(/**(.+?)**/g, ‘<strong>$1</strong>’);
+t = t.replace(/(?<!*)*([^*\n]+?)*(?!*)/g, ‘<em>$1</em>’);
+t = t.replace(/*([^*\n]+?)_/g, ‘<em>$1</em>’);
+t = t.replace(/~(.+?)~/g, ‘<del>$1</del>’);
+t = t.replace(/[([^]]+)](([^)]+))/g, ‘<a href="$2" target="_blank">$1</a>’);
+return t;
+}
+
+// ── HTML ESCAPE ──────────────────────────────────────────
+function eh(s) {
+return s.replace(/&/g, ‘&’).replace(/</g, ‘<’).replace(/>/g, ‘>’);
+}
+
+// ── SYNTAX HIGHLIGHT ────────────────────────────────────
+function hi(code, lang) {
+if (!lang) return code;
+var l = lang.toLowerCase();
+var isJS = [‘js’,‘javascript’,‘jsx’,‘ts’,‘typescript’,‘tsx’].indexOf(l) > -1;
+var isPY = [‘py’,‘python’].indexOf(l) > -1;
+if (isJS) code = code.replace(/\b(const|let|var|function|return|if|else|for|while|class|import|export|from|default|new|this|typeof|await|async|try|catch|throw|null|undefined|true|false)\b/g, ‘<span class="kw">$1</span>’);
+if (isPY) code = code.replace(/\b(def|class|return|if|elif|else|for|while|import|from|as|with|pass|break|continue|lambda|yield|not|and|or|in|is|True|False|None|print)\b/g, ‘<span class="kw">$1</span>’);
+code = code.replace(/(//[^\n]*)$/gm, ‘<span class="cmt">$1</span>’);
+code = code.replace(/(#[^\n]*)$/gm, ‘<span class="cmt">$1</span>’);
+code = code.replace(/\b(\d+.?\d*)\b/g, ‘<span class="num">$1</span>’);
+return code;
+}
+
+// ── STATS ────────────────────────────────────────────────
+var _rt = null;
+function onType() { clearTimeout(_rt); _rt = setTimeout(doRender, 400); updStats(); }
+function updStats() {
+var v = document.getElementById(‘inp’).value;
+var w = v.trim() ? v.trim().split(/\s+/).length : 0;
+document.getElementById(‘si’).textContent = w + ’ palabras · ’ + v.length + ’ chars’;
+}
+
+// ── RENDER ───────────────────────────────────────────────
+function doRender() {
+var raw = document.getElementById(‘inp’).value;
+var pv  = document.getElementById(‘pv’);
+if (!raw.trim()) {
+pv.innerHTML = ‘<div id="es"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><p>Pega tu Markdown<br>y pulsa <strong>▶ Render</strong></p></div>’;
+document.getElementById(‘so’).textContent = ‘Sin contenido’;
+document.getElementById(‘sr’).textContent = ‘—’;
+return;
+}
+try {
+pv.innerHTML = parse(raw);
+var w = (pv.innerText || ‘’).trim().split(/\s+/).length;
+document.getElementById(‘so’).textContent = w + ’ palabras’;
+document.getElementById(‘sr’).innerHTML = ‘<span class="ok">✓ OK</span>’;
+if (window.innerWidth <= 900) goTab(‘p’);
+} catch(e) {
+document.getElementById(‘sr’).innerHTML = ‘<span class="err">⚠ Error</span>’;
+}
+updStats();
+}
+
+// ── CLEAR ────────────────────────────────────────────────
+function doClear() {
+if (!document.getElementById(‘inp’).value) return;
+if (confirm(‘Borrar todo?’)) { document.getElementById(‘inp’).value = ‘’; doRender(); }
+}
+
+// ── PASTE ────────────────────────────────────────────────
+async function doPaste() {
+try {
+var t = await navigator.clipboard.readText();
+document.getElementById(‘inp’).value = t;
+doRender();
+toast(‘Pegado OK’);
+} catch(e) {
+toast(‘Permiso denegado. Usa toque largo > Pegar.’, ‘red’);
+document.getElementById(‘inp’).focus();
+}
+}
+
+// ── SELECT ALL PREVIEW ───────────────────────────────────
+function doSelAll() {
+var pv = document.getElementById(‘pv’);
+if (!pv.innerText.trim()) { toast(‘Renderiza primero’, ‘red’); return; }
+var range = document.createRange();
+range.selectNodeContents(pv);
+var sel = window.getSelection();
+sel.removeAllRanges();
+sel.addRange(range);
+toast(‘Todo seleccionado ✓’);
+}
+
+// ── COPY FORMATTED (rich HTML — paste in Notes/Word/Notion) ──
+async function doCopyFmt() {
+var pv = document.getElementById(‘pv’);
+if (!pv.innerText.trim()) { toast(‘Renderiza primero’, ‘red’); return; }
+var css = ‘body{font-family:-apple-system,sans-serif;color:#1a1f2e}h1{font-size:22px;color:#D35400;border-bottom:2px solid #D35400;padding-bottom:6px}h2{font-size:17px;border-left:4px solid #D35400;padding-left:10px}strong{color:#D35400}blockquote{border-left:4px solid #f0a07a;background:#fff8f5;padding:10px 14px;font-style:italic}mark{background:#fff3cd;color:#856404;padding:1px 4px}pre{background:#1e2436;color:#e8d5b7;padding:14px;border-radius:8px;font-family:monospace;font-size:12px;white-space:pre-wrap}.cb{display:none}table{border-collapse:collapse;width:100%}th{background:#D35400;color:#fff;padding:8px 12px}td{padding:8px 12px;border-bottom:1px solid #e0dbd4}’;
+var html = ‘<!DOCTYPE html><html><head><style>’ + css + ‘</style></head><body>’ + pv.innerHTML + ‘</body></html>’;
+try {
+await navigator.clipboard.write([
+new ClipboardItem({
+‘text/html’:  new Blob([html],          { type: ‘text/html’ }),
+‘text/plain’: new Blob([pv.innerText],   { type: ‘text/plain’ })
+})
+]);
+toast(‘Copiado con formato ✓’, ‘green’);
+} catch(e) {
+// Fallback: select all + execCommand
+doSelAll();
+try { document.execCommand(‘copy’); window.getSelection().removeAllRanges(); toast(‘Copiado ✓’, ‘green’); }
+catch(e2) { toast(‘Usa Sel. Todo y luego copia manualmente’, ‘red’); }
+}
+}
+
+// ── COPY PLAIN TEXT ──────────────────────────────────────
+function doCopyTxt() {
+var pv  = document.getElementById(‘pv’);
+var txt = pv.innerText || pv.textContent || ‘’;
+if (!txt.trim()) { toast(‘Renderiza primero’, ‘red’); return; }
+navigator.clipboard.writeText(txt)
+.then(function(){ toast(‘Texto plano copiado’, ‘green’); })
+.catch(function(){ fbCopy(txt); toast(‘Texto plano copiado’, ‘green’); });
+}
+
+// ── COPY CODE BLOCK (per block button) ───────────────────
+function cpCode(btn) {
+var code = btn.closest(‘pre’).querySelector(‘code’);
+var txt  = code.innerText || code.textContent;
+navigator.clipboard.writeText(txt)
+.then(function(){ showCopied(btn); })
+.catch(function(){ fbCopy(txt); showCopied(btn); });
+}
+
+function showCopied(btn) {
+var orig = btn.innerHTML;
+btn.innerHTML = ‘✓ Copiado’;
+btn.classList.add(‘done’);
+setTimeout(function(){
+btn.innerHTML = orig;
+btn.classList.remove(‘done’);
+}, 2000);
+}
+
+// ── FALLBACK COPY ────────────────────────────────────────
+function fbCopy(text) {
+var el = document.createElement(‘textarea’);
+el.value = text;
+el.style.cssText = ‘position:fixed;top:-999px;left:-999px;opacity:0’;
+document.body.appendChild(el);
+el.select(); el.setSelectionRange(0, 99999);
+document.execCommand(‘copy’);
+document.body.removeChild(el);
+}
+
+// ── PDF EXPORT ───────────────────────────────────────────
+function doPDF() {
+var pv = document.getElementById(‘pv’);
+if (!pv.innerText.trim()) { toast(‘Renderiza primero’, ‘red’); return; }
+var w = window.open(’’, ‘_blank’);
+w.document.write(’<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SaraPuma Export</title><style>body{font-family:-apple-system,Helvetica,sans-serif;padding:36px;color:#1a1f2e;max-width:760px;margin:0 auto}h1{font-size:22px;color:#D35400;border-bottom:2px solid #D35400;padding-bottom:6px;margin:18px 0 10px}h2{font-size:17px;border-left:4px solid #D35400;padding-left:10px;margin:16px 0 8px}strong{color:#D35400}blockquote{border-left:4px solid #f0a07a;background:#fff8f5;padding:10px 14px;margin:10px 0;font-style:italic}mark{background:#fff3cd;color:#856404}pre{background:#1e2436;color:#e8d5b7;padding:14px;border-radius:8px;font-family:monospace;font-size:12px;white-space:pre-wrap;page-break-inside:avoid}.cb{display:none}.cc{display:none}table{border-collapse:collapse;width:100%}th{background:#D35400;color:#fff;padding:8px 12px}td{padding:8px 12px;border-bottom:1px solid #e0dbd4}.sn{background:#eef5ff;border-left:4px solid #2980b9;padding:8px 12px;font-size:13px}</style></head><body>’ + pv.innerHTML + ‘</body></html>’);
+w.document.close(); w.focus(); setTimeout(function(){ w.print(); }, 600);
+}
+
+// ── TOAST ────────────────────────────────────────────────
+var _tt = null;
+function toast(msg, cls) {
+var el = document.getElementById(‘toast’);
+el.innerHTML = msg;
+el.className = ‘show’ + (cls ? ’ ’ + cls : ‘’);
+clearTimeout(_tt);
+_tt = setTimeout(function(){ el.className = ‘’; }, 2800);
+}
+
+// ── KEYBOARD SHORTCUTS ───────────────────────────────────
+document.addEventListener(‘keydown’, function(e) {
+var mod = navigator.platform.toUpperCase().includes(‘MAC’) ? e.metaKey : e.ctrlKey;
+if (mod && e.key === ‘Enter’) { e.preventDefault(); doRender(); }
+});
+
+updStats();
+</script>
+
+</body>
+</html>
