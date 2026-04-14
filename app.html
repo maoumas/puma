@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SaraPuma App – Visual Notes for Leaders</title>
+  <link rel="apple-touch-icon" href="image_5.png" />
+  <link rel="icon" href="image_5.png" type="image/png" />
+  <meta name="theme-color" content="#D35400" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@400;600;800&display=swap');
+
+```
+:root {
+  --brand: #D35400;
+  --brand-light: #f0a07a;
+  --dark: #1a1f2e;
+  --panel: #f7f5f2;
+  --border: #e2ddd8;
+  --code-bg: #1e2436;
+  --code-text: #e8d5b7;
+  --green: #27ae60;
+  --blue: #2980b9;
+  --radius: 12px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Sora', -apple-system, sans-serif;
+  background: #faf9f7;
+  color: var(--dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
+header {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--dark);
+  text-decoration: none;
+}
+
+.logo span { color: var(--brand); }
+
+.header-badge {
+  font-size: 11px;
+  background: var(--brand);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+/* ── MAIN LAYOUT ── */
+.app-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  flex: 1;
+  min-height: calc(100vh - 57px);
+}
+
+/* ── PANELS ── */
+.panel {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+}
+
+.panel:last-child { border-right: none; }
+
+.panel-header {
+  padding: 14px 20px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #888;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Sora', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--dark);
+}
+
+.btn:hover { background: #f5f5f5; }
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+.btn-primary:hover { background: #b84600; }
+
+.btn-green {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+.btn-green:hover { background: #219a52; }
+
+.btn-blue {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+.btn-blue:hover { background: #2471a3; }
+
+.btn-danger {
+  color: #e74c3c;
+  border-color: #e74c3c22;
+}
+.btn-danger:hover { background: #fdf0f0; }
+
+/* ── TEXTAREA ── */
+#markdownInput {
+  flex: 1;
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 24px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  line-height: 1.8;
+  background: #faf9f7;
+  color: var(--dark);
+}
+
+/* ── PREVIEW ── */
+#previewPanel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 32px;
+  background: #fff;
+}
+
+/* ── RENDERED MARKDOWN STYLES ── */
+#previewPanel h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--brand);
+  border-bottom: 3px solid var(--brand);
+  padding-bottom: 8px;
+  margin: 24px 0 14px;
+}
+
+#previewPanel h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--dark);
+  border-left: 4px solid var(--brand);
+  padding-left: 12px;
+  margin: 20px 0 10px;
+}
+
+#previewPanel h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #555;
+  margin: 16px 0 8px;
+}
+
+#previewPanel p {
+  margin: 8px 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: #333;
+}
+
+#previewPanel strong { color: var(--brand); font-weight: 700; }
+#previewPanel em { color: #666; font-style: italic; }
+
+#previewPanel a {
+  color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+#previewPanel ul, #previewPanel ol {
+  margin: 8px 0 8px 24px;
+  line-height: 1.8;
+}
+
+#previewPanel li { margin: 3px 0; font-size: 15px; }
+
+/* Checklist */
+#previewPanel .task-item {
+  list-style: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 5px 0;
+}
+
+#previewPanel .task-item input[type="checkbox"] {
+  margin-top: 4px;
+  accent-color: var(--brand);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Blockquote */
+#previewPanel blockquote {
+  border-left: 4px solid var(--brand-light);
+  background: #fff8f5;
+  padding: 12px 18px;
+  margin: 14px 0;
+  border-radius: 0 8px 8px 0;
+  color: #555;
+  font-style: italic;
+}
+
+/* Highlight ==text== */
+#previewPanel mark {
+  background: #fff3cd;
+  color: #856404;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* Side note */
+#previewPanel .sidenote {
+  background: #f0f7ff;
+  border-left: 4px solid var(--blue);
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 13px;
+  color: #2c5f8a;
+  margin: 10px 0;
+}
+
+/* Horizontal rule */
+#previewPanel hr {
+  border: none;
+  border-top: 2px dashed var(--border);
+  margin: 20px 0;
+}
+
+/* ── CODE BLOCKS ── */
+#previewPanel pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+  border-radius: var(--radius);
+  padding: 0;
+  margin: 16px 0;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  position: relative;
+}
+
+.code-header {
+  background: #2d3550;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #8899aa;
+}
+
+.code-lang {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #fab1a0;
+}
+
+.copy-code-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #ccc;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  transition: all 0.15s;
+}
+
+.copy-code-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+
+#previewPanel pre code {
+  display: block;
+  padding: 18px 20px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--code-text);
+  background: none;
+}
+
+/* Inline code */
+#previewPanel code:not(pre code) {
+  background: #f0ebe3;
+  color: #c0392b;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Code token colors */
+.tok-keyword  { color: #85c1e9; }
+.tok-string   { color: #a9dfbf; }
+.tok-comment  { color: #7f8c8d; font-style: italic; }
+.tok-number   { color: #f9ca74; }
+.tok-func     { color: #f8c471; }
+
+/* ── TABLES ── */
+#previewPanel table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 14px;
+}
+
+#previewPanel th {
+  background: var(--brand);
+  color: #fff;
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 700;
+}
+
+#previewPanel td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+#previewPanel tr:nth-child(even) td { background: #faf9f7; }
+
+/* ── STATUS BAR ── */
+.status-bar {
+  padding: 8px 20px;
+  background: #fff;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: #aaa;
+}
+
+.status-ok { color: var(--green); font-weight: 700; }
+.status-error { color: #e74c3c; font-weight: 700; }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--dark);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 700;
+  transition: transform 0.3s ease;
+  z-index: 999;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+#toast.show { transform: translateX(-50%) translateY(0); }
+#toast.toast-success { background: var(--green); }
+#toast.toast-error   { background: #e74c3c; }
+
+/* ── PDF OUTPUT AREA ── */
+#pdfContent {
+  display: none;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .app-wrapper {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+  .panel { border-right: none; border-bottom: 1px solid var(--border); }
+  .panel-actions { gap: 5px; }
+  .btn { padding: 6px 10px; font-size: 11px; }
+  #markdownInput { font-size: 12px; }
+}
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #ccc;
+  gap: 10px;
+  text-align: center;
+  padding: 40px;
+}
+
+.empty-state svg { opacity: 0.3; }
+.empty-state p { font-size: 14px; line-height: 1.6; }
+```
+
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a class="logo" href="index.html">Sara<span>Puma</span></a>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span class="header-badge">v3.3</span>
+      <a href="index.html" style="font-size:13px; color:#888; text-decoration:none;">← Home</a>
+    </div>
+  </header>
+
+  <div class="app-wrapper">
+
+```
+<!-- ── LEFT: INPUT ── -->
+<div class="panel">
+  <div class="panel-header">
+    <span class="panel-title">📥 Markdown Input</span>
+    <div class="panel-actions">
+      <button class="btn btn-danger" onclick="clearInput()">🗑 Clear</button>
+      <button class="btn" onclick="pasteFromClipboard()">📋 Paste</button>
+      <button class="btn btn-primary" onclick="renderMarkdown()">▶ Render</button>
+    </div>
+  </div>
+  <textarea id="markdownInput" placeholder="Paste your Markdown here…
+```
+
+# Main Title
+
+## Subheader
+
+**Bold text**, *italic*, ==highlighted==
+
+> Blockquote
+
+- [x] Task done
+- [ ] Task pending
+
+**Side note:** This is a sidenote
+
+```javascript
+const hello = ‘world’;
+console.log(hello);
+```
+
+|Col A                               |Col B|
+|------------------------------------|-----|
+|Val 1                               |Val 2|
+|“ oninput=“autoRender()”></textarea>|     |
+
+```
+  <div class="status-bar">
+    <span id="inputStats">0 words · 0 chars</span>
+    <span id="inputStatus">Ready</span>
+  </div>
+</div>
+
+<!-- ── RIGHT: PREVIEW ── -->
+<div class="panel">
+  <div class="panel-header">
+    <span class="panel-title">👁 Rendered Preview</span>
+    <div class="panel-actions">
+      <button class="btn" onclick="selectAllPreview()" title="Select all rendered text">☑ Select All</button>
+      <button class="btn btn-green" onclick="copyFormattedText()" title="Copy rich text for Word/Notes/Docs">📄 Copy Formatted</button>
+      <button class="btn btn-blue" onclick="copyPlainText()" title="Copy as plain text">📝 Copy Plain</button>
+      <button class="btn" onclick="exportPDF()" title="Export as PDF">⬇ PDF</button>
+    </div>
+  </div>
+  <div id="previewPanel">
+    <div class="empty-state" id="emptyState">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+        <polyline points="10 9 9 9 8 9"/>
+      </svg>
+      <p>Paste Markdown on the left<br/>and press <strong>Render</strong> — or just start typing.</p>
+    </div>
+  </div>
+  <div class="status-bar">
+    <span id="previewStats">Nothing rendered yet</span>
+    <span id="renderStatus">—</span>
+  </div>
+</div>
+```
+
+  </div>
+
+  <div id="toast"></div>
+
+  <!-- Hidden for PDF export -->
+
+  <div id="pdfContent"></div>
+
+<script>
+// ─────────────────────────────────────────────
+// MARKDOWN PARSER — Full Featured
+// ─────────────────────────────────────────────
+
+function parseMarkdown(raw) {
+  if (!raw || !raw.trim()) return '';
+
+  // Step 1: Protect fenced code blocks (```lang\n...\n```)
+  const codeBlocks = [];
+  let text = raw.replace(/```(\w*)\n?([\s\S]*?)```/g, (match, lang, code) => {
+    const idx = codeBlocks.length;
+    codeBlocks.push({ lang: lang.trim(), code: code });
+    return `\x00CODE_BLOCK_${idx}\x00`;
+  });
+
+  // Step 2: Protect inline code (`code`)
+  const inlineCodes = [];
+  text = text.replace(/`([^`]+)`/g, (match, code) => {
+    const idx = inlineCodes.length;
+    inlineCodes.push(code);
+    return `\x00INLINE_${idx}\x00`;
+  });
+
+  // Step 3: Line-by-line processing
+  const lines = text.split('\n');
+  const output = [];
+  let inList = false;
+  let inOl = false;
+  let inTable = false;
+  let tableRows = [];
+  let i = 0;
+
+  const flushList = () => {
+    if (inList)  { output.push('</ul>'); inList = false; }
+    if (inOl)    { output.push('</ol>'); inOl = false; }
+  };
+
+  const flushTable = () => {
+    if (!inTable) return;
+    inTable = false;
+    if (tableRows.length < 1) { tableRows = []; return; }
+    let html = '<table>';
+    tableRows.forEach((row, idx) => {
+      const cells = row.split('|').map(c => c.trim()).filter(c => c !== '');
+      // skip separator row (---) 
+      if (cells.every(c => /^[-:]+$/.test(c))) return;
+      const tag = idx === 0 ? 'th' : 'td';
+      html += '<tr>' + cells.map(c => `<${tag}>${inlineParse(c)}</${tag}>`).join('') + '</tr>';
+    });
+    html += '</table>';
+    output.push(html);
+    tableRows = [];
+  };
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // Code block placeholder
+    if (/\x00CODE_BLOCK_(\d+)\x00/.test(line)) {
+      flushList(); flushTable();
+      const match = line.match(/\x00CODE_BLOCK_(\d+)\x00/);
+      const { lang, code } = codeBlocks[parseInt(match[1])];
+      const escapedCode = escapeHtml(code);
+      const langLabel = lang || 'code';
+      output.push(`
+<pre>
+  <div class="code-header">
+    <span class="code-lang">${escapeHtml(langLabel)}</span>
+    <button class="copy-code-btn" onclick="copyCodeBlock(this)">Copy</button>
+  </div>
+  <code>${syntaxHighlight(escapedCode, lang)}</code>
+</pre>`);
+
+```
+  i++; continue;
+}
+
+// Table rows
+if (/^\|.+\|/.test(line)) {
+  flushList();
+  if (!inTable) inTable = true;
+  tableRows.push(line);
+  i++; continue;
+} else if (inTable) {
+  flushTable();
+}
+
+// HR
+if (/^(-{3,}|\*{3,}|_{3,})$/.test(line.trim())) {
+  flushList();
+  output.push('<hr>');
+  i++; continue;
+}
+
+// Headers
+const h = line.match(/^(#{1,6})\s+(.+)/);
+if (h) {
+  flushList(); flushTable();
+  const level = h[1].length;
+  output.push(`<h${level}>${inlineParse(h[2])}</h${level}>`);
+  i++; continue;
+}
+
+// Blockquote
+if (line.startsWith('> ')) {
+  flushList();
+  output.push(`<blockquote>${inlineParse(line.slice(2))}</blockquote>`);
+  i++; continue;
+}
+
+// Checklist item
+const task = line.match(/^- \[( |x|X)\] (.+)/);
+if (task) {
+  if (!inList) { output.push('<ul style="list-style:none;padding-left:4px;">'); inList = true; }
+  const checked = task[1].toLowerCase() === 'x' ? 'checked' : '';
+  output.push(`<li class="task-item"><input type="checkbox" ${checked} onclick="return false"/><span>${inlineParse(task[2])}</span></li>`);
+  i++; continue;
+}
+
+// Unordered list
+const ul = line.match(/^[-*+] (.+)/);
+if (ul) {
+  if (inOl) { output.push('</ol>'); inOl = false; }
+  if (!inList) { output.push('<ul>'); inList = true; }
+  output.push(`<li>${inlineParse(ul[1])}</li>`);
+  i++; continue;
+}
+
+// Ordered list
+const ol = line.match(/^\d+\. (.+)/);
+if (ol) {
+  if (inList) { output.push('</ul>'); inList = false; }
+  if (!inOl) { output.push('<ol>'); inOl = true; }
+  output.push(`<li>${inlineParse(ol[1])}</li>`);
+  i++; continue;
+}
+
+// Empty line → close lists, paragraph break
+if (line.trim() === '') {
+  flushList(); flushTable();
+  output.push('<br>');
+  i++; continue;
+}
+
+// Regular paragraph
+flushList(); flushTable();
+output.push(`<p>${inlineParse(line)}</p>`);
+i++;
+```
+
+}
+
+flushList();
+flushTable();
+
+let result = output.join(’\n’);
+
+// Restore inline codes
+result = result.replace(/\x00INLINE_(\d+)\x00/g, (_, idx) => {
+return `<code>${escapeHtml(inlineCodes[parseInt(idx)])}</code>`;
+});
+
+return result;
+}
+
+// ─────────────────────────────────────────────
+// INLINE PARSER — bold, italic, links, highlights, sidenotes
+// ─────────────────────────────────────────────
+function inlineParse(text) {
+// **Side note:** → sidenote div
+text = text.replace(/**Side note:**\s*(.*)/gi, ‘<span class="sidenote">📌 <strong>Side note:</strong> $1</span>’);
+
+// ==highlight==
+text = text.replace(/==(.+?)==/g, ‘<mark>$1</mark>’);
+
+// **bold**
+text = text.replace(/**(.+?)**/g, ‘<strong>$1</strong>’);
+
+// *italic* or *italic*
+text = text.replace(/(?<!*)*([^*]+?)*(?!*)/g, ‘<em>$1</em>’);
+text = text.replace(/*([^*]+?)_/g, ‘<em>$1</em>’);
+
+// ~strikethrough~
+text = text.replace(/~(.+?)~/g, ‘<del>$1</del>’);
+
+// [text](url)
+text = text.replace(/[([^]]+)](([^)]+))/g, ‘<a href="$2" target="_blank" rel="noopener">$1</a>’);
+
+// inline code placeholders are restored later by main parser
+return text;
+}
+
+// ─────────────────────────────────────────────
+// SYNTAX HIGHLIGHTING (basic, no dependencies)
+// ─────────────────────────────────────────────
+function syntaxHighlight(code, lang) {
+if (!lang) return code;
+const l = lang.toLowerCase();
+
+// Keywords by language group
+const keywords = {
+js:   /\b(const|let|var|function|return|if|else|for|while|class|import|export|from|default|new|this|typeof|await|async|try|catch|throw|=>|null|undefined|true|false)\b/g,
+ts:   /\b(const|let|var|function|return|if|else|for|while|class|import|export|from|default|new|this|typeof|await|async|try|catch|throw|type|interface|extends|implements|null|undefined|true|false)\b/g,
+py:   /\b(def|class|return|if|elif|else|for|while|import|from|as|with|pass|break|continue|lambda|yield|not|and|or|in|is|True|False|None|print)\b/g,
+css:  null,
+html: null,
+};
+
+const group = [‘javascript’,‘js’,‘jsx’].includes(l) ? ‘js’
+: [‘typescript’,‘ts’,‘tsx’].includes(l) ? ‘ts’
+: [‘python’,‘py’].includes(l) ? ‘py’
+: l;
+
+// Apply keyword highlighting
+if (keywords[group]) {
+code = code.replace(keywords[group], ‘<span class="tok-keyword">$1</span>’);
+}
+
+// Strings (single and double quotes)
+code = code.replace(/([”’`])(?:(?=(\\?))\2.)*?\1/g, m => `<span class="tok-string">${m}</span>`);
+
+// Comments: // …  and  # …
+code = code.replace(/(//.*)$/gm, ‘<span class="tok-comment">$1</span>’);
+code = code.replace(/(#.*)$/gm, ‘<span class="tok-comment">$1</span>’);
+
+// Numbers
+code = code.replace(/\b(\d+.?\d*)\b/g, ‘<span class="tok-number">$1</span>’);
+
+// Function calls
+code = code.replace(/\b([a-zA-Z_]\w*)\s*(?=()/g, ‘<span class="tok-func">$1</span>’);
+
+return code;
+}
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function escapeHtml(str) {
+return str
+.replace(/&/g, ‘&’)
+.replace(/</g, ‘<’)
+.replace(/>/g, ‘>’);
+}
+
+function wordCount(str) {
+return str.trim() ? str.trim().split(/\s+/).length : 0;
+}
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+let renderTimer = null;
+
+function autoRender() {
+clearTimeout(renderTimer);
+renderTimer = setTimeout(renderMarkdown, 300);
+updateInputStats();
+}
+
+function updateInputStats() {
+const val = document.getElementById(‘markdownInput’).value;
+document.getElementById(‘inputStats’).textContent =
+`${wordCount(val)} words · ${val.length} chars`;
+}
+
+function renderMarkdown() {
+const input = document.getElementById(‘markdownInput’).value;
+const panel = document.getElementById(‘previewPanel’);
+const empty  = document.getElementById(‘emptyState’);
+
+if (!input.trim()) {
+panel.innerHTML = ‘’;
+panel.appendChild(empty);
+document.getElementById(‘previewStats’).textContent = ‘Nothing rendered yet’;
+document.getElementById(‘renderStatus’).textContent = ‘—’;
+return;
+}
+
+try {
+const html = parseMarkdown(input);
+panel.innerHTML = html;
+
+```
+// Stats
+const text = panel.innerText || '';
+document.getElementById('previewStats').textContent =
+  `${wordCount(text)} words rendered`;
+document.getElementById('renderStatus').innerHTML =
+  '<span class="status-ok">✓ OK</span>';
+```
+
+} catch(e) {
+document.getElementById(‘renderStatus’).innerHTML =
+‘<span class="status-error">⚠ Error</span>’;
+console.error(e);
+}
+
+updateInputStats();
+}
+
+// ─────────────────────────────────────────────
+// COPY CODE BLOCK
+// ─────────────────────────────────────────────
+function copyCodeBlock(btn) {
+const pre  = btn.closest(‘pre’);
+const code = pre.querySelector(‘code’);
+const text = code.innerText || code.textContent;
+
+navigator.clipboard.writeText(text).then(() => {
+btn.textContent = ‘✅ Copied’;
+setTimeout(() => btn.textContent = ‘Copy’, 1800);
+}).catch(() => {
+fallbackCopy(text);
+btn.textContent = ‘✅ Copied’;
+setTimeout(() => btn.textContent = ‘Copy’, 1800);
+});
+}
+
+// ─────────────────────────────────────────────
+// SELECT ALL PREVIEW
+// ─────────────────────────────────────────────
+function selectAllPreview() {
+const panel = document.getElementById(‘previewPanel’);
+if (!panel.innerText.trim()) {
+showToast(‘Nothing to select yet. Render first.’, ‘error’);
+return;
+}
+
+const range = document.createRange();
+range.selectNodeContents(panel);
+const sel = window.getSelection();
+sel.removeAllRanges();
+sel.addRange(range);
+showToast(‘✅ All content selected’);
+}
+
+// ─────────────────────────────────────────────
+// COPY FORMATTED (Rich HTML → clipboard)
+// For pasting into Word, Apple Notes, Notion, etc.
+// ─────────────────────────────────────────────
+async function copyFormattedText() {
+const panel = document.getElementById(‘previewPanel’);
+if (!panel.innerText.trim()) {
+showToast(‘Nothing to copy. Render first.’, ‘error’);
+return;
+}
+
+// Build styled HTML for clipboard
+const styles = `body { font-family: -apple-system, Helvetica, Arial, sans-serif; color: #1a1f2e; } h1 { font-size: 24px; color: #D35400; border-bottom: 2px solid #D35400; padding-bottom: 6px; } h2 { font-size: 18px; color: #1a1f2e; border-left: 4px solid #D35400; padding-left: 10px; } h3 { font-size: 15px; color: #555; } strong { color: #D35400; } blockquote { border-left: 4px solid #f0a07a; background: #fff8f5; padding: 10px 14px; margin: 10px 0; font-style: italic; color: #555; } mark { background: #fff3cd; color: #856404; padding: 1px 4px; } pre { background: #1e2436; color: #e8d5b7; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 13px; white-space: pre-wrap; } code { background: #f0ebe3; color: #c0392b; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; } pre code { background: none; color: inherit; padding: 0; } .sidenote { background: #f0f7ff; border-left: 4px solid #2980b9; padding: 8px 12px; font-size: 13px; color: #2c5f8a; } table { border-collapse: collapse; width: 100%; } th { background: #D35400; color: white; padding: 8px 12px; } td { padding: 8px 12px; border-bottom: 1px solid #e2ddd8; } .code-header { display: none; }`;
+
+const htmlContent = `<!DOCTYPE html><html><head><style>${styles}</style></head><body>${panel.innerHTML}</body></html>`;
+
+try {
+// Modern Clipboard API — rich text
+const blob = new Blob([htmlContent], { type: ‘text/html’ });
+const plainBlob = new Blob([panel.innerText], { type: ‘text/plain’ });
+const item = new ClipboardItem({ ‘text/html’: blob, ‘text/plain’: plainBlob });
+await navigator.clipboard.write([item]);
+showToast(‘✅ Rich text copied — paste in Notes, Word, Notion…’, ‘success’);
+} catch (err) {
+// Fallback: select all + execCommand copy
+selectAllPreview();
+try {
+document.execCommand(‘copy’);
+window.getSelection().removeAllRanges();
+showToast(‘✅ Content copied (formatted)’, ‘success’);
+} catch (e) {
+showToast(‘⚠ Could not copy. Try “Select All” manually.’, ‘error’);
+}
+}
+}
+
+// ─────────────────────────────────────────────
+// COPY PLAIN TEXT
+// ─────────────────────────────────────────────
+function copyPlainText() {
+const panel = document.getElementById(‘previewPanel’);
+const text  = panel.innerText || panel.textContent;
+
+if (!text.trim()) {
+showToast(‘Nothing to copy. Render first.’, ‘error’);
+return;
+}
+
+navigator.clipboard.writeText(text).then(() => {
+showToast(‘📝 Plain text copied to clipboard’);
+}).catch(() => {
+fallbackCopy(text);
+showToast(‘📝 Plain text copied to clipboard’);
+});
+}
+
+// ─────────────────────────────────────────────
+// CLEAR & PASTE
+// ─────────────────────────────────────────────
+function clearInput() {
+if (!document.getElementById(‘markdownInput’).value) return;
+if (confirm(‘Clear all content?’)) {
+document.getElementById(‘markdownInput’).value = ‘’;
+renderMarkdown();
+}
+}
+
+async function pasteFromClipboard() {
+try {
+const text = await navigator.clipboard.readText();
+document.getElementById(‘markdownInput’).value = text;
+renderMarkdown();
+showToast(‘📋 Pasted from clipboard’);
+} catch(e) {
+showToast(‘⚠ Clipboard access denied. Paste manually (⌘V / Ctrl+V).’, ‘error’);
+document.getElementById(‘markdownInput’).focus();
+}
+}
+
+// ─────────────────────────────────────────────
+// EXPORT PDF
+// ─────────────────────────────────────────────
+function exportPDF() {
+const panel = document.getElementById(‘previewPanel’);
+if (!panel.innerText.trim()) {
+showToast(‘Nothing to export. Render first.’, ‘error’);
+return;
+}
+
+const printWin = window.open(’’, ‘_blank’);
+const styles = document.querySelector(‘style’).innerHTML;
+printWin.document.write(`<!DOCTYPE html> <html> <head> <meta charset="UTF-8"> <title>SaraPuma Export</title> <style> @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@400;600;800&display=swap'); body { font-family: 'Sora', sans-serif; padding: 40px; color: #1a1f2e; max-width: 800px; margin: 0 auto; } h1 { font-size: 24px; color: #D35400; border-bottom: 2px solid #D35400; padding-bottom: 8px; } h2 { font-size: 18px; color: #1a1f2e; border-left: 4px solid #D35400; padding-left: 10px; } h3 { font-size: 15px; color: #555; } strong { color: #D35400; } blockquote { border-left: 4px solid #f0a07a; background: #fff8f5; padding: 10px 14px; margin: 10px 0; font-style: italic; } mark { background: #fff3cd; color: #856404; padding: 1px 4px; border-radius: 3px; } pre { background: #1e2436; color: #e8d5b7; padding: 14px; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; white-space: pre-wrap; page-break-inside: avoid; } pre code { color: #e8d5b7; background: none; padding: 0; } code { background: #f0ebe3; color: #c0392b; padding: 2px 6px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; } .sidenote { background: #f0f7ff; border-left: 4px solid #2980b9; padding: 8px 12px; font-size: 13px; color: #2c5f8a; } table { border-collapse: collapse; width: 100%; } th { background: #D35400; color: white; padding: 8px 12px; } td { padding: 8px 12px; border-bottom: 1px solid #e2ddd8; } .code-header { display: none; } .copy-code-btn { display: none; } @media print { .copy-code-btn { display: none; } } </style> </head> <body>${panel.innerHTML}</body> </html>`);
+printWin.document.close();
+printWin.focus();
+setTimeout(() => { printWin.print(); }, 500);
+}
+
+// ─────────────────────────────────────────────
+// FALLBACK COPY (for older Safari)
+// ─────────────────────────────────────────────
+function fallbackCopy(text) {
+const el = document.createElement(‘textarea’);
+el.value = text;
+el.setAttribute(‘readonly’, ‘’);
+el.style.cssText = ‘position:fixed;top:0;left:0;opacity:0;’;
+document.body.appendChild(el);
+el.select();
+el.setSelectionRange(0, el.value.length);
+document.execCommand(‘copy’);
+document.body.removeChild(el);
+}
+
+// ─────────────────────────────────────────────
+// TOAST NOTIFICATION
+// ─────────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg, type = ‘success’) {
+const el = document.getElementById(‘toast’);
+el.textContent = msg;
+el.className = `show toast-${type}`;
+clearTimeout(toastTimer);
+toastTimer = setTimeout(() => { el.className = ‘’; }, 2800);
+}
+
+// ─────────────────────────────────────────────
+// KEYBOARD SHORTCUTS
+// ─────────────────────────────────────────────
+document.addEventListener(‘keydown’, e => {
+const isMac = navigator.platform.toUpperCase().includes(‘MAC’);
+const mod = isMac ? e.metaKey : e.ctrlKey;
+
+if (mod && e.key === ‘Enter’) { e.preventDefault(); renderMarkdown(); }
+if (mod && e.shiftKey && e.key === ‘c’) { e.preventDefault(); copyFormattedText(); }
+if (mod && e.shiftKey && e.key === ‘p’) { e.preventDefault(); copyPlainText(); }
+});
+
+// Init
+updateInputStats();
+</script>
+
+</body>
+</html>
