@@ -423,20 +423,78 @@ header {
 #toast.toast-error   { background: #e74c3c; }
 
 /* ── PDF OUTPUT AREA ── */
-#pdfContent {
+#pdfContent { display: none; }
+
+/* ── TAB BAR (mobile only) ── */
+.tab-bar {
   display: none;
 }
 
 /* ── MOBILE ── */
 @media (max-width: 768px) {
+  .tab-bar {
+    display: flex;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: none;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #aaa;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active {
+    color: var(--brand);
+    border-bottom-color: var(--brand);
+  }
+
   .app-wrapper {
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+    min-height: calc(100vh - 110px);
   }
-  .panel { border-right: none; border-bottom: 1px solid var(--border); }
-  .panel-actions { gap: 5px; }
-  .btn { padding: 6px 10px; font-size: 11px; }
-  #markdownInput { font-size: 12px; }
+
+  .panel {
+    border-right: none;
+    display: none;
+  }
+
+  .panel.tab-active {
+    display: flex;
+  }
+
+  .panel-header {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 12px;
+  }
+
+  .panel-actions {
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 7px 10px;
+    font-size: 11px;
+  }
+
+  #markdownInput {
+    font-size: 14px;
+    padding: 16px;
+  }
+
+  #previewPanel {
+    padding: 16px 18px;
+  }
 }
 
 /* ── EMPTY STATE ── */
@@ -469,11 +527,18 @@ header {
     </div>
   </header>
 
-  <div class="app-wrapper">
+  <!-- Mobile tab switcher -->
+
+  <div class="tab-bar" id="tabBar">
+    <button class="tab-btn active" onclick="showTab('input')">📥 Input</button>
+    <button class="tab-btn" onclick="showTab('preview')">👁 Preview</button>
+  </div>
+
+  <div class="app-wrapper" id="appWrapper">
 
 ```
 <!-- ── LEFT: INPUT ── -->
-<div class="panel">
+<div class="panel tab-active" id="panelInput">
   <div class="panel-header">
     <span class="panel-title">📥 Markdown Input</span>
     <div class="panel-actions">
@@ -482,33 +547,7 @@ header {
       <button class="btn btn-primary" onclick="renderMarkdown()">▶ Render</button>
     </div>
   </div>
-  <textarea id="markdownInput" placeholder="Paste your Markdown here…
-```
-
-# Main Title
-
-## Subheader
-
-**Bold text**, *italic*, ==highlighted==
-
-> Blockquote
-
-- [x] Task done
-- [ ] Task pending
-
-**Side note:** This is a sidenote
-
-```javascript
-const hello = ‘world’;
-console.log(hello);
-```
-
-|Col A                               |Col B|
-|------------------------------------|-----|
-|Val 1                               |Val 2|
-|“ oninput=“autoRender()”></textarea>|     |
-
-```
+  <textarea id="markdownInput" placeholder="Pega tu Markdown aqui… (se renderiza automaticamente)" oninput="autoRender()"></textarea>
   <div class="status-bar">
     <span id="inputStats">0 words · 0 chars</span>
     <span id="inputStatus">Ready</span>
@@ -516,7 +555,7 @@ console.log(hello);
 </div>
 
 <!-- ── RIGHT: PREVIEW ── -->
-<div class="panel">
+<div class="panel" id="panelPreview">
   <div class="panel-header">
     <span class="panel-title">👁 Rendered Preview</span>
     <div class="panel-actions">
